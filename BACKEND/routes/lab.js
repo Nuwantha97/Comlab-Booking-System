@@ -30,7 +30,7 @@ router.route("/update/:id").put(async(req, res) => {
         const {name, index_number} = req.body;
         const updatedLab = {name, index_number};
         const update = await Lab.findByIdAndUpdate(labId, updatedLab).then(() => {
-                res.status(200).send({status: "Lab Updated", lab : update});
+                res.status(200).send({status: "Lab Updated"});
         }).catch((err) => {
                 console.log(err);
                 res.status(500).send({status: "Error with updating Lab", error: err});
