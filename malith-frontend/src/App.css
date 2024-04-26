@@ -22,3 +22,17 @@
 .my-app h1 {
   color: #055366; /* Set font color as dark blue */
 }
+.container {
+  background-color: #5c818a;
+  border-radius: 20px;
+  width: 450px;
+  height: 300px;
+  position: fixed;
+  top: 40%;
+  right: 30px;
+  text-align: center;
+  transform: translateY(-50%);
+}
+.container h3 {
+  color: white;
+}

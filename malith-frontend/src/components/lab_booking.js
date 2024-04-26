@@ -14,11 +14,6 @@ export default function MyApp() {
     <div className="my-app">
       <h1>Book Lab Session</h1>
       <MyButton />
-      <div className="container">
-        <h3>CO1 Lab Availability</h3>
-      </div>
     </div>
   );
 }
-
-
