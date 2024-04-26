@@ -1,3 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #93b6bf; /* Change this to the desired background color */
+}
+
+
 .my-button {
   background-color: #055366;
   color: white;
@@ -15,7 +22,7 @@
 
 .my-app {
   padding-left: 20px; /* Add padding from the left */
-  padding-top: 15px; /* Add padding from the top */
+  padding-top: 15px;
   
 }
 
@@ -36,3 +43,15 @@
 .container h3 {
   color: white;
 }
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px; /* Adjust as needed for spacing between label and input */
+}
+.form-group input[type="text"] {
+  width: 500px;
+}
+
