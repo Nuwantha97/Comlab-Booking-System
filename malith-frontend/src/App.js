@@ -1,9 +1,9 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
 function MyButton() {
   return (
-    <button>
+    <button className="my-button">
       Scheduling Poll
     </button>
   );
@@ -11,7 +11,7 @@ function MyButton() {
 
 export default function MyApp() {
   return (
-    <div>
+    <div className="my-app">
       <h1>Book Lab Session</h1>
       <MyButton />
     </div>
