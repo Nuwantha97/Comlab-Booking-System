@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import logo from './logo.ico'; 
 import './styles.css';
 
-function ColorSchemesExample() {
+function NavBarBL() {
   return (
     <>
       <Navbar className="navbar-green">
@@ -32,4 +32,4 @@ function ColorSchemesExample() {
   );
 }
 
-export default ColorSchemesExample;
+export default NavBarBL;

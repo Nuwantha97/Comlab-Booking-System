@@ -35,7 +35,9 @@ export default function Header() {
                 <Buttons text="Home"  borderRadius="50px" width="90px"  />
               </Link>
                 <Buttons text="Booking"  borderRadius="50px" width="90px"  />
+                <Link to="/view"> 
                 <Buttons text="View"  borderRadius="50px" width="90px"  />
+                </Link>
                 <img src={notificationIcon} alt="notf-icon" className='notificationIcon' />
                 <Link to="/user"> 
                   <img src={userIcon} alt="user-icon" className='userIcon' />
