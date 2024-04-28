@@ -1,30 +1,31 @@
 import React from 'react';
-import './App.css';
+import MyApp from './pages/booking'
+import Home from './pages/Home'
+import { BrowserRouter, Route, Router, Routes } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import User from './pages/User';
 
-function MyButton() {
+
+function App() {
   return (
-    <button className="my-button">
-      Scheduling Poll
-    </button>
+    
+    <div>
+      <BrowserRouter>
+       <Routes>
+         <Route path="/" element={<Home/>}></Route>
+         <Route path="/booking" element={<MyApp/>}></Route>
+         <Route path="/dashboard" element={<Dashboard/>}></Route>
+         <Route path="/user" element={<User/>}></Route>
+         
+       </Routes>
+        
+      </BrowserRouter>
+        
+        
+        
+      </div>
+    
   );
 }
 
-export default function MyApp() {
-  return (
-    <div className="my-app">
-      <h1>Book Lab Session</h1>
-      <MyButton />
-      <div className="container">
-        <h3>CO1 Lab Availability</h3>
-      </div>
-      <div className="form-group">
-          <label htmlFor="username">Username:</label>
-          <input type="text" id="username" name="username" />
-          <label htmlFor="username">Invite Attendees:</label>
-          <input type="text" id="username" name="username" />
-      </div>
-    </div>
-  );
-}
-
-
+export default App;
