@@ -1,0 +1,27 @@
+
+.home {
+    background-image: url('../images/home.jpg');
+    background-size: 100% 100%;
+    padding: 5em;
+    display: flex;
+    height: 100vh;
+    background-color: rgba(184, 219, 222, 0.5);
+    
+  }
+  .text-home {
+    font-family: 'Roboto Slab', serif;
+    text-align: start;
+     color: #1A4350;
+     font-weight: 600;
+     line-height: 88px;
+    }
+    .button-row {
+      display: flex;
+    }
+    .button-row > * {
+      margin-right: 10px;
+    }
+    .button-row > *:last-child {
+      margin-right: 0;
+    }
+    
