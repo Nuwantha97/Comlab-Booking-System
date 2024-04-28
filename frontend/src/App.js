@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import User from './pages/User';
+import View from './pages/View';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
          <Route path="/" element={<Home/>}></Route>
          <Route path="/dashboard" element={<Dashboard/>}></Route>
          <Route path="/user" element={<User/>}></Route>
+         <Route path="/View" element={<View/>}></Route>
          
        </Routes>
         
