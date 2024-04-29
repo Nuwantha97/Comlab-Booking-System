@@ -23,7 +23,7 @@ export default function Home() {
             <Link to ="/booking">
               <Buttons text="Sign in"  borderRadius="0" width="95px"  />
             </Link>
-            <Link to ="/dashboard" >
+            <Link to ="/signup" >
               <Buttons text="Sign up"  borderRadius="0" width="95px"  />
             </Link>
           </div>
