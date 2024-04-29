@@ -20,7 +20,7 @@ export default function Home() {
           </p>
           <br />
           <div  className='button-row'>
-            <Link to ="/booking">
+            <Link to ="/signIn">
               <Buttons text="Sign in"  borderRadius="0" width="95px"  />
             </Link>
             <Link to ="/signup" >

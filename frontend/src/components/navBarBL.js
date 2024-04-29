@@ -25,7 +25,7 @@ function NavBarBL() {
               </div>
             </Navbar.Brand>  
             <Nav>
-                <Link to ="/dashboard" className="ml-auto">
+                <Link to ="/signIn" className="ml-auto">
                   <Buttons text="Sign in"  borderRadius="0" width="95px"  />
                 </Link>
                 <Link to ="/dashboard" className="ml-auto">
