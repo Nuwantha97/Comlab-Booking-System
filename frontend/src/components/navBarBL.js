@@ -2,16 +2,14 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import logo from './logo.ico'; 
-import Buttons from './Buttons'
 import './styles.css';
-import { Link } from 'react-router-dom';
 
-function NavBarBL() {
+function ColorSchemesExample() {
   return (
     <>
       <Navbar className="navbar-green">
         <Container>
-          <Navbar.Brand href="#Home">
+            <Navbar.Brand href="#Home">
               <div className="d-flex align-items-center">
                 <img
                   alt=""
@@ -23,14 +21,10 @@ function NavBarBL() {
                   <p>Faculty of Engineering - University of Jaffna</p>
                 </div>
               </div>
-            </Navbar.Brand>  
+            </Navbar.Brand>   
             <Nav>
-                <Link to ="/dashboard" className="ml-auto">
-                  <Buttons text="Sign in"  borderRadius="0" width="95px"  />
-                </Link>
-                <Link to ="/dashboard" className="ml-auto">
-                  <Buttons text="Admin"  borderRadius="0" width="95px"  />
-                </Link>
+                <Nav.Link href="#pricing" className="ml-auto">Sign in</Nav.Link>
+                <Nav.Link href="#pricing" className="ml-auto">Admin</Nav.Link>
             </Nav>
         </Container>
       </Navbar>
@@ -38,4 +32,4 @@ function NavBarBL() {
   );
 }
 
-export default NavBarBL;
+export default ColorSchemesExample;
