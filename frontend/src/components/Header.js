@@ -17,17 +17,18 @@ export default function Header() {
       <Navbar className="navbar-green">
         <Container>
             <Navbar.Brand href="#Home">
-              <div className="d-flex align-items-center">
-                <img
-                  alt=""
-                  src={logo}
-                  style={{ width: '30px', height: '30px', marginRight: '10px' }}
-                />
-                <div>
-                  <h3>CO1 Lab Booking System</h3>
-                  <p>Faculty of Engineering - University of Jaffna</p>
+            
+                <div className="d-flex align-items-center">
+                  <img
+                    alt=""
+                    src={logo}
+                    style={{ width: '30px', height: '30px', marginRight: '10px' }}
+                  />
+                  <div>
+                    <h3>CO1 Lab Booking System</h3>
+                    <p>Faculty of Engineering - University of Jaffna</p>
+                  </div>
                 </div>
-              </div>
             </Navbar.Brand>   
             <Nav>
               <div className='buttons-container'>
