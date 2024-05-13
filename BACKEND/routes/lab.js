@@ -4,10 +4,12 @@ let Lab = require("../models/lab_book");
 router.route("/add").post((req, res) => {
         const name = req.body.name;
         const index_number = req.body.index_number;
+        const subjectCode = req.body.subjectCode;
 
         const newLab = new Lab({
                 name,
-                index_number
+                index_number,
+                subjectCode
         })
 
         newLab.save().then(() => {
@@ -27,8 +29,8 @@ router.route("/").get((req, res) => {
 
 router.route("/update/:id").put(async(req, res) => {
         let labId = req.params.id;
-        const {name, index_number} = req.body;
-        const updatedLab = {name, index_number};
+        const {name, index_number, subjectCode} = req.body;
+        const updatedLab = {name, index_number, subjectCode};
         const update = await Lab.findByIdAndUpdate(labId, updatedLab).then(() => {
                 res.status(200).send({status: "Lab Updated"});
         }).catch((err) => {

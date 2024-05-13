@@ -21,6 +21,13 @@ mongoose.connect(URL, {
 const connection = mongoose.connection;
 const labRouter = require('./routes/lab.js');
 app.use("/lab", labRouter);
+
+const usersRouter = require('./routes/users.js');
+app.use("/users", usersRouter);
+
+const bookingsRouter = require('./routes/bookings.js');
+app.use("/bookings", bookingsRouter);
+
 connection.once("open", () => {
         console.log("Mongodb Connection success!")
 });

@@ -6,6 +6,10 @@ const labSchema = new Schema({
         required: true
     },
     index_number: {
+        type: Number,
+        required: true
+    },
+    subjectCode:{
         type: String,
         required: true
     }
