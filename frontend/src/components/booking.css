@@ -2,6 +2,8 @@
     margin: 0;
     padding: 0;
     background-color: #93b6bf; /* Change this to the desired background color */
+    display: flex;
+    height: 100vh;
   }
   
   

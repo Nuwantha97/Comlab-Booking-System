@@ -34,7 +34,9 @@ export default function Header() {
               <Link to="/dashboard"> 
                 <Buttons text="Home"  borderRadius="50px" width="90px"  />
               </Link>
+              <Link to="/booking">
                 <Buttons text="Booking"  borderRadius="50px" width="90px"  />
+                </Link>
                 <Link to="/view"> 
                 <Buttons text="View"  borderRadius="50px" width="90px"  />
                 </Link>
