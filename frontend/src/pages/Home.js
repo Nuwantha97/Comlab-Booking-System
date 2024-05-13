@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import NavBarBL from '../components/NavBarBL';
+import NavBarBL from '../components/navBarBL';
 import  '../components/home.css';
 import Buttons from '../components/Buttons'
 
