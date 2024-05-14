@@ -1,4 +1,4 @@
-page-container-login {
+.page-container-login {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,6 +7,8 @@ page-container-login {
     background-size: 100% 100%;
     display: flex;
     height: 100vh;
+    justify-content: flex-start;
+    
   }
   
   .form-container-login {
@@ -15,6 +17,7 @@ page-container-login {
     padding: 20px;
     border-radius: 10px;
     background-color: #328f8a;
+    margin-left: 60px;
   }
   .form-container-login h1,.form-container-login h3{
     text-align: center;
@@ -49,7 +52,16 @@ page-container-login {
     margin-top: 10px;
   }
   
-  .form-container-login Not-registered {
-    display: flex; 
-    align-items: center; 
-}
+
+  .Not-registered .registration-info {
+    display: flex;
+    align-items: center;
+  }
+  .forgot-password {
+    align-self: flex-end; 
+  }
+  
+  .forgot-password a {
+    text-decoration: none; 
+    color: #000000;
+  }

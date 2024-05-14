@@ -5,7 +5,7 @@ import '../components/dashboard.css'
 
 export default function Dashboard() {
   return (
-    <div>
+    <div className='dashboard_body'>
         <Header/>
         <div className='text-container'>
         <h1  className='text' style={{ fontFamily: 'Roboto Slab, serif', fontSize: '68px', fontWeight: '400', lineHeight: '88px', textAlign: 'center', color: 'white', marginLeft: 0 }}>Welcome to the CO1 Lab Booking System</h1>

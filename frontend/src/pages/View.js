@@ -48,8 +48,9 @@ function CalendarView({ bookings }) {
   
 
   return (
-    <div >
+    <div>
       <Header />
+      <div className='view_body'>
       <div style={{ padding: '50px' }}>
         <div style={{backgroundColor:'white'}}>
         <Calendar
@@ -81,6 +82,7 @@ function CalendarView({ bookings }) {
           </div>
         </div>
       )}
+    </div>
     </div>
     </div>
   );

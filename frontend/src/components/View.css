@@ -1,6 +1,9 @@
 /* View.css */
 
 /* Calendar event styles */
+.view_body{
+  background-color:#1A4350;
+}
 .green-event {
     background-color: #00b528 !important; /* Green color for events */
     color: #fff !important; /* White text color for events */

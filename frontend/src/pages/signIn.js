@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
+import NavBarBL from '../components/navBarBL';
 import'../components/signIn.css';
 import { Link } from 'react-router-dom';
 
@@ -50,9 +50,9 @@ export default function LoginForm() {
 
   return (
     <div>
-      <Header />
+      <NavBarBL />
       <div className="page-container-login">
-      <div className="form-container-lohin">
+      <div className="form-container-login">
         <h1>Log in</h1> 
         <h3>Sign in to continue</h3>
 
@@ -67,9 +67,8 @@ export default function LoginForm() {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              className='input'
             />
-          </div>
-          <div className="form-group-login">
             <label htmlFor="password" className="label">
               Password:
             </label>
@@ -79,16 +78,23 @@ export default function LoginForm() {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              className='input'
             />
+            <div className="forgot-password">
+              <Link to="/forgotpassword">Forgot password?</Link>
+            </div>
           </div >
           <div className='buttonStyle'>
-          <button type="submit" onClick={handleButtonClick} >
-            Sign In
-          </button>
+            <button type="submit" onClick={handleButtonClick} >
+              Sign In
+            </button>
           </div>
-          <div class="Not-registered">
-            <h3>Not Registered?</h3>
-            <Link to="/signup">Sign up</Link> </div>
+          <div className="Not-registered">
+            <div className="registration-info">
+              <h3>Not Registered?</h3>
+              <Link to="/signup">Create an account!</Link> 
+            </div>
+          </div>
         </form>
 
         {errorMessage && <p className="error-message-login">{errorMessage}</p>}

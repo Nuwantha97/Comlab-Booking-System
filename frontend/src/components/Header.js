@@ -32,18 +32,18 @@ export default function Header() {
             </Navbar.Brand>   
             <Nav>
               <div className='buttons-container'>
-              <Link to="/dashboard"> 
-                <Buttons text="Home"  borderRadius="50px" width="90px"  />
-              </Link>
-              <Link to="/booking">
-                <Buttons text="Booking"  borderRadius="50px" width="90px"  />
+                <Link to="/dashboard"> 
+                  <Buttons text="Home"  borderRadius="50px" width="90px"  />
+                </Link>
+                <Link to="/booking">
+                  <Buttons text="Booking"  borderRadius="50px" width="90px"  />
                 </Link>
                 <Link to="/view"> 
-                <Buttons text="View"  borderRadius="50px" width="90px"  />
+                  <Buttons text="View"  borderRadius="50px" width="90px"  />
                 </Link>
-                <img src={notificationIcon} alt="notf-icon" className='notificationIcon' />
+                  <img src={notificationIcon} alt="notf-icon" className='notificationIcon' />
                 <Link to="/user"> 
-                  <img src={userIcon} alt="user-icon" className='userIcon' />
+                    <img src={userIcon} alt="user-icon" className='userIcon' />
                 </Link>
                 
               </div>

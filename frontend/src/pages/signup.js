@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../components/AccountCreation.css';
-import Header from '../components/Header'
+import NavBarBL from '../components/navBarBL';
 import Buttons from '../components/Buttons'
 import { Link } from 'react-router-dom';
 
@@ -48,37 +48,37 @@ export default function AccountCreation() {
 
   return (
     <div>
-        <Header/>
-    <div className="page-container-CreatAcc">
-      <div className="form-container-creatAcc">
-        <h1>Create New Account</h1>  
-        <div class="already-registered">
-        <h3>Already Registered</h3>
-        <Link to="/dashboard">Sign in</Link> </div>
+      <NavBarBL/>
+      <div className="page-container-CreatAcc">
+          <div className="form-container-creatAcc">
+            <h1>Create New Account</h1>  
+            <div class="already-registered">
+            <h3>Already Registered</h3>
+            <Link to="/dashboard">Sign in</Link> </div>
 
-        <form onSubmit={handleSubmit} className="form">
-          <div className="form-group-creatAcc">
-            <label htmlFor="firstName" className="label">First Name:</label>
-            <input type="text" id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} className="input" />
+            <form onSubmit={handleSubmit} className="form">
+              <div className="form-group-creatAcc">
+                <label htmlFor="firstName" className="label">First Name:</label>
+                <input type="text" id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} className="input" />
+              </div>
+              <div className="form-group-creatAcc">
+                <label htmlFor="lastName" className="label">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} className="input" />
+              </div>
+              <div className="form-group-creatAcc">
+                <label htmlFor="email" className="label">Email:</label>
+                <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="input" />
+              </div>
+              <div className="form-group-creatAcc">
+                <label htmlFor="password" className="label">Password:</label>
+                <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className="input" />
+              </div>
+              <div className='Button'>
+              <Buttons text="Create Account"  borderRadius="10px" width="200px"  />
+              </div>
+            </form>
+            {errorMessage && <p className="error-message-creatAcc">{errorMessage}</p>}
           </div>
-          <div className="form-group-creatAcc">
-            <label htmlFor="lastName" className="label">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} className="input" />
-          </div>
-          <div className="form-group-creatAcc">
-            <label htmlFor="email" className="label">Email:</label>
-            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="input" />
-          </div>
-          <div className="form-group-creatAcc">
-            <label htmlFor="password" className="label">Password:</label>
-            <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className="input" />
-          </div>
-          <div className='Button'>
-          <Buttons text="Create Account"  borderRadius="10px" width="200px"  />
-          </div>
-        </form>
-        {errorMessage && <p className="error-message-creatAcc">{errorMessage}</p>}
-      </div>
       </div>
     </div>
   );

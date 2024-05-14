@@ -7,6 +7,7 @@ import AccountCreation from './pages/signup';
 import LoginForm from './pages/signIn';
 import MyApp from './pages/booking'
 import CalendarView from './pages/View';
+import Errmsg from './pages/errmsg';
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
          <Route path='/signin' element={<LoginForm/>}></Route>
          <Route path='/booking' element={<MyApp/>}></Route>
          <Route path='/view' element={<CalendarView/>}></Route>
-
+         <Route path='errmsg' element={<Errmsg/>}></Route>
          
        </Routes>
         
