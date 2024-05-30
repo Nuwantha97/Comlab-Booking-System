@@ -1,20 +1,14 @@
-// server/app.js
-
+// app.js
 const express = require('express');
-const connectDB = require('./utils/db');
-const userRoutes = require('./routes/userRoutes');
-
 const app = express();
-
-// Connect to MongoDB
-connectDB();
+const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRouter'); // Add this line
 
 // Middleware
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json());
 
 // Routes
-app.use('/api/users', userRoutes); // Example route setup for user-related endpoints
-
-// Other middleware and routes setup...
+app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes); // Add this line
 
 module.exports = app;
