@@ -7,21 +7,6 @@
 }
 
 
-.my-button {
-  background-color: #055366;
-  color: white;
-  border-radius: 20px;
-  padding: 10px 20px; /* Add padding here */
-  position: absolute;
-  top: 130px;
-  right: 30px;
-  transition: transform 0.3s ease;
-}
-
-.my-button:hover {
-  transform: scale(1.1); /* Increase button size on hover */
-}
-
 .my-app {
   padding-left: 20px; /* Add padding from the left */
   padding-top: 15px;
@@ -34,10 +19,10 @@
 .container-11 {
   background-color: #5c818a;
   border-radius: 20px;
-  width: 450px;
-  height: 300px;
+  width: 40%;
+  height: 50%;
   position: fixed;
-  top: 50%;
+  top: 55%;
   right: 30px;
   text-align: center;
   transform: translateY(-50%);
@@ -63,24 +48,15 @@
 }
 .green-rectangle {
   background-color: #4cd40d;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; 
   color: white;
   font-size: 30px;
-  padding-top: 20px;
   border-radius: 20px;
-  width: 390px;
-  height: 190px;
+  width: 70%;
+  height: 70%;
 }
-@media screen and (max-width: 768px) {
-  .container-11 {
-    width: 100%; /* Set width to 100% for smaller screens */
-  }
-
-  .form-group input[type="text"],
-  .form-group input[type="date"] {
-    width: 100%; /* Set input width to 100% for smaller screens */
-  }
-}
-
 
 .inline-container {
   display: flex;
@@ -90,14 +66,32 @@
 .inline-container > * {
   margin-right: 10px;
 }  
-.check-button{
-  background-color: #055366;
-  color: white;
-  border-radius: 20px;
-  transition: transform 0.3s ease;
+
+.Scheduling-button{
+  position: absolute;
+  top: 20%; /* 20px from the top */
+  right: 30px; /*/* 20px from the right */
 }
-.check-button:hover {
-  transform: scale(1.1); /* Increase button size on hover */
+.left {
+  flex: 1; /* Takes up remaining space */
+  padding-right: 10px; /* Add some spacing */
 }
 
+.right {
+  flex: 1; /* Takes up remaining space */
+  padding-left: 10px;
+  right: 30px; /* Add some spacing */
+}
+.scheduling-box {
+  position: fixed; /* Position the div relative to the viewport */
+  top: 30%; /* Position 55% from the top of the viewport */
+  right: 20px; /* Position 20px from the right edge of the viewport */
+  width: 100px; /* Set width to 100px */
+  height: 80px; /* Set height to 80px */
+  background-color: darkblue; /* Set background color */
+  color: white; /* Set text color */
+  padding: 10px; /* Add padding */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow for better visibility */
+  z-index: 999; /* Set z-index to ensure it's above other elements */
+}
 
