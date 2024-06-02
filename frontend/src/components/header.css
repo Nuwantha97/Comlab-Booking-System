@@ -1,36 +1,59 @@
 
-  .userIcon {
-    width: 50px;
-    height: 50px;
-    gap: 0px;
-    opacity: 0px;
-    border-radius: 50%;
-  }
+.userIcon img{
+  width: 50px;
+  height: 50px;
+  gap: 0px;
+  opacity: 0px;
+  border-radius: 50%;
+  mix-blend-mode: darken;
+}
 
-  .notificationIcon{
-    width: 50px;
-    height: 50px;
-    gap: 0px;
-    opacity: 0px;
-    border-radius: 50%;
+.userIcon:hover img,
+.userIcon.active img,
+.userIcon.active-page img{
+  transform: scale(1.1); /* Scale up the icon on hover */
+  opacity: 0.3;
+}
 
-  }
-  .navbar-green {
-    background-color: #b8dbde; 
-    color: white; 
-    width: 100%; /* Ensure the navbar takes full width */
-  }
+.notificationIcon{
+  width: 50px;
+  height: 50px;
+  gap: 0px;
+  opacity: 0px;
+  border-radius: 50%;
+  mix-blend-mode: darken;
+
+}
+
+.notificationIcon:hover {
+  transform: scale(1.1); /* Scale up the icon on hover */
+  opacity: 0.3;
+}
+.navbar-green {
+  background-color: #A6BBC1; 
+  color: white; 
+  width: 100%; /* Ensure the navbar takes full width */
+}
+
+
+.buttons-container{
+  margin-right: 20px;
+  display: flex; /* Use flexbox for buttons and user icon */
+  align-items: center; 
   
+}
 
-  .buttons-container{
-    margin-right: 2px;
-    display: flex; /* Use flexbox for buttons and user icon */
-    align-items: center; 
-  }
+.buttons-container > * {
+  margin-right: 20px; /* Add margin between buttons */
+}
 
-  .buttons-container > * {
-    margin-right: 10px; /* Add margin between buttons */
-  }
-  
-  
+
+.nav-link {
+  text-decoration: none;
+  color: white;
+  padding: 10px;
+  transition: color 0.3s ease;
+}
+
+
 

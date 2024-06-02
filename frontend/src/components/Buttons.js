@@ -1,18 +1,19 @@
-import React from 'react'
+import React from 'react';
 import BootstrapButton from 'react-bootstrap/Button';
-import '../components/buttons.css'
+import '../components/buttons.css';
 
-export default function Buttons({text, borderRadius, width, marginTop}) {
-
+export default function Buttons({ text, borderRadius, width, marginTop, className }) {
   const buttonStyle = {
-    borderRadius: borderRadius, // Set the border radius using the prop
+    borderRadius: borderRadius,
     width: width,
-    marginTop: marginTop
+    marginTop: marginTop,
   };
 
   return (
     <div>
-      <><BootstrapButton variant="outline-light" className='button' style={buttonStyle}>{text}</BootstrapButton>{' '}</>
+      <BootstrapButton variant="outline-light" className={`button ${className}`} style={buttonStyle}>
+        {text}
+      </BootstrapButton>{' '}
     </div>
-  )
+  );
 }

@@ -6,6 +6,7 @@ import Buttons from './Buttons'
 import './styles.css';
 import { Link } from 'react-router-dom';
 
+
 function NavBarBL() {
   return (
     <>

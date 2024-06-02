@@ -1,59 +1,69 @@
-import React from 'react'
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import logo from './logo.ico'; 
 import './styles.css';
-import '../components/header.css'
-import Buttons from '../components/Buttons'
-import userIcon from '../images/user.png'
-import notificationIcon from '../images/notification.jpg'
+import '../components/header.css';
+import Buttons from '../components/Buttons';
+import userIcon from '../images/user.png';
+import notificationIcon from '../images/notification.jpg';
 import { Link } from 'react-router-dom';
 
+export default function Header({ onUserIconClick, isProfileVisible }) {
+  const location = useLocation();  // Get the current location object
 
-export default function Header() {
   return (
     <div>
       <Navbar className="navbar-green">
         <Container>
-            <Navbar.Brand href="#Home">
-            
-                <div className="d-flex align-items-center">
-                  <img
-                    alt=""
-                    src={logo}
-                    style={{ width: '30px', height: '30px', marginRight: '10px' }}
-                  />
-                  <div>
-                    <h3>CO1 Lab Booking System</h3>
-                    <p>Faculty of Engineering - University of Jaffna</p>
-                  </div>
-                </div>
-            </Navbar.Brand>   
-            <Nav>
-              <div className='buttons-container'>
-                <Link to="/dashboard"> 
-                  <Buttons text="Home"  borderRadius="50px" width="90px"  />
-                </Link>
-                <Link to="/booking">
-                  <Buttons text="Booking"  borderRadius="50px" width="90px"  />
-                </Link>
-                <Link to="/view"> 
-                  <Buttons text="View"  borderRadius="50px" width="90px"  />
-                </Link>
-                  <img src={notificationIcon} alt="notf-icon" className='notificationIcon' />
-                <Link to="/user"> 
-                    <img src={userIcon} alt="user-icon" className='userIcon' />
-                </Link>
-                
+          <Navbar.Brand href="#Home">
+            <div className="d-flex align-items-center">
+              <img
+                alt=""
+                src={logo}
+                style={{ width: '80px', height: '80px', marginRight: '40px', marginLeft: '18px' }}
+              />
+              <div>
+                <h3 style={{ fontWeight: '700', color: '#205464', textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' }}>CO1 Lab Booking System</h3>
+                <p style={{ color: '#205464', fontWeight: '400', fontSize: '18px', lineHeight: '24px' }}>Faculty of Engineering - University of Jaffna</p>
               </div>
-                
-                
-
-            </Nav>
+            </div>
+          </Navbar.Brand>
+          <Nav>
+            <div className='buttons-container'>
+              <Link to="/dashboard">
+                <Buttons 
+                  text="Home" 
+                  borderRadius="50px" 
+                  width="110px" 
+                  className={location.pathname === '/dashboard' ? 'active-button' : ''}/>
+              </Link>
+              <Link to="/booking">
+                <Buttons 
+                  text="Booking"
+                  borderRadius="50px" 
+                  width="110px" 
+                  className={location.pathname === '/booking' ? 'active-button' : ''}/>
+              </Link>
+              <Link to="/view">
+                <Buttons 
+                  text="View" 
+                  borderRadius="50px" 
+                  width="110px" 
+                  className={location.pathname === '/view' ? 'active-button' : ''} 
+                />
+              </Link>
+              <img src={notificationIcon} alt="notif-icon" className='notificationIcon' />
+              <div className={`userIcon ${isProfileVisible ? 'active' : ''} ${location.pathname === '/user' ? 'active-page' : ''}`}
+                    onClick={onUserIconClick}>
+                    <img src={userIcon} alt="user-icon" />
+              </div>
+            </div>
+          </Nav>
         </Container>
       </Navbar>
-    
     </div>
-  )
+  );
 }

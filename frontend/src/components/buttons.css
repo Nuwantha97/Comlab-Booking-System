@@ -8,3 +8,10 @@
     background-Color: #1A4350;
     border-width: 2px;
 }
+
+.button.active-button {
+    color: white !important;
+    background-Color: #638793 !important;
+    border-color: #1A4350 !important;
+
+  }
