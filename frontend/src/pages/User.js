@@ -7,8 +7,7 @@ import UserInputs from '../components/UserInputs';
 import '../App.css';
 
 export default function User() {
-  return (
-    <div className='main-container'>
+  return (    <div className='main-container'>
       <Header />
       <div className='container-1'>
         <div className='container-2'>

@@ -5,6 +5,7 @@ import Buttons from '../components/Buttons'
 import { Link } from 'react-router-dom';
 
 
+
 export default function AccountCreation() {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -35,6 +36,10 @@ export default function AccountCreation() {
       // });
       setSubmittedData(formData);
       setErrorMessage('');
+
+      // Redirect to user page
+      //window.location.href = '/user';
+
     } catch (error) {
       setErrorMessage(error.message || 'Registration failed. Please try again later.');
       console.error('Error registering user:', error);
