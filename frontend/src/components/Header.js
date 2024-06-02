@@ -55,11 +55,15 @@ export default function Header({ onUserIconClick, isProfileVisible }) {
                   className={location.pathname === '/view' ? 'active-button' : ''} 
                 />
               </Link>
-              <img src={notificationIcon} alt="notif-icon" className='notificationIcon' />
+              <Link to="/Notification">
+                <img src={notificationIcon} alt="notf-icon" className='notificationIcon' />
+              </Link>
+              
               <div className={`userIcon ${isProfileVisible ? 'active' : ''} ${location.pathname === '/user' ? 'active-page' : ''}`}
                     onClick={onUserIconClick}>
                     <img src={userIcon} alt="user-icon" />
               </div>
+
             </div>
           </Nav>
         </Container>
