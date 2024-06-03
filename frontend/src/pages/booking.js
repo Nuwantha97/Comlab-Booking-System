@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../components/booking.css';
 import Header from '../components/Header';
 import Buttons from '../components/Buttons';
+import Profile from '../components/Profile'
 
 export default function MyApp() {
   const [selectedDate, setSelectedDate] = useState("");
@@ -29,10 +30,15 @@ export default function MyApp() {
   const handleHideScheduling = () => {
     setShowScheduling(false); // Hide scheduling div when the close button is clicked
   };
+  const [isBoxVisible, setIsBoxVisible] = useState(false);
+
+  const handleUserIconClick = () => {
+    setIsBoxVisible(!isBoxVisible);
+  };
 
   return (
     <div>
-      <Header />
+      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
       <div className="my-app">
         <div className="booking-body">
           <div class="right">
@@ -80,6 +86,7 @@ export default function MyApp() {
             </div>
           </div>
         </div>
+        {isBoxVisible && <Profile />}
       </div>
     </div>
   );

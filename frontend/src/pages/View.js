@@ -4,6 +4,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import '../components/View.css'; // Import your CSS file
 import Header from '../components/Header';
+import Profile from '../components/Profile'
 
 const localizer = momentLocalizer(moment);
 
@@ -45,11 +46,16 @@ function CalendarView({ bookings }) {
       </div>
     );
   };
+  const [isBoxVisible, setIsBoxVisible] = useState(false);
+
+  const handleUserIconClick = () => {
+    setIsBoxVisible(!isBoxVisible);
+  };
   
 
   return (
     <div>
-      <Header />
+      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='view_body'>
       <div style={{ padding: '50px' }}>
         <div style={{backgroundColor:'white'}}>
@@ -83,6 +89,7 @@ function CalendarView({ bookings }) {
         </div>
       )}
     </div>
+    {isBoxVisible && <Profile />}
     </div>
     </div>
   );

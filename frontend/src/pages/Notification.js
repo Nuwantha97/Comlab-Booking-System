@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import '../components/notification.css';
+import Profile from '../components/Profile'
 
 export default function Notification() {
   const [previewContent, setPreviewContent] = useState([]);
@@ -61,10 +62,15 @@ export default function Notification() {
     setSelectedNotification(null);
     setShowOkButton(false);
   };
+  const [isBoxVisible, setIsBoxVisible] = useState(false);
+
+  const handleUserIconClick = () => {
+    setIsBoxVisible(!isBoxVisible);
+  };
 
   return (
     <div>
-      <Header />
+      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
       <div className="notification-container">
         {/* Left side with toolbars */}
         <div className="left-side">
@@ -108,6 +114,7 @@ export default function Notification() {
             </div>
           )}
         </div>
+        {isBoxVisible && <Profile />}
       </div>
     </div>  
   );
