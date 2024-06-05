@@ -11,9 +11,11 @@ import MyApp from './pages/booking';
 import CalendarView from './pages/View';
 import Errmsg from './pages/errmsg';
 import Notification from './pages/Notification'; // Import the Notification component
+import { UserProvider } from './components/UserContext';
 
 function App() {
   return (
+    <UserProvider>
     <NotificationProvider> {/* Wrap the entire application with NotificationProvider */}
       <div>
         <BrowserRouter>
@@ -31,6 +33,7 @@ function App() {
         </BrowserRouter>
       </div>
     </NotificationProvider>
+    </UserProvider>
   );
 }
 

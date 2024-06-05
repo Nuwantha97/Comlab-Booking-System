@@ -25,7 +25,8 @@
 
 }
 
-.notificationIcon:hover {
+.notificationIcon:hover,
+.notificationIcon.active-page {
   transform: scale(1.1); /* Scale up the icon on hover */
   opacity: 0.3;
 }

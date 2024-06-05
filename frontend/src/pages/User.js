@@ -1,12 +1,16 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import '../components/user.css';
 import Header from '../components/Header';
 import userImage from '../images/user-image.png';
 import Buttons from '../components/Buttons';
 import UserInputs from '../components/UserInputs';
 import '../App.css';
+import { UserContext } from '../components/UserContext';
+
+
 
 export default function User() {
+  const { userData } = useContext(UserContext);
   return (    <div className='main-container'>
       <Header />
       <div className='container-1'>
@@ -19,7 +23,7 @@ export default function User() {
 
           <div className='user-input-details'>
             <div className="inputs-wrapper">
-              <UserInputs />
+              <UserInputs userData={userData}/>
               <div className="button-save">
                 <Buttons text="Save" borderRadius="50px" width="90px" marginTop="20px" />
               </div>
