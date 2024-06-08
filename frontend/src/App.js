@@ -11,6 +11,8 @@ import MyApp from './pages/booking';
 import CalendarView from './pages/View';
 import Errmsg from './pages/errmsg';
 import Notification from './pages/Notification'; // Import the Notification component
+import UserSingIn from './pages/userSingIn';
+import GetAllUsers from './pages/GetAllUsers';
 
 function App() {
   return (
@@ -26,7 +28,9 @@ function App() {
             <Route path="/booking" element={<MyApp />} />
             <Route path="/view" element={<CalendarView />} />
             <Route path="/errmsg" element={<Errmsg />} />
-            <Route path="/notification" element={<Notification />} /> {/* Add this route */}
+            <Route path="/notification" element={<Notification />} />
+            <Route path="/userSingIn" element={<UserSingIn />} />
+            <Route path="/getallusers" element={<GetAllUsers />} />
           </Routes>
         </BrowserRouter>
       </div>
