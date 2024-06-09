@@ -12,18 +12,16 @@ mongoose.connect(URL, {
   useUnifiedTopology: true,
 });
 
-const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-};
 
 const connection = mongoose.connection;
 connection.once('open', () => {
   console.log('MongoDB connection success!');
 });
 
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 
 
 app.listen(PORT, () => {

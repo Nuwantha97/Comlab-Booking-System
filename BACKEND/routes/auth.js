@@ -7,8 +7,13 @@ const User = require('../models/user');
 
 // Authenticate user
 router.post('/login', passport.authenticate('local', { session: false }), (req, res) => {
-  const token = jwt.sign({ user: req.user }, config.jwtSecret, { expiresIn: '1h' });
-  res.json({ token });
+  const token = jwt.sign({ user: req.user }, config.jwtSecret, { expiresIn: '3d' });
+  res.json({
+    token,
+    user: {
+      role: req.user.role
+    }
+  });
 });
 
 module.exports = router;

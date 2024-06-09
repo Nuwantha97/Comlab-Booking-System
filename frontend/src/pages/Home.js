@@ -23,9 +23,6 @@ export default function Home() {
             <Link to ="/userSingIn" >
               <Buttons text="Sign in"  borderRadius="0" width="95px"  />
             </Link>
-            <Link to ="/signup" >
-              <Buttons text="Sign up"  borderRadius="0" width="95px"  />
-            </Link>
           </div>
         </div>              
       </div> 

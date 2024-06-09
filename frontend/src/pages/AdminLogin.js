@@ -5,7 +5,7 @@ import '../components/signIn.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-export default function UserSignIn() {
+export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,16 +29,8 @@ export default function UserSignIn() {
       });
 
       console.log('Login response:', response);
-      const { role } = response.data.user;
-
-      if (role === 'admin') {
-        alert('Redirect to the Admin login page.');
-        navigate('/adminlogin'); 
-      } else if (role === 'lecturer' || role === 'instructor') {
-        navigate('/dashboard'); 
-      } else {
-        setErrorMessage('Unauthorized role');
-      }
+      alert('Admin Login Successful');
+      navigate('/AdminDashboard');
     } catch (error) {
       console.error('Login error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -54,7 +46,7 @@ export default function UserSignIn() {
       <NavBarBL />
       <div className="page-container-login">
         <div className="form-container-login">
-          <h1>Log in</h1>
+          <h1>Admin Log in</h1>
           <h3>Sign in to continue</h3>
           <form className="form" onSubmit={sendData}>
             <div className="form-group-login">
