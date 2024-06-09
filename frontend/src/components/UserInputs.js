@@ -1,40 +1,99 @@
+import React, { useState, useEffect } from 'react';
+import './userInputs.css';
 
-import React, { useState } from 'react';
-import './userInputs.css'
-import Buttons  from './Buttons'
+export default function UserInputs({ userData }) {
+  const [editMode, setEditMode] = useState(false);
+  const [userDetails, setUserDetails] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    role: 'Lecturer' // Assuming role is static
+  });
 
-
-export default function UserInputs() {
-
-  const [password, setPassword] = useState('');
+  useEffect(() => {
+    // Update local state when userData changes
+    setUserDetails(userData);
+  }, [userData]);
 
   const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+    const { value } = event.target;
+    setUserDetails((prevDetails) => ({
+      ...prevDetails,
+      password: value
+    }));
+  };
+
+  const handleChangeClick = (event) => {
+    event.preventDefault(); // Prevent form submission
+    setEditMode(true);
+  };
+
+  const handlePasswordBlur = () => {
+    setEditMode(false);
+    // Implement the logic to save the new password to the context or server here
+    // For example: updateUserData(userDetails);
   };
 
   return (
     <div className='userInputs'>
-       <form action="/action_page.php">
-            <label htmlFor="name" className="input-label">Name</label><br />
-            <input type="text" id="name" name="name" className="input-field" /><br />
-            <label htmlFor="password" className="input-label">Password</label><br />
-            <div className="input-wrapper">
-              <input type="text"
-                    id="password"
-                    name="password"
-                    className="input-field-password"
-                    value={password.replace(/./g, '*')} // Display stars instead of characters
-                    onChange={handlePasswordChange}
-             />
-              <Buttons text="Change" />
-            </div>            
-            <label htmlFor="email" className="input-label">Email</label><br />
-            <input type="text" id="email" name="email" className="input-field" /><br />
-            <label htmlFor="role" className="input-label">Role</label><br />
-            <input type="text" id="role" name="role" className="input-field" /><br />
-        </form>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <label htmlFor="name" className="input-label">Name</label><br />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          className="input-field"
+          value={`${userDetails.firstName} ${userDetails.lastName}`}
+          readOnly
+        /><br />
 
-      
+        <label htmlFor="password" className="input-label">Password</label><br />
+        <div className="input-wrapper">
+          {editMode ? (
+            <input
+              type="password"
+              id="password"
+              name="password"
+              className="input-field-password"
+              value={userDetails.password}
+              onChange={handlePasswordChange}
+              onBlur={handlePasswordBlur} // Save password on blur
+              autoFocus // Automatically focus the password input when in edit mode
+            />
+          ) : (
+            <input
+              type="password"
+              id="password"
+              name="password"
+              className="input-field-password"
+              value={userDetails.password ? userDetails.password.replace(/./g, '*') : ''}
+              readOnly
+            />
+          )}
+          <button className="changeButton" onClick={handleChangeClick}>Change</button>
+        </div>
+
+        <label htmlFor="email" className="input-label">Email</label><br />
+        <input
+          type="text"
+          id="email"
+          name="email"
+          className="input-field"
+          value={userDetails.email}
+          readOnly
+        /><br />
+
+        <label htmlFor="role" className="input-label">Role</label><br />
+        <input
+          type="text"
+          id="role"
+          name="role"
+          className="input-field"
+          value={userDetails.role}
+          readOnly
+        /><br />
+      </form>
     </div>
-  )
+  );
 }
