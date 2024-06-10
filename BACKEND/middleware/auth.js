@@ -4,11 +4,13 @@ const auth = (req, res, next) => {
   const authHeader = req.header('Authorization');
   if (!authHeader) {
     return res.status(401).json({ message: 'Access denied. No token provided.' });
+    console.log('no token provided');
   }
 
   const token = authHeader.split(' ')[1];
   if (!token) {
     return res.status(401).json({ message: 'Access denied. No token provided.' });
+    console.log('no token provided');
   }
 
   try {
@@ -17,6 +19,7 @@ const auth = (req, res, next) => {
     next();
   } catch (ex) {
     res.status(400).json({ message: 'Failed to authenticate token' });
+    console.log('failed to authenticate token');
   }
 };
 

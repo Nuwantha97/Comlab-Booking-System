@@ -36,6 +36,21 @@ router.get('/getall', auth, async(req, res) => {
   }
 });
 
+//Get names and emails
+router.get('/getNames', auth, async(req, res) => {
+  try{
+    if(req.user.role !== 'lecturer' && req.user.role !== 'instructor'){
+      return res.status(403).json({error: "Access denied. You're not an admin."});
+    }
+    const getUsers = await User.find({role:{$ne: 'admin'}});
+    res.json(getUsers);
+  }
+  catch(error){
+    console.error(error);
+    res.status(500).json({error: 'Server error'});
+  }
+});
+
 //Get all the lectures
 router.get('/lecturers', auth, async(req, res) =>{
   try{

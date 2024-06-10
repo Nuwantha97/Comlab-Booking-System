@@ -1,3 +1,7 @@
+.inline-container input[type="time"] {
+  width: 90px; /* Adjust the width to accommodate hh:mm format */
+}
+
 .my-app {
   margin: 0;
   padding: 0;
@@ -5,7 +9,6 @@
   display: flex;
   height: 100vh;
 }
-
 
 .my-app {
   padding-left: 20px; /* Add padding from the left */
@@ -67,10 +70,14 @@
   margin-right: 10px;
 }  
 
+.inline-container input[type="time"] {
+  width: 90px; /* Adjust the width to accommodate hh:mm format */
+}
+
 .Scheduling-button{
   position: absolute;
   top: 20%; /* 20px from the top */
-  right: 30px; /*/* 20px from the right */
+  right: 30px; /* 20px from the right */
 }
 .left {
   flex: 1; /* Takes up remaining space */
@@ -104,16 +111,16 @@
   cursor: pointer;
 }
 .button-container {
-  margin:20px;
+  margin: 20px;
   display: flex;
   justify-content: left;
   gap: 30px; /* Adds space between the buttons */
 }
 .scheduling, .check-button {
   background-color: #1A4350;
-  font-Family: 'Roboto';
-  font-Size: '18px';
-  font-Weight: 400;
+  font-family: 'Roboto';
+  font-size: 18px;
+  font-weight: 400;
   color: white;
   border: 2px solid white;
   border-radius: 20px;
@@ -126,4 +133,3 @@
   color: black;
   border: 1px solid white;
 }
-
