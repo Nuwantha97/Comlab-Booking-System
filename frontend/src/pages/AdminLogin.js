@@ -4,9 +4,9 @@ import NavBarBL from '../components/navBarBL';
 import '../components/signIn.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Buttons from '../components/Buttons'
+import Buttons from '../components/submitButton';
 
-export default function AdminLogin() {
+export default function UserSignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
@@ -30,8 +30,17 @@ export default function AdminLogin() {
       });
 
       console.log('Login response:', response);
-      alert('Admin Login Successful');
-      navigate('/AdminDashboard');
+      const { role } = response.data.user;
+      if (role === 'lecturer' || role === 'Instructor') {
+        alert('Redirect to the User login page.');
+        navigate('/userSingIn'); 
+      } else if (role === 'admin') {
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        navigate('/adminhome'); 
+      } else {
+        setErrorMessage('Unauthorized role');
+      }
     } catch (error) {
       console.error('Login error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -41,7 +50,6 @@ export default function AdminLogin() {
       }
     }
   };
-
   return (
     <div>
       <NavBarBL />
@@ -73,9 +81,9 @@ export default function AdminLogin() {
             <div className="forgot-password">
               <Link to="/forgotpassword" style={{textDecoration:'underline'}}>Forgot password?</Link>
             </div>
-            <Link to ="/adminSingIn" >
-              <Buttons text="Log in"  borderRadius="0" width="95px"  />
-            </Link>
+            <div className="buttons">
+                <Buttons text="Save" borderRadius="50px" width="125px"  height="50px" marginTop="20px" /> 
+            </div>
           </form>
           {errorMessage && <p className="error-message-login">{errorMessage}</p>}
         </div>

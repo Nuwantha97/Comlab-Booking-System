@@ -4,6 +4,7 @@ import NavBarBL from '../components/navBarBL';
 import '../components/signIn.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Buttons from '../components/submitButton';
 
 export default function UserSignIn() {
   const [email, setEmail] = useState("");
@@ -82,8 +83,8 @@ export default function UserSignIn() {
             <div className="forgot-password">
               <Link to="/forgotpassword">Forgot password?</Link>
             </div>
-            <div className="buttonStyle">
-              <button type="submit">Sign In</button>
+            <div className="buttons">
+                <Buttons text="Save" borderRadius="50px" width="125px"  height="50px" marginTop="20px" /> 
             </div>
           </form>
           {errorMessage && <p className="error-message-login">{errorMessage}</p>}

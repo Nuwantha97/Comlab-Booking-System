@@ -16,7 +16,7 @@ export default function MyApp() {
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
 
-  const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  const token = localStorage.getItem('token'); 
   const navigate = useNavigate();
 
   useEffect(() => {
