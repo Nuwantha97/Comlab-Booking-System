@@ -7,7 +7,7 @@ import Dashboard from './pages/Dashboard';
 import User from './pages/User';
 import AccountCreation from './pages/signup';
 import LoginForm from './pages/signIn';
-import MyApp from './pages/booking';
+import LabBooking from './pages/booking';
 import CalendarView from './pages/View';
 import Errmsg from './pages/errmsg';
 import Notification from './pages/Notification'; // Import the Notification component
@@ -28,7 +28,7 @@ function App() {
             <Route path="/user" element={<User />} />
             <Route path="/signup" element={<AccountCreation />} />
             <Route path="/signin" element={<LoginForm />} />
-            <Route path="/booking" element={<MyApp />} />
+            <Route path="/booking" element={<LabBooking />} />
             <Route path="/view" element={<CalendarView />} />
             <Route path="/errmsg" element={<Errmsg />} />
             <Route path="/notification" element={<Notification />} />

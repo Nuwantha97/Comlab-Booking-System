@@ -1,93 +1,166 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
+import axios from 'axios';
 
 export default function MyApp() {
-  const [username, setUsername] = useState("");
-  const [inviteAttendees, setInviteAttendees] = useState("");
+  const [title, setTitle] = useState("");
+  const [attendees, setAttendees] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
-  const [fromTime, setFromTime] = useState("");
-  const [toTime, setToTime] = useState("");
-  const [selectedRange, setSelectedRange] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
-  const [showScheduling, setShowScheduling] = useState(false);
+  const [isBoxVisible, setIsBoxVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [availabilityMessage, setAvailabilityMessage] = useState('');
+  const [users, setUsers] = useState([]);
+
+  const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('/api/users/getNames', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, [token]);
 
   const handleDateChange = (event) => {
-    const inputDate = new Date(event.target.value);
-    const options = { month: 'long', day: '2-digit', year: 'numeric' };
-    const formattedDate = inputDate.toLocaleDateString('en-US', options);
-    setSelectedDate(formattedDate);
+    const inputDate = event.target.value;
+    setSelectedDate(inputDate);
   };
 
-  const handleCheckButton = () => {
-    setSelectedRange(`${fromTime} - ${toTime}`);
+  const handleCheckButton = async () => {
+    if (!startTime || !endTime) {
+      setAvailabilityMessage('Start time and end time cannot be empty');
+      return;
+    }
+
+    const checkData = {
+      startTime: new Date(`${selectedDate}T${startTime}`).toISOString(),
+      endTime: new Date(`${selectedDate}T${endTime}`).toISOString()
+    };
+
+    console.log('Checking availability with data:', checkData);
+
+    try {
+      const response = await axios.post('/api/bookings/check-availability', checkData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Availability check response:', response.data);
+      setAvailabilityMessage(response.data.message);
+    } catch (error) {
+      console.error('Availability check error:', error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setAvailabilityMessage(error.response.data.error);
+      } else {
+        setAvailabilityMessage('Server error');
+      }
+    }
   };
 
-  const handleSchedulingButtonClick = () => {
-    setShowScheduling(true); // Show scheduling div when the button is clicked
+  const handleSave = async () => {
+    const bookingData = {
+      title,
+      startTime: new Date(`${selectedDate}T${startTime}`).toISOString(),
+      endTime: new Date(`${selectedDate}T${endTime}`).toISOString(),
+      description,
+      attendees: attendees.map(user => user.email) // Using the selected attendees' emails
+    };
+
+    console.log('Saving booking with data:', bookingData);
+
+    try {
+      const response = await axios.post('/api/bookings', bookingData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Booking save response:', response.data);
+      alert('Booking Successful');
+      window.location.reload();
+    } catch (error) {
+      console.error('Booking error:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Server error');
+      }
+    }
   };
 
-  const handleHideScheduling = () => {
-    setShowScheduling(false); // Hide scheduling div when the close button is clicked
+  const handleUserIconClick = () => {
+    setIsBoxVisible(!isBoxVisible);
+  };
+
+  const handleAttendeesChange = (event) => {
+    const selectedOptions = Array.from(event.target.selectedOptions);
+    setAttendees(selectedOptions.map(option => JSON.parse(option.value)));
   };
 
   return (
     <div>
-      <Header />
+      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="my-app">
         <div className="booking-body">
-          <div className="right">
-            <div className="Scheduling-button">
-              <button className="scheduling" onClick={handleSchedulingButtonClick}>Scheduling poll</button>
-            </div>
-            {showScheduling && (
-              <div className="scheduling-box" style={{ width: '40%', height: '30%', backgroundColor: '#055366', color: 'white' }}>
-                <h3>Scheduling Poll</h3>
-                <button className="close-button" onClick={handleHideScheduling}>X</button>
-                <div className="form-group">
-                  <label htmlFor="date">Date:</label>
-                  <input type="date" id="date" name="date" style={{ width: '150px' }} onChange={handleDateChange}/>
-                </div>
-              </div>
-            )}
-            {!showScheduling && (
+            <div className="right">
               <div className="container-11">
                 <h3>CO1 Lab Availability</h3>
                 <div className="green-rectangle">
                   {selectedDate}
-                  <br />
-                  {selectedRange}
                 </div>
+                {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
               </div>
-            )}
-          </div>
+            </div>
           <div className="left">
             <h1>Book Lab Session</h1>
             <div className="form-group">
-              <label htmlFor="username">Username:</label>
-              <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-              <label htmlFor="InviteAttendees">Invite Attendees:</label>
-              <input type="text" id="inviteAttendees" name="inviteAttendees" value={inviteAttendees} onChange={(e) => setInviteAttendees(e.target.value)} />
+              <label htmlFor="title">Add Title:</label>
+              <input type="text" id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+
+              <label htmlFor="attendees">Invite Attendees:</label>
+              <select multiple id="attendees" name="attendees" onChange={handleAttendeesChange}>
+                {users.map(user => (
+                  <option key={user._id} value={JSON.stringify(user)}>{`${user.firstName} ${user.lastName}: ${user.email}`}</option>
+                ))}
+              </select>
+
               <label htmlFor="date">Date:</label>
               <div className="inline-container">
-                <input type="date" id="date" name="date" style={{ width: '150px' }} onChange={handleDateChange}/>
-                <label htmlFor="fromDate">From:</label>
-                <input type="text" id="fromDate" name="fromDate" style={{ width: '50px' }} onChange={(e) => setFromTime(e.target.value)} />
-                <label htmlFor="toDate">To:</label>
-                <input type="text" id="toDate" name="toDate" style={{ width: '50px' }} onChange={(e) => setToTime(e.target.value)} />
+                <input type="date" id="date" name="date" style={{ width: '150px' }} onChange={handleDateChange} />
+                <label htmlFor="startTime">From:</label>
+                <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} onChange={(e) => setStartTime(e.target.value)} />
+                <label htmlFor="endTime">To:</label>
+                <input type="time" id="endTime" name="endTime" style={{ width: '90px' }} onChange={(e) => setEndTime(e.target.value)} />
                 <button className="check-button" onClick={handleCheckButton}>Check</button>
               </div>
-              
+
               <label htmlFor="description">Description (Optional):</label>
-              <textarea id="description" name="description" rows="2" cols="30" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short Description"/>
+              <textarea id="description" name="description" rows="2" cols="30" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short Description" />
               <div className="button-container">
-                <button className="check-button">Save</button>
-                <button className="check-button">Cancel</button>
+                <button className="check-button" onClick={handleSave} type="submit">Save</button>
+                <button className="check-button" onClick={() => navigate('/dashboard')}>Cancel</button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 }

@@ -5,6 +5,7 @@ const auth = require('../middleware/auth');
 
 
 function checkRole(req, res, next) {
+  console.log('hit checkRole', req.user.role);
   if (req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
     return res.status(403).json({ error: "Access denied. You're not authorized to book labs." });
   }

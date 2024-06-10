@@ -35,6 +35,8 @@ export default function UserSignIn() {
         alert('Redirect to the Admin login page.');
         navigate('/adminlogin'); 
       } else if (role === 'lecturer' || role === 'instructor') {
+        const token = response.data.token;
+        localStorage.setItem('token', token);
         navigate('/dashboard'); 
       } else {
         setErrorMessage('Unauthorized role');
