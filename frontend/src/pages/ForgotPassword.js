@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Buttons from '../components/Buttons'
 
-export default function AdminLogin() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
@@ -47,7 +47,7 @@ export default function AdminLogin() {
       <NavBarBL />
       <div className="page-container-login">
         <div className="form-container-login">
-          <h1>Admin Log in</h1>
+          <h1>Change Password</h1>
           <h3>Sign in to continue</h3>
           <form className="form" onSubmit={sendData}>
             <div className="form-group-login">
@@ -73,8 +73,8 @@ export default function AdminLogin() {
             <div className="forgot-password">
               <Link to="/forgotpassword" style={{textDecoration:'underline'}}>Forgot password?</Link>
             </div>
-            <Link to ="/adminSingIn" >
-              <Buttons text="Log in"  borderRadius="0" width="95px"  />
+            <Link to ="/adminhome" >
+              <Buttons text="Submit"  borderRadius="0" width="95px"  />
             </Link>
           </form>
           {errorMessage && <p className="error-message-login">{errorMessage}</p>}

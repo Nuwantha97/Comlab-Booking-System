@@ -1,0 +1,111 @@
+/* viewuser.css */
+.viewuser-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .left-side-admin {
+    flex: 0.25;
+    background-color: #205464;
+    padding: 0px;
+    width: 240px;
+
+  }
+  
+  .role-list {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+  }
+  
+  .role-list li {
+    padding: 10px;
+    background-color: #366574;
+    margin-bottom: 2px;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+    font-weight: 450;
+    line-height: 36px;
+   
+  }
+  
+  .role-list li:hover {
+    background-color: #638793;
+  }
+  
+  .role-list li.selected {
+    color: white;
+    background-color: #638793;
+    border: 2px solid #205464;
+  }
+  
+  .right-side-admin {
+    flex: 0.95;
+    padding: 20px;
+    background-color: #A6BBC1;
+    
+  }
+  
+  .title-admin {
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 43px;
+    line-height: 48px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  .role-title {
+    color: #205464;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-left: 25px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    font-weight: 600;
+    font-size: 43px;
+    line-height: 48px;
+    display: flex;
+    align-items: flex-start; 
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-left: 25px;
+    margin-top: 50px;
+    margin-right: 100px;
+  }
+  
+  .user-table th,
+  .user-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    border-left: none; /* Remove left border */
+    border-right: none; /* Remove right border */
+    
+  }
+  
+  .user-table th{
+    font-weight: 500;
+    line-height: 15px;
+    font-size: 20px;
+    color: #1D4C5A;
+    background-color:#638793 ;
+  }
+
+  .user-table td{
+    font-weight: 450;
+    line-height: 36px;
+    font-size: 18px;
+    color: #1D4C5A;
+  }
+ 
+  
+ 
