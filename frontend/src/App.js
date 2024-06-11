@@ -20,6 +20,7 @@ import AdminProfile from './pages/AdminProfile';
 import AddUser from './pages/AddUser';
 import ViewUser from './pages/ViewUser';
 import UserList from './pages/UserList';
+import EditUser from './pages/editUser';
 
 
 function App() {
@@ -46,11 +47,7 @@ function App() {
             <Route path="/adduser" element={<AddUser />} />
             <Route path="/viewuser" element={<ViewUser />} />
             <Route path="/UserList" element={<UserList />} />
-
-
-
-            
-
+            <Route path="/editUser" element={<EditUser />} />
             
           </Routes>
         </BrowserRouter>
