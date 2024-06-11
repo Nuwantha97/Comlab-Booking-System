@@ -22,7 +22,7 @@ export default function MyApp() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/api/users/getNames', {
+        const response = await axios.get('/api/users/getall', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
