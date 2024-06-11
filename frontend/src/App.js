@@ -19,6 +19,7 @@ import AdminHome from './pages/AdminHome';
 import AdminProfile from './pages/AdminProfile';
 import AddUser from './pages/AddUser';
 import ViewUser from './pages/ViewUser';
+import UserList from './pages/UserList';
 
 
 function App() {
@@ -44,6 +45,8 @@ function App() {
             <Route path="/adminprofile" element={<AdminProfile />} />
             <Route path="/adduser" element={<AddUser />} />
             <Route path="/viewuser" element={<ViewUser />} />
+            <Route path="/UserList" element={<UserList />} />
+
 
 
             
