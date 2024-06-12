@@ -10,7 +10,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [userData, setUser] = useState('');
   const token = localStorage.getItem('token');
-  console.log('token from admin profile componenet:', token);
+  console.log('token from admin profile component:', token);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -30,12 +30,25 @@ export default function Profile() {
     fetchUsers();
   }, [token]);
 
+  useEffect(() => {
+    if (!token) {
+      setUser('');
+    }
+  }, [token]);
+
   const handleProfileSettingsClick = () => {
     if (userData.role === 'admin') {
       navigate('/adminprofile');
+    } else if(userData.role === 'to') {
+      navigate('/toProfile')
     } else {
       navigate('/');
     }
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('token');
+    setUser('');
   };
 
   return (
@@ -50,8 +63,8 @@ export default function Profile() {
             {userData.email}
           </h4>
         </div>
-        <Link to="/"> 
-          <Buttons text="Sign out" borderRadius="50px" width="175px" height="60px" marginTop="25px" />
+        <Link to="/" > 
+          <Buttons text="Sign out" borderRadius="50px" width="175px" height="60px" marginTop="25px" onClick={handleSignOut}/>
         </Link>
       </div>
       <div className='containerProfile-3'>

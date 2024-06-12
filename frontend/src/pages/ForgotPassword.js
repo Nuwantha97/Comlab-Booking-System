@@ -34,7 +34,7 @@ export default function ForgotPassword() {
 
       console.log('Login response:', response);
       alert('Admin Login Successful');
-      navigate('/AdminDashboard');
+      navigate('/userSingIn');
     } catch (error) {
       console.error('Login error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -109,9 +109,7 @@ export default function ForgotPassword() {
               />
             </div>
             
-            <Link to ="/adminhome" className='buttonStyle ' >
-              <Buttons text="Submit"  borderRadius="10px" width="95px"  />
-            </Link>
+            <Buttons type="submit" text="Submit"  borderRadius="50px" width="125px" height="50px" marginTop="20px" />
           </form>
         </div>
         {/* Oblique line divider */}

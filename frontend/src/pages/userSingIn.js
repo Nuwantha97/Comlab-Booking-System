@@ -10,6 +10,7 @@ export default function UserSignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
+  const [failedAttempts, setFailedAttempts] = useState(0);
   const navigate = useNavigate();
 
   const sendData = async (e) => {
@@ -39,11 +40,23 @@ export default function UserSignIn() {
         const token = response.data.token;
         localStorage.setItem('token', token);
         navigate('/dashboard'); 
+      } else if (role === 'to') {
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+        navigate('/toHome'); 
       } else {
         setErrorMessage('Unauthorized role');
       }
+      setFailedAttempts(0); 
     } catch (error) {
       console.error('Login error:', error);
+      setFailedAttempts((prev) => {
+        const newAttempts = prev + 1;
+        if (newAttempts >= 3) {
+          navigate('/errmsg');
+        }
+        return newAttempts;
+      });
       if (error.response && error.response.data && error.response.data.message) {
         setErrorMessage(error.response.data.message);
       } else {
@@ -84,7 +97,7 @@ export default function UserSignIn() {
               <Link to="/forgotpassword" style={{textDecoration:'underline'}}>Forgot password?</Link>
             </div>
             <div className="buttons">
-                <Buttons text="Save" borderRadius="50px" width="125px"  height="50px" marginTop="20px" /> 
+                <Buttons text="Log in" borderRadius="50px" width="125px"  height="50px" marginTop="20px" /> 
             </div>
           </form>
           {errorMessage && <p className="error-message-login">{errorMessage}</p>}
