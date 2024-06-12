@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavBarBL from '../components/navBarBL';
 import '../components/signIn.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Buttons from '../components/submitButton';
+import EntranceImage from  '../images/entrance.jpg'
 
 export default function UserSignIn() {
   const [email, setEmail] = useState("");
@@ -54,7 +54,7 @@ export default function UserSignIn() {
 
   return (
     <div>
-      <NavBarBL />
+      
       <div className="page-container-login">
         <div className="form-container-login">
           <h1>Log in</h1>
@@ -90,6 +90,13 @@ export default function UserSignIn() {
           {errorMessage && <p className="error-message-login">{errorMessage}</p>}
         </div>
       </div>
+      <div className="image-container-login"  >
+      <img src={EntranceImage} alt="university-photograph-entrance" className='EntranceUniImage'/>
+      </div>
+       {/* Oblique line divider */}
+       <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'8px' , left:'60%'}}></div>
+      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'58%'}}></div>  
+      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'56%'}}></div>
     </div>
   );
 }
