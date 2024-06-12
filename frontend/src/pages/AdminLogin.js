@@ -86,15 +86,16 @@ export default function UserSignIn() {
           </form>
           {errorMessage && <p className="error-message-login">{errorMessage}</p>}
         </div>
+        {/* Oblique line divider */}
+       <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'8px' , left:'88%'}}></div>
+      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'85%'}}></div>  
+      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'82%'}}></div>
       </div>
 
       <div className="image-container-login"  >
       <img src={EntranceImage} alt="university-photograph-entrance" className='EntranceUniImage'/>
       </div>
-       {/* Oblique line divider */}
-       <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'8px' , left:'60%'}}></div>
-      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'58%'}}></div>  
-      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'56%'}}></div>
+       
     </div>
   );
 }

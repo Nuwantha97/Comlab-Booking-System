@@ -113,11 +113,12 @@ export default function ForgotPassword() {
           </form>
         </div>
         {/* Oblique line divider */}
+        <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'10px' , left:'12%'}}></div>
+      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'15%'}}></div>  
+      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'18%'}}></div>
       
       </div>
-      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'10px' , left:'39.5%'}}></div>
-      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'37.5%'}}></div>  
-      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'35.5%'}}></div>
+      
     </div>
   );
 }

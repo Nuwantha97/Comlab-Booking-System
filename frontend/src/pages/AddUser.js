@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState,useRef, useEffect} from 'react'
 import HeaderAdmin from '../components/HeaderAdmin';
 import Buttons from '../components/submitButton';
 import UserImageAdmin from '../images/user-image.png';
@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import '../components/adduser.css'
 import Profile from '../components/Profile'
 import axios from 'axios';
+
 
 export default function AddUser() {
     const [isBoxVisible, setIsBoxVisible] = useState(false);
@@ -15,6 +16,7 @@ export default function AddUser() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
+    const profileRef = useRef(null);
 
     const token = localStorage.getItem('token');
     
@@ -23,6 +25,23 @@ export default function AddUser() {
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
   };
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsBoxVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isBoxVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBoxVisible]);
+
   const handleSave = async (event) => {
     event.preventDefault();
     const userData = {
@@ -127,7 +146,7 @@ export default function AddUser() {
             <img src={UserImageAdmin} alt="user-photograph" className='userImageAdmin' />
           </div>
         </div>
-        {isBoxVisible && <Profile />}
+        {isBoxVisible && <Profile profileRef={profileRef}/>}
         
       </div>
     </div>

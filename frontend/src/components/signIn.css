@@ -103,6 +103,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .input:focus {
@@ -127,4 +128,94 @@
 .forgot-password a {
   text-decoration: none;
   color: #000000;
+}
+
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 1024px) {
+  .page-container-login {
+    width: 100%;
+    clip-path: none;
+    padding: 20px;
+  }
+
+  .image-container-login {
+    width: 50%;
+  }
+
+  .form-container-login {
+    width: 90%;
+    padding: 20px;
+    clip-path: none;
+  }
+
+  .EntranceUniImage {
+    object-fit: cover;
+  }
+
+  .oblique-line {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .page-container-login {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .image-container-login {
+    width: 100%;
+    height: 50%;
+    position: relative;
+  }
+
+  .form-container-login {
+    width: 90%;
+    padding: 20px;
+    clip-path: none;
+  }
+
+  .EntranceUniImage {
+    height: 100%;
+    position: relative;
+  }
+  .oblique-line {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .page-container-login {
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .image-container-login {
+    width: 100%;
+    height: 50%;
+    position: relative;
+  }
+
+  .form-container-login {
+    width: 100%;
+    padding: 10px;
+    clip-path: none;
+  }
+
+  .EntranceUniImage {
+    height: 100%;
+    position: relative;
+  }
+
+  .input {
+    width: 100%;
+  }
+  .oblique-line {
+    display: none;
+  }
 }

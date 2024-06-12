@@ -6,7 +6,7 @@ import settingIcon from '../images/setting_icon.png';
 import '../components/profile.css';
 import axios from 'axios';
 
-export default function Profile() {
+export default function Profile({ profileRef }) {
   const navigate = useNavigate();
   const [userData, setUser] = useState('');
   const token = localStorage.getItem('token');
@@ -52,7 +52,7 @@ export default function Profile() {
   };
 
   return (
-    <div className='profile-container'>
+    <div className='profile-container' ref={profileRef}>
       <div className='containerProfile-2'>
         <img src={userIconProfile} alt="user-icon" className='userIconProfile' />
         <div className='info'>
