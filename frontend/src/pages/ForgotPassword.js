@@ -51,10 +51,7 @@ export default function ForgotPassword() {
       <img src={FacultyImage} alt="university-photograph-entrance" className='FacultyImage'/>
       </div>
 
-      {/* Oblique line divider */}
-      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'8px' , left:'40%'}}></div>
-      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'42%'}}></div>  
-      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'44%'}}></div>
+      
 
       <div className="page-container-forgot-password">
         <div className="form-container-forgot-password">
@@ -117,6 +114,10 @@ export default function ForgotPassword() {
             </Link>
           </form>
         </div>
+        {/* Oblique line divider */}
+      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'8px' , left:'12%'}}></div>
+      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'15%'}}></div>  
+      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'18%'}}></div>
       </div>
     </div>
   );
