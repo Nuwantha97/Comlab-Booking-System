@@ -23,6 +23,7 @@ router.post('/add', auth, async (req, res) => {
 
 //Get all users 
 router.get('/getall', auth, async(req, res) => {
+  console.log('hit getall');
   try{
     if(req.user.role !== 'admin'){
       return res.status(403).json({error: "Access denied. You're not an admin."});

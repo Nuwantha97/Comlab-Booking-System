@@ -22,12 +22,13 @@ export default function MyApp() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/api/users/getall', {
+        const response = await axios.get('/api/users/getNames', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         setUsers(response.data);
+        console.log('users from booking page:', response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
