@@ -81,7 +81,7 @@ export default function UserSignIn() {
               />
             </div>
             <div className="forgot-password">
-              <Link to="/forgotpassword">Forgot password?</Link>
+              <Link to="/forgotpassword" style={{textDecoration:'underline'}}>Forgot password?</Link>
             </div>
             <div className="buttons">
                 <Buttons text="Save" borderRadius="50px" width="125px"  height="50px" marginTop="20px" /> 
@@ -90,14 +90,14 @@ export default function UserSignIn() {
           {errorMessage && <p className="error-message-login">{errorMessage}</p>}
         </div>
         {/* Oblique line divider */}
-       <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'8px' , left:'88%'}}></div>
-      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'85%'}}></div>  
-      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'82%'}}></div>
+       
       </div>
       <div className="image-container-login"  >
       <img src={EntranceImage} alt="university-photograph-entrance" className='EntranceUniImage'/>
       </div>
-       
+      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'10px' , left:'60.3%'}}></div>
+      <div className="oblique-line" style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'5px', left:'58%'}}></div>  
+      <div className="oblique-line"style={{borderColor:'#1D4C5A', borderStyle:'solid', borderWidth:'3px', left:'56%'}}></div>
     </div>
   );
 }
