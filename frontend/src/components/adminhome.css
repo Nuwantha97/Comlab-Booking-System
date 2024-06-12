@@ -21,7 +21,6 @@
     left: 50%; /* Position from the left */
     transform: translate(-50%, -50%); /* Center the container */
     text-align: center; /* Center-align text */
-    z-index: 1; /* Ensure it appears above the image */
     display: flex;
     flex-direction: column; /* Stack children vertically */
     justify-content: center; /* Center align horizontally */
