@@ -96,6 +96,17 @@ router.get('/instructors', auth, async(req, res) =>{
   }
 });
 
+router.get('/tokenUser', auth, async(req, res) =>{
+  try{
+    const tokenUser = await User.findById(req.user._id).select('-password');
+    res.json(tokenUser);
+    console.log("Token api details:", tokenUser);
+  }catch(error){
+    console.error(error);
+    res.status(500).json({error: 'Server error'});
+  }
+});
+
 // Get user by ID 
 router.get('/:id', auth, async (req, res) => {
   try {
