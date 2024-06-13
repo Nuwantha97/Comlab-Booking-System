@@ -1,23 +1,12 @@
-/* dashboard.css */
-/* .main-container {
-    background-color: #1A4350;
-    width: 100%;
-    flex: 1; /* Grow to fill remaining space */
-    /* display: flex;
-    justify-content: center; /* Center align horizontally */
-    /* align-items: center;  */ 
-  /* }  */
+.admin_home_body {
+  background-color: #1A4350;
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Set height to 100% of viewport height */
+}
 
-
-
-  .admin_home_body{
-    background-color:#1A4350;
-    position: relative;
-   
-  }
-  
-  .text-container-admin-home {
-    position: absolute;
+.text-container-admin-home {
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -33,40 +22,38 @@
   color: white;
   padding: 20px;
   box-sizing: border-box;
- 
-  }
-  
-  .image-container-admin {
-    display: flex;
-    justify-content: center; /* Center align horizontally */
-    width: 100%;
-  
-  }
-  .frontOfAdminImage {
-    width: 100%;
-    height: 585px;
-    top: 102px;
-    border: 20px solid #205464;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.4) inset; /* Inset shadow effect */
-    
-  }
-  
-  
-  
-  
-  .text {
-    font-family: 'Roboto Slab', serif;
+}
+
+.image-container-admin {
+  display: flex;
+  justify-content: center; /* Center align horizontally */
+  align-items: center; /* Center align vertically */
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Ensure the image fills the container */
+}
+
+.frontOfAdminImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the container */
+  border: 20px solid #205464;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.4) inset; /* Inset shadow effect */
+}
+
+.text {
+  font-family: 'Roboto Slab', serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 40px;
   text-align: center;
   color: white;
-  white-space: nowrap;
-  }
+  /* white-space: nowrap; */
+}
 
- /* Media queries for responsiveness */
+/* Media queries for responsiveness */
 @media screen and (max-width: 1024px) {
-  .text-container-admin-home {
+  .text-container-admin-home .text {
     font-size: 24px;
     line-height: 32px;
     padding: 10px;
@@ -78,9 +65,9 @@
 }
 
 @media screen and (max-width: 768px) {
-  .text-container-admin-home {
+  .text-container-admin-home .text {
     font-size: 20px;
-    line-height: 28px;
+    line-height: 24px;
   }
 
   .frontOfAdminImage {
@@ -89,9 +76,9 @@
 }
 
 @media screen and (max-width: 480px) {
-  .text-container-admin-home {
+  .text-container-admin-home .text {
     font-size: 16px;
-    line-height: 24px;
+    line-height: 20px;
     white-space: normal; /* Allow text to wrap */
   }
 
@@ -99,5 +86,3 @@
     border-width: 2px;
   }
 }
- 
- 

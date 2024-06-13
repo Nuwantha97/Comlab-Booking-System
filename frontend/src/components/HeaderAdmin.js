@@ -10,12 +10,12 @@ import Buttons from '../components/Buttons';
 import userIcon from '../images/user.png';
 import { Link } from 'react-router-dom';
 
-export default function Header({ onUserIconClick, isProfileVisible }) {
+export default function HeaderAdmin({ onUserIconClick, isProfileVisible }) {
   const location = useLocation();  // Get the current location object
 
   return (
     <div>
-      <Navbar className="navbar-green">
+      <Navbar className="navbar-green" expand="lg">
         <Container>
           <Navbar.Brand href="#Home">
             <div className="d-flex align-items-center" style={{height:'70px'}}>
@@ -30,6 +30,8 @@ export default function Header({ onUserIconClick, isProfileVisible }) {
               </div>
             </div>
           </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
           <Nav>
             <div className='buttons-container'>
               <Link to="/adminhome">
@@ -63,6 +65,7 @@ export default function Header({ onUserIconClick, isProfileVisible }) {
 
             </div>
           </Nav>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     </div>
