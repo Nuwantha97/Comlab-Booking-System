@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
@@ -6,6 +6,7 @@ import axios from 'axios';
 import '../components/View.css'; // Import your CSS file
 import Header from '../components/Header';
 import Profile from '../components/Profile';
+import { useNavigate } from 'react-router-dom';
 
 const localizer = momentLocalizer(moment);
 
@@ -13,7 +14,10 @@ function CalendarView() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
+  const [isCancelConfirmationVisible, setIsCancelConfirmationVisible] = useState(false);
+  const [attendeesInput, setAttendeesInput] = useState('');
   const profileRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -29,7 +33,8 @@ function CalendarView() {
           title: booking.title,
           start: new Date(booking.startTime),
           end: new Date(booking.endTime),
-          description: booking.description
+          description: booking.description,
+          attendees: booking.attendees // Assuming attendees is an array of strings
         })));
       } catch (error) {
         console.error('Error fetching bookings:', error);
@@ -44,11 +49,18 @@ function CalendarView() {
   };
 
   const handleEditEvent = () => {
-    // Add your logic for editing the event
-    console.log('Edit event');
+    navigate('/booking', { state: { event: selectedEvent } });
   };
 
   const handleCancelEvent = async () => {
+    if (!selectedEvent) {
+      return;
+    }
+
+    setIsCancelConfirmationVisible(true);
+  };
+
+  const handleConfirmCancel = async () => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`/api/bookings/${selectedEvent.id}`, {
@@ -64,6 +76,31 @@ function CalendarView() {
     } catch (error) {
       console.error('Error deleting booking:', error);
     }
+
+    setIsCancelConfirmationVisible(false);
+  };
+
+  const handleCancelCancel = () => {
+    setIsCancelConfirmationVisible(false);
+  };
+
+  const handleInviteAttendees = () => {
+    if (!selectedEvent || !attendeesInput) {
+      return;
+    }
+
+    // Assuming attendees are stored as an array in the event object
+    const updatedEvent = {
+      ...selectedEvent,
+      attendees: [...selectedEvent.attendees, attendeesInput]
+    };
+
+    // Update the events array with the new attendee
+    const updatedEvents = events.map(event => event.id === selectedEvent.id ? updatedEvent : event);
+    setEvents(updatedEvents);
+
+    // Clear the input field
+    setAttendeesInput('');
   };
 
   const CustomToolbar = () => {
@@ -132,6 +169,13 @@ function CalendarView() {
               <p>{selectedEvent.description}</p>
               <p>Start: {selectedEvent.start.toLocaleString()}</p>
               <p>End: {selectedEvent.end.toLocaleString()}</p>
+              <p>Attendees:</p>
+              <ul>
+  {selectedEvent.attendees.map((attendee, index) => (
+    <li key={index} style={{ color: 'white' }}>{attendee}</li>
+  ))}
+</ul>
+
               <div className="button-group">
                 <button onClick={handleEditEvent}>Edit</button>
                 <button onClick={handleCancelEvent}>Cancel</button>
@@ -139,6 +183,17 @@ function CalendarView() {
             </div>
           )}
         </div>
+        {isCancelConfirmationVisible && (
+          <div className="confirmation-box">
+            <h2>Cancel scheduled lab session?</h2>
+            <p>You will permanently cancel this scheduled lab session</p>
+            <div className="button-group">
+              <button className="not-now-button" onClick={handleCancelCancel}>Not now</button>
+              <button className="cancel-button" onClick={handleConfirmCancel}>Cancel lab session</button>
+            </div>
+          </div>
+        )}
+
         {isBoxVisible && <Profile profileRef={profileRef}/>}
       </div>
     </div>
