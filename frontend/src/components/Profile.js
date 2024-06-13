@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import userIconProfile from '../images/user.png';
-import Buttons from '../components/Buttons';
+import Buttons from '../components/editButton';
 import { Link, useNavigate } from 'react-router-dom';
 import settingIcon from '../images/setting_icon.png';
 import '../components/profile.css';
