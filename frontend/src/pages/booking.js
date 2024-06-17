@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
+import Profile from '../components/Profile';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -190,6 +191,7 @@ export default function MyApp() {
         </div>
       </div>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {isBoxVisible && <Profile />}
     </div>
   );
 }
