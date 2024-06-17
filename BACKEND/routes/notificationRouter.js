@@ -66,13 +66,12 @@ router.get('/', auth, async (req, res) => {
 
 
 // PUT route to mark notifications as read for a specific user
-router.put('/markRead/:id', auth, async (req, res) => {
-    const { id } = req.params;
+router.put('/markRead', auth, async (req, res) => {
     const userEmail = req.user.email; 
 
     try {
         const notification = await Notification.findOneAndUpdate(
-            { _id: id, receiverEmail: userEmail },
+            { receiverEmail: userEmail },
             { isRead: true },
             { new: true } // Return updated document
         );
