@@ -3,6 +3,53 @@ const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer'); // Assuming you use nodemailer for sending emails
+const crypto = require('crypto');
+
+// Function to send OTP
+const sendOtpToEmail = (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'emailmsgsender@gmail.com',
+      pass: 'Password123@'
+    }
+  });
+
+  const mailOptions = {
+    from: 'emailmsgsender@gmail.com',
+    to: email,
+    subject: 'Your OTP Code',
+    text: `Your OTP code is ${otp}`
+  };
+  email.send({
+
+  })
+  return transporter.sendMail(mailOptions);
+};
+
+// Endpoint to verify email and send OTP
+router.get('/verify-email', async (req, res) => {
+  try {
+    const { email } = req.query; // Using query parameter for email in GET request
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Email not found' });
+    }
+
+    const otp = crypto.randomInt(100000, 999999).toString();
+    
+    user.otp = otp;
+    await user.save();
+
+    // Return the OTP in the response
+    res.json({ message: 'Email found', otp ,email});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 // Add a new user
 router.post('/add', auth, async (req, res) => {
@@ -164,6 +211,28 @@ router.put('/:id', auth, async(req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ message: 'User updated successfully', updateUser });
   }catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update user password by email
+router.put('/update-password', auth, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
