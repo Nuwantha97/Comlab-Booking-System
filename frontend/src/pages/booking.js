@@ -139,6 +139,9 @@ export default function MyApp() {
     setAttendees(selectedOptions.map(option => JSON.parse(option.value)));
   };
 
+  // Determine the rectangle color based on availabilityMessage
+  const rectangleClass = availabilityMessage === "Time slot is available" || availabilityMessage === '' ? 'green-rectangle' : 'red-rectangle';
+
   return (
     <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
@@ -147,7 +150,7 @@ export default function MyApp() {
             <div className="right">
               <div className="container-11">
                 <h3>CO1 Lab Availability</h3>
-                <div className="green-rectangle">
+                <div className={rectangleClass}>
                   {selectedDate}
                 </div>
                 {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
