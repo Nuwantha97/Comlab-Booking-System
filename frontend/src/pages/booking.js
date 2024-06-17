@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
 import axios from 'axios';
+import Profile from '../components/Profile'
 
 export default function MyApp() {
   const [title, setTitle] = useState("");
@@ -165,6 +166,7 @@ export default function MyApp() {
         </div>
       </div>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {isBoxVisible && <Profile />}
     </div>
   );
 }
