@@ -6,29 +6,119 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer'); 
 const crypto = require('crypto');
 const { setTimeout } = require('timers/promises');
+require('dotenv').config();
+
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // Function to send OTP
 const sendMails = (email, otp) => {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "emailmsgsender@gmail.com",
-      pass: "vrsg yurx kmym jfdj",
-    },
-  });
-
   const mailOptions = {
     from: {
       name: 'email Sender',
-      address: "emailmsgsender@gmail.com"
+      address: process.env.EMAIL_USER
     },
     to: email,
     subject: "Your OTP Code for password change!",
     text: `Your OTP code is ${otp}`,
   };
+  return transporter.sendMail(mailOptions);
+};
+
+//function to send user details 
+const sendMailNewUser = (firstName, lastName, email, role, password) => {
+  const subject = "Welcome to Our Platform!";
+  const text = `
+Dear ${firstName} ${lastName},
+
+Welcome to our platform! Your account has been successfully created.
+
+Here are your account details:
+Email: ${email}
+Role: ${role}
+Password: ${password}
+
+Thank you and have a great day!
+
+Best regards,
+Email Sender
+`;
+
+  const mailOptions2 = {
+    from: {
+      name: 'Email Sender',
+      address: process.env.EMAIL_USER
+    },
+    to: email,
+    subject: subject,
+    text: text,
+  };
+
+  return transporter.sendMail(mailOptions2);
+};
+
+const sendDeleteNotification = (firstName, lastName, email) => {
+  const subject = "Account Deletion Notification";
+  const text = `
+Dear ${firstName} ${lastName},
+
+We regret to inform you that your account has been deleted from our platform.
+
+If you believe this deletion was in error or have any questions, please contact our support team.
+
+Best regards,
+Email Sender
+`;
+
+  const mailOptions = {
+    from: {
+      name: 'Email Sender',
+      address: process.env.EMAIL_USER
+    },
+    to: email,
+    subject: subject,
+    text: text,
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
+const sendEditNotification = (firstName, lastName, email, role) => {
+  const subject = "Account Details Updated";
+  const text = `
+Dear ${firstName} ${lastName},
+
+Your account details have been updated on our platform.
+
+Here are your updated account details:
+Email: ${email}
+Role: ${role}
+
+If you did not request this change or have any questions, please contact our support team immediately.
+
+Best regards,
+Email Sender
+`;
+
+  const mailOptions = {
+    from: {
+      name: 'Email Sender',
+      address: process.env.EMAIL_USER
+    },
+    to: email,
+    subject: subject,
+    text: text,
+  };
+
   return transporter.sendMail(mailOptions);
 };
 
@@ -70,6 +160,7 @@ router.post('/add', auth, async (req, res) => {
     const { firstName, lastName, email, role, password } = req.body;
     const user = new User({ firstName, lastName, email, role, password });
     await user.save();
+    await sendMailNewUser(firstName, lastName, email, role, password);
     res.json({ message: 'User added successfully' });
   } catch (error) {
     console.error(error);
@@ -192,6 +283,7 @@ router.delete('/:id', auth, async(req, res) => {
 
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) return res.status(404).json({error: "User not found"});
+    await sendDeleteNotification(user.firstName, user.lastName, user.email);
     console.log("User deleted successfully: " + user);
     res.json({message: "User deleted successfully"});
   }catch(error){
@@ -219,6 +311,7 @@ router.put('/:id', auth, async(req, res) => {
 
     const user = await User.findByIdAndUpdate(req.params.id, updateUser, {new:true});
     if (!user) return res.status(404).json({ error: 'User not found' });
+    await sendEditNotification(user.firstName, user.lastName, user.email, user.role);
     res.json({ message: 'User updated successfully', updateUser });
   }catch (error) {
     console.error(error);
