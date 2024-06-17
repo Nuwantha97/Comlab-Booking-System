@@ -141,7 +141,7 @@ function CalendarView() {
   }, [isBoxVisible]);
 
   return (
-    <div>
+    <div className='view_container'>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='view_body'>
         <div style={{ padding: '50px' }}>

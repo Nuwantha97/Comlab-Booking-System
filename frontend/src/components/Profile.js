@@ -42,7 +42,7 @@ export default function Profile({ profileRef }) {
     } else if(userData.role === 'to') {
       navigate('/toProfile')
     } else {
-      navigate('/');
+      navigate('/user');
     }
   };
 

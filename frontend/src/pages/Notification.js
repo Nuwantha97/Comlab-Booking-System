@@ -1,8 +1,8 @@
 // Notification.js
-import React, { useState,useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Header from '../components/Header';
 import '../components/notification.css';
-import Profile from '../components/Profile'
+import Profile from '../components/Profile';
 
 export default function Notification() {
   const [previewContent, setPreviewContent] = useState([]);
@@ -10,6 +10,7 @@ export default function Notification() {
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showOkButton, setShowOkButton] = useState(false);
   const profileRef = useRef(null);
+  const labDetailsRef = useRef(null);
 
   const notifications = {
     All: ['Notification 1 for All', 'Notification 2 for All', 'Notification 3 for All'],
@@ -63,6 +64,7 @@ export default function Notification() {
     setSelectedNotification(null);
     setShowOkButton(false);
   };
+
   const [isBoxVisible, setIsBoxVisible] = useState(false);
 
   const handleUserIconClick = () => {
@@ -73,22 +75,23 @@ export default function Notification() {
     if (profileRef.current && !profileRef.current.contains(event.target)) {
       setIsBoxVisible(false);
     }
+    if (labDetailsRef.current && !labDetailsRef.current.contains(event.target)) {
+      setLabDetails(null);
+      setSelectedNotification(null);
+      setShowOkButton(false);
+    }
   };
 
   useEffect(() => {
-    if (isBoxVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isBoxVisible]);
+  }, []);
 
   return (
-    <div>
-      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
+    <div className='nnn'>
+      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="notification-container">
         {/* Left side with toolbars */}
         <div className="left-side">
@@ -119,7 +122,7 @@ export default function Notification() {
             </ul>
           </div>
           {labDetails && (
-            <div className="lab-details-box">
+            <div className="lab-details-box" ref={labDetailsRef}>
               <div className="lab-details">
                 <h2>Lab Details</h2>
                 <p style={{ color: '#205464' }}>{labDetails}</p>
@@ -132,8 +135,8 @@ export default function Notification() {
             </div>
           )}
         </div>
-        {isBoxVisible && <Profile profileRef={profileRef}/>}
+        {isBoxVisible && <Profile profileRef={profileRef} />}
       </div>
-    </div>  
+    </div>
   );
 }

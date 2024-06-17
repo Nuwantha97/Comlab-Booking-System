@@ -1,7 +1,7 @@
 // App.js
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { NotificationProvider } from './NotificationContext'; // Import the NotificationProvider
+
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import User from './pages/User';
@@ -30,7 +30,7 @@ import ToNotification from './pages/ToNotification';
 function App() {
   return (
     <UserProvider>
-    <NotificationProvider> {/* Wrap the entire application with NotificationProvider */}
+    
       <div>
         <BrowserRouter>
           <Routes>
@@ -60,7 +60,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </div>
-    </NotificationProvider>
+ 
     </UserProvider>
   );
 }

@@ -106,7 +106,7 @@ export default function ViewUser() {
   const filteredUsers = users.filter(user => user.role === selectedRole);
 
   return (
-    <div>
+    <div className='vvv'>
       <HeaderAdmin onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <hr style={{height: '1px', backgroundColor: 'black', borderStyle: 'none', margin: 0}}/>
       <div className="viewuser-container">

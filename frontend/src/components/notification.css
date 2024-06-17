@@ -1,4 +1,9 @@
-
+.nnn {
+    display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
+}
 .notification-container {
     display: flex;
     height: 100vh; 
