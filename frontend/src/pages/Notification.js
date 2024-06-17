@@ -90,7 +90,7 @@ export default function Notification() {
   }, []);
 
   return (
-    <div>
+    <div className='nnn'>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="notification-container">
         {/* Left side with toolbars */}

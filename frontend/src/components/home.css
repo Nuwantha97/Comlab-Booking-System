@@ -1,3 +1,14 @@
+.hhh {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+.hhh > div {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .home {
   position: relative;
   background-image: url('../images/home.jpg');
@@ -6,6 +17,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: auto;
 }
 
 .home::before {
