@@ -11,11 +11,7 @@ require('dotenv').config();
 // POST route to create notifications
 router.post('/createNotification', auth, async (req, res) => {
     try {
-        if (req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
-            return res.status(403).json({ error: "Access denied." });
-        }
-
-        const { title, startTime, endTime, description, attendees } = req.body;
+        const { title, startTime, endTime, description, attendees, uEmail, uDate} = req.body;
 
         // Function to create notifications for each attendee
         const createNotifications = async (attendees) => {
@@ -23,13 +19,13 @@ router.post('/createNotification', auth, async (req, res) => {
 
             for (let i = 0; i < attendees.length; i++) {
                 const receiverEmail = attendees[i];
-                const senderEmail = req.user.email; 
+                const senderEmail = uEmail
 
                 const newNotification = new Notification({
                     receiverEmail,
                     senderEmail,
                     labSessionTitle: title,
-                    labDate: req.body.labDate,
+                    labDate: uDate,
                     labStartTime: startTime,
                     labEndTime: endTime,
                     message: description,

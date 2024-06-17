@@ -6,6 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 export default function MyApp() {
+  const [id, setId] = useState('');
   const [title, setTitle] = useState("");
   const [attendees, setAttendees] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
@@ -16,23 +17,46 @@ export default function MyApp() {
   const [errorMessage, setErrorMessage] = useState('');
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
+  const [email, setEmail] = useState("");
 
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (location.state && location.state.event) {
       const { event } = location.state;
+      setId(event.state.id);
       setTitle(event.title);
       setSelectedDate(moment(event.start).format('YYYY-MM-DD'));
       setStartTime(moment(event.start).format('HH:mm'));
       setEndTime(moment(event.end).format('HH:mm'));
       setDescription(event.description);
-      // Assuming attendees are stored in the event object, adjust as necessary
       setAttendees(event.attendees || []);
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (id) {
+      const fetchUser = async () => {
+        try {
+          const response = await axios.get(`/api/users/${id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const user = response.data;
+          setEmail(user.email);
+          console.log('Fetched user:', user);
+          setTextContainerText("Edit User Details");
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
+      };
+
+      fetchUser();
+    }
+  }, [id, token]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -95,10 +119,22 @@ export default function MyApp() {
       startTime: new Date(`${selectedDate}T${startTime}`).toISOString(),
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString(),
       description,
-      attendees: attendees.map(user => user.email) // Using the selected attendees' emails
+      attendees: attendees.map(user => user.email)
+    };
+  
+  
+    const notificationData = {
+      title: bookingData.title,
+      startTime: bookingData.startTime,
+      endTime: bookingData.endTime,
+      description: bookingData.description,
+      attendees: bookingData.attendees,
+      uEmail: email,
+      uDate: new Date(`${selectedDate}`).toISOString() // Convert selected date to ISO format
     };
   
     console.log('Saving booking with data:', bookingData);
+    console.log('Saving booking with data:', notificationData);
   
     try {
       const response = await axios.post('/api/bookings', bookingData, {
@@ -108,7 +144,6 @@ export default function MyApp() {
         }
       });
   
-      // Delete the earlier lab booking if it exists
       if (location.state && location.state.event) {
         await axios.delete(`/api/bookings/${location.state.event.id}`, {
           headers: {
@@ -119,7 +154,6 @@ export default function MyApp() {
   
       console.log('Booking save response:', response.data);
       alert('Booking Successful');
-      window.location.reload();
     } catch (error) {
       console.error('Booking error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -128,8 +162,22 @@ export default function MyApp() {
         setErrorMessage('Server error');
       }
     }
+  
+    try {
+      const notificationResponse = await axios.post('/api/notification/createNotification', notificationData);
+  
+      console.log('Notification creation response:', notificationResponse.data);
+    } catch (error) {
+      console.error('Notification creation error:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        setErrorMessage(error.response.data.message);
+      } else {
+        setErrorMessage('Failed to create notification');
+      }
+    }
   };
   
+
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
   };
