@@ -7,6 +7,8 @@ import axios from 'axios';
 import Buttons from '../components/submitButton';
 import FacultyImage from '../images/faculty.jpg';
 
+
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -54,42 +56,6 @@ export default function ForgotPassword() {
     }
   };
   
-  
-  const sendOtpToEmail = (email, otp) => {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'emailmsgsender@gmail.com',
-        pass: 'Password123@',
-      },
-    });
-  
-    const mailOptions = {
-      from: 'emailmsgsender@gmail.com',
-      to: email,
-      subject: 'Your OTP Code',
-      text: `Your OTP code is ${otp}`,
-    };
-  
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error('Error sending OTP:', error);
-      } else {
-        console.log('OTP sent:', info.response);
-      }
-    });
-  };
-  // const sendOtpToEmail = (email,otp) => {
-  //   Email.send({
-  //     SecureToken : "774225fa-82dc-4f03-bbdf-8e9c69b95123",
-  //     To : email,
-  //     From : "emailmsgsender@gmail.com",
-  //     Subject : "This is the subject",
-  //     Body : `Your OTP code is ${otp}`
-  // }).then(
-  //   message => alert("send otp")
-  // );
-  // };
   const getCode = async () => {
     try {
       const response = await axios.get(`/api/users/verify-email?email=${email}`);
@@ -101,7 +67,6 @@ export default function ForgotPassword() {
       if (response.data.message === 'Email found') {
         setIsCodeSent(true);
         setErrorMessage('');
-        sendOtpToEmail(response.data.email, response.data.otp);
       }
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {

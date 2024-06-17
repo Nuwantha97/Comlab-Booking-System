@@ -1,30 +1,34 @@
+
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer'); // Assuming you use nodemailer for sending emails
+const nodemailer = require('nodemailer'); 
 const crypto = require('crypto');
 
 // Function to send OTP
-const sendOtpToEmail = (email, otp) => {
+const sendMails = (email, otp) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
-      user: 'emailmsgsender@gmail.com',
-      pass: 'Password123@'
-    }
+      user: "emailmsgsender@gmail.com",
+      pass: "vrsg yurx kmym jfdj",
+    },
   });
 
   const mailOptions = {
-    from: 'emailmsgsender@gmail.com',
+    from: {
+      name: 'email Sender',
+      address: "emailmsgsender@gmail.com"
+    },
     to: email,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is ${otp}`
+    subject: "Your OTP Code for password change!",
+    text: `Your OTP code is ${otp}`,
   };
-  email.send({
-
-  })
   return transporter.sendMail(mailOptions);
 };
 
@@ -43,7 +47,7 @@ router.get('/verify-email', async (req, res) => {
     user.otp = otp;
     await user.save();
 
-    // Return the OTP in the response
+    await sendMails(email, otp);
     res.json({ message: 'Email found', otp ,email});
   } catch (error) {
     console.error(error);
