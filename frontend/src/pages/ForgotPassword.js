@@ -32,15 +32,11 @@ export default function ForgotPassword() {
       let response;
   
       if (password === confirmPassword && otp === inOtp) {
-        response = await axios.put('/api/users/update-password', userData, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+        response = await axios.put('/api/users/update-password', userData);
   
         alert('Password updated successfully!');
         console.log('Update password response:', response.data);
-        navigate('/');
+        navigate('./userSingIn');
       } else {
         // Handle error scenario where password or OTP does not match
         if (password !== confirmPassword) {

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
@@ -6,6 +5,7 @@ const auth = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer'); 
 const crypto = require('crypto');
+const { setTimeout } = require('timers/promises');
 
 // Function to send OTP
 const sendMails = (email, otp) => {
@@ -46,6 +46,12 @@ router.get('/verify-email', async (req, res) => {
     
     user.otp = otp;
     await user.save();
+
+    setTimeout(async () => {
+      user.otp = ''; 
+      await user.save();
+      console.log(`OTP removed for ${email} after 5 minutes.`);
+    }, 5 * 60 * 1000);
 
     await sendMails(email, otp);
     res.json({ message: 'Email found', otp ,email});
