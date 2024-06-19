@@ -8,7 +8,6 @@ import Buttons from '../components/submitButton';
 import FacultyImage from '../images/faculty.jpg';
 
 
-
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -32,7 +31,7 @@ export default function ForgotPassword() {
       let response;
   
       if (password === confirmPassword && otp === inOtp) {
-        response = await axios.put('/api/users/update-password', userData);
+        response = await axios.post('/api/users/update-password', userData);
   
         alert('Password updated successfully!');
         console.log('Update password response:', response.data);

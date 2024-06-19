@@ -24,7 +24,7 @@ const transporter = nodemailer.createTransport({
 const sendMails = (email, otp) => {
   const mailOptions = {
     from: {
-      name: 'email Sender',
+      name: 'Admin',
       address: process.env.EMAIL_USER
     },
     to: email,
@@ -133,8 +133,9 @@ router.get('/verify-email', async (req, res) => {
     }
 
     const otp = crypto.randomInt(100000, 999999).toString();
-    
+    console.log("genarated otp:", otp);
     user.otp = otp;
+    console.log("user otp:", user.otp);
     await user.save();
 
     setTimeout(async () => {
@@ -320,10 +321,9 @@ router.put('/:id', auth, async(req, res) => {
 });
 
 // Update user password by email
-router.put('/update-password', auth, async (req, res) => {
+router.post('/update-password', async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
 
     if (!user) {
