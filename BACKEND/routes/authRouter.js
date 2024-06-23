@@ -15,11 +15,12 @@ router.post('/login', async (req, res) => {
   if (!validPassword) return res.status(400).json({ message: 'Invalid email or password' });
   console.log("Invalid email or password");
 
-  const token = jwt.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '3d' });
+  const token = jwt.sign({ _id: user._id, role: user.role, email:user.email }, process.env.JWT_SECRET, { expiresIn: '3d' });
   res.json({
     token,
     user: {
-      role: user.role
+      role: user.role,
+      email: user.email
     }
   });
   console.log("Valid", user);
