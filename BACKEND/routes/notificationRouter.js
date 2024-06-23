@@ -5,11 +5,15 @@ const auth = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer'); 
 const crypto = require('crypto');
+const User = require('../models/user');
 require('dotenv').config();
 
 // POST route to create notifications
 router.post('/createNotification', auth, async (req, res) => {
     try {
+        if ( req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
+            return res.status(403).json({ error: "Access denied." });
+          }
         const { title, startTime, endTime, description, attendees, uEmail, uDate} = req.body;
 
         // Function to create notifications for each attendee
@@ -54,10 +58,15 @@ router.post('/createNotification', auth, async (req, res) => {
 
 // GET route to fetch all notifications
 router.get('/', auth, async (req, res) => {
-    const userEmail = req.user.email; 
+    const requestUser = await User.findById(req.user._id);
+    const userEmail = requestUser.email; 
 
     try {
+        if (req.user.role !== 'to' && req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
+            return res.status(403).json({ error: "Access denied." });
+          }
         const notifications = await Notification.find({ receiverEmail: userEmail });
+        console.log('notifications:', notifications);
         res.status(200).json(notifications);
     } catch (error) {
         console.error('Error fetching notifications:', error);
