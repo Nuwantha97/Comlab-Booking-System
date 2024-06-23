@@ -75,35 +75,22 @@ router.get('/', auth, async (req, res) => {
 });
 
 
-// PUT route to mark notifications as read for a specific user
-router.put('/markRead', auth, async (req, res) => {
-    const userEmail = req.user.email; 
-
-    try {
-        const notification = await Notification.findOneAndUpdate(
-            { receiverEmail: userEmail },
-            { isRead: true },
-            { new: true } // Return updated document
-        );
-
-        if (!notification) {
-            return res.status(404).json({ message: 'Notification not found for the current user' });
-        }
-
-        res.status(200).json(notification);
-    } catch (error) {
-        console.error('Error marking notification as read:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
 
 
 // PUT route to mark notifications as read for the authenticated user
 router.put('/markRead/:id', auth, async (req, res) => {
     const { id } = req.params;
-    const userEmail = req.user.email; 
+    const requestUser = await User.findById(req.user._id);
+    console.log('requestUser:', requestUser);
+    const userEmail = requestUser.email;
+    console.log('userEmail:', userEmail);
+    console.log('req.user.email:', req.user.email);
+    //const userEmail = req.user.email;  
 
     try {
+        if (req.user.role !== 'to' && req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
+            return res.status(403).json({ error: "Access denied." });
+          }
         const notification = await Notification.findOneAndUpdate(
             { _id: id, receiverEmail: userEmail },
             { isRead: true },
