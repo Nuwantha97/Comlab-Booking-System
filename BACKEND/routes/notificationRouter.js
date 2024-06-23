@@ -18,6 +18,7 @@ router.post('/createNotification', auth, async (req, res) => {
 
             for (let i = 0; i < attendees.length; i++) {
                 const receiverEmail = attendees[i];
+                console.log('receiverEmail:', receiverEmail);
                 const senderEmail = uEmail
 
                 const newNotification = new Notification({

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const notificationSchema = new mongoose.Schema({
-    reciverEmail: {
+    receiverEmail: {
         type: String,
         required: true
     },
