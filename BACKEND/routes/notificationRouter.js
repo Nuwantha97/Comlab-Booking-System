@@ -81,11 +81,8 @@ router.get('/', auth, async (req, res) => {
 router.put('/markRead/:id', auth, async (req, res) => {
     const { id } = req.params;
     const requestUser = await User.findById(req.user._id);
-    console.log('requestUser:', requestUser);
     const userEmail = requestUser.email;
-    console.log('userEmail:', userEmail);
-    console.log('req.user.email:', req.user.email);
-    //const userEmail = req.user.email;  
+
 
     try {
         if (req.user.role !== 'to' && req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
