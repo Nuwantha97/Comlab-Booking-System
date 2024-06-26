@@ -19,6 +19,8 @@ export default function MyApp() {
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
   const [email, setEmail] = useState("");
+  const [textContainerText, setTextContainerText] = useState('');
+
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
