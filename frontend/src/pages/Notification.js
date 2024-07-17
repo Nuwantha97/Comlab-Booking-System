@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-//import axios from 'axios';
+import axios from 'axios';
 import Header from '../components/Header';
 import '../components/notification.css';
 import Profile from '../components/Profile';
 
-const axios = {
+const token = localStorage.getItem('token');
+/*const axios = {
   get: () => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -161,9 +162,9 @@ const axios = {
       }, 1000); // Simulating delay for API call
     });
   },
-};
+};*/
 
-export default function Notification({ token }) {
+export default function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const [selectedType, setSelectedType] = useState('');
@@ -175,12 +176,8 @@ export default function Notification({ token }) {
   useEffect(() => {
     const fetchNotifications = async () => {
 
-      const response = await axios.get('/users');
-      setNotifications(response.data);
-      setFilteredNotifications(response.data);
-
-      /*try {
-        const response = await axios.get('/api/notifications', {
+      try {
+        const response = await axios.get('/api/notification/', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -190,7 +187,7 @@ export default function Notification({ token }) {
         console.log('Fetched notifications:', response.data);
       } catch (error) {
         console.error('Error fetching notifications:', error);
-      }*/
+      }
     };
     fetchNotifications();
   }, [token]);
@@ -235,7 +232,7 @@ export default function Notification({ token }) {
   const handleOkClick = async () => {
     if (selectedNotification && selectedNotification.type === 'unread') {
       try {
-        const response = await axios.put(`/api/notifications/markRead/${selectedNotification._id}`, {}, {
+        const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -256,7 +253,7 @@ export default function Notification({ token }) {
   };
 
   const handleAcceptClick = async () => {
-    try {
+    /*try {
       const response = await axios.post(`/api/notifications/updateIsLabStatus/${selectedNotification._id}`, {}, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -276,7 +273,7 @@ export default function Notification({ token }) {
       console.log('Updated notification type:', response.data);
     } catch (error) {
       console.error('Error updating notification type:', error);
-    }
+    }*/
 
     console.log("Accept button clicked for request notification.");
     setIsDialogVisible(false);
