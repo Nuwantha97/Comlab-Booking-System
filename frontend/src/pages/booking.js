@@ -29,7 +29,7 @@ export default function MyApp() {
   useEffect(() => {
     if (location.state && location.state.event) {
       const { event } = location.state;
-      setId(event.state.id);
+      setId(event.id);
       setTitle(event.title);
       setSelectedDate(moment(event.start).format('YYYY-MM-DD'));
       setStartTime(moment(event.start).format('HH:mm'));
