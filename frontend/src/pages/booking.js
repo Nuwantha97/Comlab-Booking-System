@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
-import Profile from '../components/Profile';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -19,8 +18,6 @@ export default function MyApp() {
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
   const [email, setEmail] = useState("");
-  const [textContainerText, setTextContainerText] = useState('');
-
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
@@ -29,7 +26,7 @@ export default function MyApp() {
   useEffect(() => {
     if (location.state && location.state.event) {
       const { event } = location.state;
-      setId(event.id);
+      setId(event.state.id);
       setTitle(event.title);
       setSelectedDate(moment(event.start).format('YYYY-MM-DD'));
       setStartTime(moment(event.start).format('HH:mm'));
@@ -201,58 +198,54 @@ export default function MyApp() {
     setAttendees(selectedOptions.map(option => JSON.parse(option.value)));
   };
 
-  // Determine the rectangle color based on availabilityMessage
-  const rectangleClass = availabilityMessage === "Time slot is available" || availabilityMessage === '' ? 'green-rectangle' : 'red-rectangle';
-
   return (
-    <div className='bbb'>
+    <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="my-app">
-  <div className="booking-body">
-    <div className="left">
-      <h1>{location.state && location.state.event ? 'Edit Booking' : 'Book Lab Session'}</h1>
-      <div className="form-group">
-        <label htmlFor="title">Add Title:</label>
-        <input type="text" id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <div className="booking-body">
+            <div className="right">
+              <div className="container-11">
+                <h3>CO1 Lab Availability</h3>
+                <div className="green-rectangle">
+                  {selectedDate}
+                </div>
+                {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
+              </div>
+            </div>
+          <div className="left">
+            <h1>{location.state && location.state.event ? 'Edit Booking' : 'Book Lab Session'}</h1>
+            <div className="form-group">
+              <label htmlFor="title">Add Title:</label>
+              <input type="text" id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
 
-        <label htmlFor="attendees">Invite Attendees:</label>
-        <select multiple id="attendees" name="attendees" onChange={handleAttendeesChange}>
-          {users.map(user => (
-            <option key={user._id} value={JSON.stringify(user)}>{`${user.firstName} ${user.lastName}: ${user.email}`}</option>
-          ))}
-        </select>
+              <label htmlFor="attendees">Invite Attendees:</label>
+              <select multiple id="attendees" name="attendees" onChange={handleAttendeesChange}>
+                {users.map(user => (
+                  <option key={user._id} value={JSON.stringify(user)}>{`${user.firstName} ${user.lastName}: ${user.email}`}</option>
+                ))}
+              </select>
 
-        <label htmlFor="date">Date:</label>
-        <div className="inline-container">
-          <input type="date" id="date" name="date" style={{ width: '150px' }} value={selectedDate} onChange={handleDateChange} />
-          <label htmlFor="startTime">From:</label>
-          <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} value={startTime} onChange={(e) => setStartTime(e.target.value)} />
-          <label htmlFor="endTime">To:</label>
-          <input type="time" id="endTime" name="endTime" style={{ width: '90px' }} value={endTime} onChange={(e) => setEndTime(e.target.value)} />
-          <button className="check-button" onClick={handleCheckButton}>Check</button>
-        </div>
+              <label htmlFor="date">Date:</label>
+              <div className="inline-container">
+                <input type="date" id="date" name="date" style={{ width: '150px' }} value={selectedDate} onChange={handleDateChange} />
+                <label htmlFor="startTime">From:</label>
+                <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+                <label htmlFor="endTime">To:</label>
+                <input type="time" id="endTime" name="endTime" style={{ width: '90px' }} value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+                <button className="check-button" onClick={handleCheckButton}>Check</button>
+              </div>
 
-        <label htmlFor="description">Description (Optional):</label>
-        <textarea id="description" name="description" rows="2" cols="30" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short Description" />
-        <div className="button-container">
-          <button className="check-button" onClick={handleSave} type="submit">Save</button>
-          <button className="check-button" onClick={() => navigate('/dashboard')}>Cancel</button>
+              <label htmlFor="description">Description (Optional):</label>
+              <textarea id="description" name="description" rows="2" cols="30" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short Description" />
+              <div className="button-container">
+                <button className="check-button" onClick={handleSave} type="submit">Save</button>
+                <button className="check-button" onClick={() => navigate('/dashboard')}>Cancel</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="right">
-      <div className="container-11">
-        <h3>CO1 Lab Availability</h3>
-        <div className={rectangleClass}>
-          {selectedDate}
-        </div>
-        {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
-      </div>
-    </div>
-  </div>
-  {errorMessage && <p className="error-message">{errorMessage}</p>}
-  {isBoxVisible && <Profile />}
-</div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 }

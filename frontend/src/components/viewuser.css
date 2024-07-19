@@ -1,16 +1,10 @@
 /* General styles for the container */
-.vvv {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
 .viewuser-container {
-  flex-direction: column;
   display: flex;
-  height: 100vh;
-  overflow: hidden
+  flex-direction: row;
+  min-height: 100vh; /* Use min-height instead of height to allow scrolling */
+  width: 100%;
+  overflow-x: auto; /* Allow horizontal scrolling */
 }
 
 /* Left side panel styling */

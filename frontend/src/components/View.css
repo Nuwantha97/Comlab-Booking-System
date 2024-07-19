@@ -1,20 +1,6 @@
-.view_container{
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
 .view_body {
-  flex-direction: column;
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.view_body > div {
-  flex: 1; /* Allow the div to grow and take up remaining space */
-  overflow-y: auto; /* Enable vertical scrolling if content exceeds the div's height */
+  padding: 50px;
+  background-color: #1A4350;
 }
 
 .calendar-container {

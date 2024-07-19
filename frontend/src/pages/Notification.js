@@ -6,8 +6,6 @@ import Profile from '../components/Profile';
 
 const token = localStorage.getItem('token');
 
-
-
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [filteredNotifications, setFilteredNotifications] = useState([]);
@@ -38,7 +36,6 @@ export default function Notification() {
   useEffect(() => {
     filterNotifications(selectedType);
   }, [selectedType, notifications]);
-
 
   const filterNotifications = (type) => {
     if (type === 'unread') {
@@ -72,10 +69,8 @@ export default function Notification() {
     setIsDialogVisible(true);
   };
 
-
   const handleOkClick = async () => {
     console.log('handleOKClick called');
-
 
     if (!selectedNotification) {
       console.error('No selected notification');
