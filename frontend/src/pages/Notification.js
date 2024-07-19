@@ -1,168 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import '../components/notification.css';
 import Profile from '../components/Profile';
-
-const token = localStorage.getItem('token');
-/*const axios = {
-  get: () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        let sampleUsers = [
-          {
-              reciverEmail: 'user1@example.com',
-              type: 'booking_confirmation',
-              senderEmail: 'admin@example.com',
-              labSessionTitle: 'Lab Session 1',
-              labDate: new Date('2024-06-18'),
-              labStartTime: '09:00 AM',
-              labEndTime: '11:00 AM',
-              message: 'Your lab session has been confirmed.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-06-17'),
-              IsLabWillGoingOn: false,
-              isRead: true
-          },
-          {
-              reciverEmail: 'user2@example.com',
-              type: 'request',
-              senderEmail: 'staff@example.com',
-              labSessionTitle: 'Lab Session 2',
-              labDate: new Date('2024-06-20'),
-              labStartTime: '02:00 PM',
-              labEndTime: '04:00 PM',
-              message: 'You have a new lab session request.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-06-17'),
-              IsLabWillGoingOn: false,
-              isRead: false
-          },
-          {
-              reciverEmail: 'user3@example.com',
-              type: 'cancellation',
-              senderEmail: 'admin@example.com',
-              labSessionTitle: 'Lab Session 3',
-              labDate: new Date('2024-06-22'),
-              labStartTime: '10:00 AM',
-              labEndTime: '12:00 PM',
-              message: 'Your lab session has been cancelled.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-06-18'),
-              IsLabWillGoingOn: false,
-              isRead: false
-          },
-          {
-              reciverEmail: 'user4@example.com',
-              type: 'reminder',
-              senderEmail: 'admin@example.com',
-              labSessionTitle: 'Lab Session 4',
-              labDate: new Date('2024-06-25'),
-              labStartTime: '03:00 PM',
-              labEndTime: '05:00 PM',
-              message: 'Reminder: Your lab session is approaching.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-06-20'),
-              IsLabWillGoingOn: false,
-              isRead: false
-          },
-          {
-              reciverEmail: 'user5@example.com',
-              type: 'booking_confirmation',
-              senderEmail: 'staff@example.com',
-              labSessionTitle: 'Lab Session 5',
-              labDate: new Date('2024-06-28'),
-              labStartTime: '01:00 PM',
-              labEndTime: '03:00 PM',
-              message: 'Your lab session has been confirmed.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-06-23'),
-              IsLabWillGoingOn: false,
-              isRead: false
-          },
-          {
-              reciverEmail: 'user6@example.com',
-              type: 'request',
-              senderEmail: 'admin@example.com',
-              labSessionTitle: 'Lab Session 6',
-              labDate: new Date('2024-06-30'),
-              labStartTime: '11:00 AM',
-              labEndTime: '01:00 PM',
-              message: 'You have a new lab session request.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-06-25'),
-              IsLabWillGoingOn: false,
-              isRead: true
-          },
-          {
-              reciverEmail: 'user7@example.com',
-              type: 'cancellation',
-              senderEmail: 'staff@example.com',
-              labSessionTitle: 'Lab Session 7',
-              labDate: new Date('2024-07-02'),
-              labStartTime: '09:00 AM',
-              labEndTime: '11:00 AM',
-              message: 'Your lab session has been cancelled.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-06-27'),
-              IsLabWillGoingOn: false,
-              isRead: false
-          },
-          {
-              reciverEmail: 'user8@example.com',
-              type: 'reminder',
-              senderEmail: 'admin@example.com',
-              labSessionTitle: 'Lab Session 8',
-              labDate: new Date('2024-07-05'),
-              labStartTime: '04:00 PM',
-              labEndTime: '06:00 PM',
-              message: 'Reminder: Your lab session is approaching.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-07-01'),
-              IsLabWillGoingOn: false,
-              isRead: true
-          },
-          {
-              reciverEmail: 'user9@example.com',
-              type: 'booking_confirmation',
-              senderEmail: 'staff@example.com',
-              labSessionTitle: 'Lab Session 9',
-              labDate: new Date('2024-07-08'),
-              labStartTime: '10:00 AM',
-              labEndTime: '12:00 PM',
-              message: 'Your lab session has been confirmed.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-07-03'),
-              IsLabWillGoingOn: false,
-              isRead: false
-          },
-          {
-              reciverEmail: 'user10@example.com',
-              type: 'request',
-              senderEmail: 'admin@example.com',
-              labSessionTitle: 'Lab Session 10',
-              labDate: new Date('2024-07-15'),
-              labStartTime: '02:00 PM',
-              labEndTime: '04:00 PM',
-              message: 'You have a new lab session request.',
-              isReciverConfirm: false,
-              createdAt: new Date('2024-07-05'),
-              IsLabWillGoingOn: false,
-              isRead: true
-          }
-      ];      
-        resolve({ data: sampleUsers });
-      }, 1000); // Simulating delay for API call
-    });
-  },
-  put: (url) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 1000); // Simulating delay for API call
-    });
-  },
-};*/
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
@@ -173,9 +13,10 @@ export default function Notification() {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
 
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     const fetchNotifications = async () => {
-
       try {
         const response = await axios.get('/api/notification/', {
           headers: {
@@ -192,11 +33,7 @@ export default function Notification() {
     fetchNotifications();
   }, [token]);
 
-  useEffect(() => {
-    filterNotifications(selectedType);
-  }, [selectedType, notifications]);
-
-  const filterNotifications = (type) => {
+  const filterNotifications = useCallback((type) => {
     if (type === 'unread') {
       setFilteredNotifications(notifications.filter(notification => !notification.isRead));
     } else if (type === 'reminder') {
@@ -209,12 +46,15 @@ export default function Notification() {
       });
       setFilteredNotifications(nearbyReminders);
     } else if (type === '') {
-      // Display all notifications
       setFilteredNotifications(notifications);
-    }else {
+    } else {
       setFilteredNotifications(notifications.filter(notification => notification.type === type));
     }
-  };
+  }, [notifications]);
+
+  useEffect(() => {
+    filterNotifications(selectedType);
+  }, [selectedType, notifications, filterNotifications]);
 
   const handleButtonClick = (type) => {
     setSelectedType(type);
@@ -230,55 +70,50 @@ export default function Notification() {
   };
 
   const handleOkClick = async () => {
-    if (selectedNotification && selectedNotification.type === 'unread') {
-      try {
-        const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        console.log('Marked notification as read:', response.data);
+    console.log('handleOKClick called');
 
-        // Update notifications state to mark the selected notification as read
-        const updatedNotifications = notifications.map(notif =>
-          notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
-        );
-        setNotifications(updatedNotifications);
-        setFilteredNotifications(updatedNotifications);
-      } catch (error) {
-        console.error('Error marking notification as read:', error);
-      }
-    }
-    setIsDialogVisible(false); // Close the dialog after handling the click
-  };
-
-  const handleAcceptClick = async () => {
-    /*try {
-      const response = await axios.post(`/api/notifications/updateIsLabStatus/${selectedNotification._id}`, {}, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      console.log('Updated IsLabWillGoingOn:', response.data);
-    } catch (error) {
-      console.error('Error updating IsLabWillGoingOn:', error);
+    if (!selectedNotification) {
+      console.error('No selected notification');
+      return;
     }
 
     try {
-      const response = await axios.post(`/api/notifications/updateNotificationType/${selectedNotification._id}`, {}, {
+      const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      console.log('Updated notification type:', response.data);
-    } catch (error) {
-      console.error('Error updating notification type:', error);
-    }*/
+      console.log('Marked notification as read:', response.data);
 
-    console.log("Accept button clicked for request notification.");
+      const updatedNotifications = notifications.map(notif =>
+        notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
+      );
+      setNotifications(updatedNotifications);
+      setFilteredNotifications(updatedNotifications);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+
     setIsDialogVisible(false);
   };
 
+  const handleAcceptClick = async () => {
+    try {
+      const response = await axios.post(
+        `/api/notifications/updateIsReceiverConfirm/${selectedNotification._id}/${selectedNotification.bookingId}`, 
+        {}, 
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Updated isReceiverConfirm and booking status:', response.data);
+    } catch (error) {
+      console.error('Error updating isReceiverConfirm and booking status:', error);
+    }
+    setIsDialogVisible(false);
+  };
 
   const handleCancelClick = async () => {
     setIsDialogVisible(false);
@@ -296,7 +131,6 @@ export default function Notification() {
     <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="notification-container">
-        {/* Left side with toolbars */}
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
@@ -308,9 +142,7 @@ export default function Notification() {
             <button className="toolbar-button" onClick={() => handleButtonClick('booking_confirmation')}>Booking Confirmations</button>
           </ul>
         </div>
-        {/* Right side with preview */}
         <div className="right-side">
-          {/* Display preview content here */}
           <div className="scroll-container">
             <ul className="preview-list">
               {filteredNotifications.map((notification, index) => (
@@ -370,7 +202,6 @@ export default function Notification() {
                     <p>{labDetails.labSessionTitle}</p>
                     <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
                     <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
-                    {/* Calculate remaining time */}
                     <p>Remaining Time: {calculateRemainingTime(labDetails.labDate, labDetails.labStartTime)}</p>
                     <button onClick={handleConClick} className="ok-button">
                       OK
