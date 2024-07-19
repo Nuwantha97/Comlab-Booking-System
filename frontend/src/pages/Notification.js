@@ -100,7 +100,7 @@ export default function Notification() {
   const handleAcceptClick = async () => {
     try {
       const response = await axios.post(
-        `/api/notifications/updateIsReceiverConfirm/${selectedNotification._id}/${selectedNotification.bookingId}`, 
+        `/api/notification/updateIsReceiverConfirm/${selectedNotification._id}`, 
         {}, 
         {
           headers: {
@@ -116,12 +116,67 @@ export default function Notification() {
   };
 
   const handleCancelClick = async () => {
+
+    try {
+      const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Marked notification as read:', response.data);
+
+      const updatedNotifications = notifications.map(notif =>
+        notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
+      );
+      setNotifications(updatedNotifications);
+      setFilteredNotifications(updatedNotifications);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+
     setIsDialogVisible(false);
   };
 
   const handleConClick = async () => {
+
+    try {
+      const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Marked notification as read:', response.data);
+
+      const updatedNotifications = notifications.map(notif =>
+        notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
+      );
+      setNotifications(updatedNotifications);
+      setFilteredNotifications(updatedNotifications);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+
     setIsDialogVisible(false);
   };
+
+  const handleRejectClick = async () => {
+    try {
+      const response = await axios.post(
+        `/api/notification/updateIsLabStatus/${selectedNotification._id}`, 
+        {}, 
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Updated IsLabWillGoingOn and booking status:', response.data);
+    } catch (error) {
+      console.error('Error updating isReceiverConfirm and booking status:', error);
+    }
+    setIsDialogVisible(false);
+  };
+  
 
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
@@ -178,11 +233,14 @@ export default function Notification() {
                     <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
                     <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
                     <p>Message: {labDetails.message}</p>
-                    <button onClick={handleAcceptClick} className="ok-button">
-                      Accept
-                    </button>
+                    <div className="button-group">
+                      <button onClick={handleCancelClick} className="ok-button"> Ok </button>
+                      <button onClick={handleAcceptClick} className="ok-button"> Accept </button>
+                      <button onClick={handleRejectClick} className="ok-button"> Reject </button>
+                    </div>
                   </>
                 )}
+
                 {selectedNotification.type === 'cancellation' && (
                   <>
                     <h2>Lab Session Cancellation</h2>
@@ -216,9 +274,10 @@ export default function Notification() {
                     <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
                     <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
                     <p>Message: {labDetails.message}</p>
-                    <button onClick={handleConClick} className="ok-button">
-                      OK
-                    </button>
+                    <div className="button-group">
+                      <button onClick={handleConClick} className="ok-button">OK</button>
+                      <button onClick={handleRejectClick} className="ok-button"> Cancel lab </button>
+                    </div>
                   </>
                 )}
               </div>

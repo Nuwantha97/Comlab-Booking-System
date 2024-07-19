@@ -92,7 +92,7 @@ router.put('/markRead/:id', auth, async (req, res) => {
           }
         const notification = await Notification.findOneAndUpdate(
             { _id: id, receiverEmail: userEmail },
-            { isRead: false },
+            { isRead: true },
             { new: true } // Return updated document
         );
 
@@ -132,15 +132,15 @@ router.post('/updateIsReceiverConfirm/:notificationId', auth, async (req, res) =
 });*/
 
 // POST route to update isReceiverConfirm for notifications and update booking type
-router.post('/updateIsReceiverConfirm/:notificationId/:bookingId', auth, async (req, res) => {
-    const { notificationId, bookingId } = req.params;
-    const userEmail = req.user.email; 
+router.post('/updateIsReceiverConfirm/:notificationId', auth, async (req, res) => {
+    const { notificationId } = req.params;
+    const userEmail = req.user.email;
 
     try {
         // Find and update the notification
         const notification = await Notification.findOneAndUpdate(
             { _id: notificationId, receiverEmail: userEmail },
-            { isReceiverConfirm: true, type: 'booking_confirmation' },
+            { isReceiverConfirm: true, type: 'booking_confirmation', isRead:false  },
             { new: true } // Return updated document
         );
 
@@ -148,10 +148,17 @@ router.post('/updateIsReceiverConfirm/:notificationId/:bookingId', auth, async (
             return res.status(404).json({ message: 'Notification not found for the current user' });
         }
 
+        // Get the bookingId from the notification
+        const bookingId = notification.bookingId;
+
+        if (!bookingId) {
+            return res.status(400).json({ message: 'Booking ID not found in the notification' });
+        }
+
         // Find and update the booking
         const booking = await Booking.findOneAndUpdate(
             { _id: bookingId },
-            { status: 'confirmed' },
+            { status: 'confirmed'},
             { new: true } // Return updated document
         );
 
@@ -160,15 +167,16 @@ router.post('/updateIsReceiverConfirm/:notificationId/:bookingId', auth, async (
         }
 
         res.status(200).json({
-            message: 'isReceiverConfirm and booking type updated successfully',
+            message: 'isReceiverConfirm and booking status updated successfully',
             notification,
             booking
         });
     } catch (error) {
-        console.error('Error updating isReceiverConfirm and booking type:', error);
+        console.error('Error updating isReceiverConfirm and booking status:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 // POST route to update IsLabWillGoingOn and type for notifications for the authenticated user
 router.post('/updateIsLabStatus/:notificationId', auth, async (req, res) => {
@@ -178,12 +186,33 @@ router.post('/updateIsLabStatus/:notificationId', auth, async (req, res) => {
     try {
         const notification = await Notification.findOneAndUpdate(
             { _id: notificationId, receiverEmail: userEmail },
-            { IsLabWillGoingOn: false, type: 'cancellation' },
+            { IsLabWillGoingOn: false, 
+              type: 'cancellation',
+              isRead:false
+            },
             { new: true } // Return updated document
         );
 
         if (!notification) {
             return res.status(404).json({ message: 'Notification not found for the current user' });
+        }
+
+        // Get the bookingId from the notification
+        const bookingId = notification.bookingId;
+
+        if (!bookingId) {
+            return res.status(400).json({ message: 'Booking ID not found in the notification' });
+        }
+
+        // Find and update the booking
+        const booking = await Booking.findOneAndUpdate(
+            { _id: bookingId },
+            { status: 'cancelled' },
+            { new: true } // Return updated document
+        );
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
         }
 
         res.status(200).json({ message: 'IsLabWillGoingOn updated to false and type changed to cancellation', notification });
