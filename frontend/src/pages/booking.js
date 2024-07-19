@@ -4,6 +4,7 @@ import '../components/booking.css';
 import Header from '../components/Header';
 import axios from 'axios';
 import moment from 'moment';
+import { jwtDecode } from 'jwt-decode';
 
 export default function MyApp() {
   const [id, setId] = useState('');
@@ -17,11 +18,18 @@ export default function MyApp() {
   const [errorMessage, setErrorMessage] = useState('');
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
-  const [email, setEmail] = useState("");
+  const [uEmail, setEmail] = useState("");
 
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setEmail(decodedToken.email || ""); // Extract email from token
+    }
+  }, [token]);
 
   useEffect(() => {
     if (location.state && location.state.event) {
@@ -33,6 +41,7 @@ export default function MyApp() {
       setEndTime(moment(event.end).format('HH:mm'));
       setDescription(event.description);
       setAttendees(event.attendees || []);
+      setEmail(event.uEmail || "");
     }
   }, [location.state]);
 
@@ -47,13 +56,10 @@ export default function MyApp() {
           });
           const user = response.data;
           setEmail(user.email);
-          //console.log('Fetched user:', user);
-          //setTextContainerText("Edit User Details");
         } catch (error) {
           console.error('Error fetching user:', error);
         }
       };
-
       fetchUser();
     }
   }, [id, token]);
@@ -67,7 +73,6 @@ export default function MyApp() {
           }
         });
         setUsers(response.data);
-        //console.log('users from booking page:', response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -92,8 +97,6 @@ export default function MyApp() {
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString()
     };
 
-    //console.log('Checking availability with data:', checkData);
-
     try {
       const response = await axios.post('/api/bookings/check-availability', checkData, {
         headers: {
@@ -101,7 +104,6 @@ export default function MyApp() {
           'Authorization': `Bearer ${token}`
         }
       });
-      //console.log('Availability check response:', response.data);
       setAvailabilityMessage(response.data.message);
     } catch (error) {
       console.error('Availability check error:', error);
@@ -121,9 +123,7 @@ export default function MyApp() {
       description,
       attendees: attendees.map(user => user.email)
     };
-  
-    //console.log('Saving booking with data:', bookingData);
-  
+
     try {
       const bookingResponse = await axios.post('/api/bookings', bookingData, {
         headers: {
@@ -131,10 +131,9 @@ export default function MyApp() {
           'Authorization': `Bearer ${token}`
         }
       });
-  
-      const bookingId = bookingResponse.data._id; 
-  
-      // If there is an existing booking, delete it
+
+      const bookingId = bookingResponse.data._id;
+
       if (location.state && location.state.event) {
         await axios.delete(`/api/bookings/${location.state.event.id}`, {
           headers: {
@@ -142,24 +141,22 @@ export default function MyApp() {
           }
         });
       }
-  
-      //console.log('Booking save response:', bookingResponse.data);
+
       alert('Booking Successful');
-  
-      // Now create the notification with the newly created booking ID
+
       const notificationData = {
         title: bookingData.title,
         startTime: bookingData.startTime,
         endTime: bookingData.endTime,
         description: bookingData.description,
         attendees: bookingData.attendees,
-        uEmail: email,
-        uDate: new Date(`${selectedDate}`).toISOString() ,
+        uEmail: uEmail,
+        uDate: new Date(`${selectedDate}`).toISOString(),
         bookingId
       };
-  
+
       console.log('Saving notification with data:', notificationData);
-  
+
       try {
         const notificationResponse = await axios.post('/api/notification/createNotification', notificationData, {
           headers: {
@@ -167,7 +164,7 @@ export default function MyApp() {
             'Authorization': `Bearer ${token}`
           }
         });
-  
+
         console.log('Notification creation response:', notificationResponse.data);
       } catch (notificationError) {
         console.error('Notification creation error:', notificationError);
@@ -186,8 +183,6 @@ export default function MyApp() {
       }
     }
   };
-  
-  
 
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
@@ -203,15 +198,15 @@ export default function MyApp() {
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="my-app">
         <div className="booking-body">
-            <div className="right">
-              <div className="container-11">
-                <h3>CO1 Lab Availability</h3>
-                <div className="green-rectangle">
-                  {selectedDate}
-                </div>
-                {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
+          <div className="right">
+            <div className="container-11">
+              <h3>CO1 Lab Availability</h3>
+              <div className="green-rectangle">
+                {selectedDate}
               </div>
+              {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
             </div>
+          </div>
           <div className="left">
             <h1>{location.state && location.state.event ? 'Edit Booking' : 'Book Lab Session'}</h1>
             <div className="form-group">
@@ -238,14 +233,14 @@ export default function MyApp() {
               <label htmlFor="description">Description (Optional):</label>
               <textarea id="description" name="description" rows="2" cols="30" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short Description" />
               <div className="button-container">
-                <button className="check-button" onClick={handleSave} type="submit">Save</button>
+                <button className="check-button" onClick={handleSave}>{location.state && location.state.event ? 'Save' : 'Book'}</button>
                 <button className="check-button" onClick={() => navigate('/dashboard')}>Cancel</button>
               </div>
+              {errorMessage && <p className="error-message">{errorMessage}</p>}
             </div>
           </div>
         </div>
       </div>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 }
