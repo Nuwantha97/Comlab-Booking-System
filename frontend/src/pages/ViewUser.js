@@ -1,4 +1,4 @@
-import React, { useState, useRef,useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import HeaderAdmin from '../components/HeaderAdmin';
 import '../components/viewuser.css';
 import Profile from '../components/Profile';
@@ -6,10 +6,6 @@ import Buttons from '../components/editButton';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const token = localStorage.getItem('token');
-console.log('token from viewuser.js:', token);
-
 
 export default function ViewUser() {
   const [user_id, setUserId] = useState('');
@@ -23,24 +19,28 @@ export default function ViewUser() {
   const navigate = useNavigate();
   const profileRef = useRef(null);
 
+  const fetchUsers = async (token) => {
+    try {
+      const response = await axios.get('/api/users/getall', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      setUsers(response.data);
+      console.log('users from viewuser.js:', response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('/api/users/getall', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        setUsers(response.data);
-        console.log('users from viewuser.js:', response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
+    const token = localStorage.getItem('token');
+    console.log('token from viewuser.js:', token);
 
-    fetchUsers();
-  }, [token]);
+    if (token) {
+      fetchUsers(token);
+    }
+  }, []);
 
   const handleRoleClick = (role) => {
     setSelectedRole(role);
@@ -49,6 +49,7 @@ export default function ViewUser() {
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
   };
+
   const handleClickOutside = (event) => {
     if (profileRef.current && !profileRef.current.contains(event.target)) {
       setIsBoxVisible(false);
@@ -65,7 +66,6 @@ export default function ViewUser() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isBoxVisible]);
-
 
   const handleEditButtonClick = (edituser_id) => {
     console.log('edit user button clicked for user:', edituser_id);
@@ -85,7 +85,7 @@ export default function ViewUser() {
       try {
         await axios.delete(`/api/users/${deleteUser._id}`, {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
         setUsers(users.filter(user => user._id !== deleteUser._id)); 
@@ -106,7 +106,7 @@ export default function ViewUser() {
   const filteredUsers = users.filter(user => user.role === selectedRole);
 
   return (
-    <div>
+    <div className='vvv'>
       <HeaderAdmin onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <hr style={{height: '1px', backgroundColor: 'black', borderStyle: 'none', margin: 0}}/>
       <div className="viewuser-container">
