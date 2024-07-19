@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import '../components/notification.css';
 import Profile from '../components/Profile';
-
-const token = localStorage.getItem('token');
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
@@ -14,6 +12,8 @@ export default function Notification() {
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
+
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -33,11 +33,7 @@ export default function Notification() {
     fetchNotifications();
   }, [token]);
 
-  useEffect(() => {
-    filterNotifications(selectedType);
-  }, [selectedType, notifications]);
-
-  const filterNotifications = (type) => {
+  const filterNotifications = useCallback((type) => {
     if (type === 'unread') {
       setFilteredNotifications(notifications.filter(notification => !notification.isRead));
     } else if (type === 'reminder') {
@@ -54,7 +50,11 @@ export default function Notification() {
     } else {
       setFilteredNotifications(notifications.filter(notification => notification.type === type));
     }
-  };
+  }, [notifications]);
+
+  useEffect(() => {
+    filterNotifications(selectedType);
+  }, [selectedType, notifications, filterNotifications]);
 
   const handleButtonClick = (type) => {
     setSelectedType(type);

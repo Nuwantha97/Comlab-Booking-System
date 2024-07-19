@@ -48,7 +48,7 @@ export default function MyApp() {
           const user = response.data;
           setEmail(user.email);
           //console.log('Fetched user:', user);
-          setTextContainerText("Edit User Details");
+          //setTextContainerText("Edit User Details");
         } catch (error) {
           console.error('Error fetching user:', error);
         }
