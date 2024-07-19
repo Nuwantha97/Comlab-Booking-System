@@ -12,7 +12,7 @@ const notificationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['booking_confirmation', 'request', 'cancellation', 'reminder'],
+        enum: ['booking_confirmation', 'request', 'cancellation', 'reminder', 'rejected','confirmed'],
         required: true
     },
     senderEmail: {

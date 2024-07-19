@@ -27,7 +27,7 @@ export default function MyApp() {
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
-      setEmail(decodedToken.email || ""); // Extract email from token
+      setEmail(decodedToken.email || ""); 
     }
   }, [token]);
 
