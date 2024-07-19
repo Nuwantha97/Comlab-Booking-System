@@ -71,6 +71,7 @@
   margin-right: 0;
 }
 
+/* Button Styles */
 button {
   border-radius: 0;
   width: 95px;
@@ -80,8 +81,26 @@ button {
   background-color: #1A4350;
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Hover Effects */
+button:hover {
+  background-color: #16334a;
+  transform: translateY(-3px); /* Slight lift */
+}
+
+/* Click Effects */
+button:active {
+  background-color: #0e2333;
+  transform: scale(0.95); /* Slight shrink */
+}
+
+/* 3D Effects */
+button {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-  background-color: #16334a;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
 }
