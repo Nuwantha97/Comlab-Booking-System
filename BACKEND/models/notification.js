@@ -6,24 +6,21 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    bookingId:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true
-    },
     type: {
         type: String,
         enum: ['booking_confirmation', 'request', 'cancellation', 'reminder'],
         required: true
     },
     senderEmail: {
-        type: String
+        type: String,
+        required: true
     },
     labSessionTitle: {
         type: String,
         required: true
     },
     labDate: {
-        type: String,
+        type: Date,
         required: true
     },
     labStartTime: {

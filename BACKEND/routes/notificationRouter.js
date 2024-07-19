@@ -7,7 +7,6 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const User = require('../models/user');
 require('dotenv').config();
-const Booking = require('../models/labBooking');
 
 // POST route to create notifications
 router.post('/createNotification', auth, async (req, res) => {
@@ -15,7 +14,7 @@ router.post('/createNotification', auth, async (req, res) => {
         if ( req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
             return res.status(403).json({ error: "Access denied." });
           }
-        const { title, startTime, endTime, description, attendees, uEmail, uDate, bookingId} = req.body;
+        const { title, startTime, endTime, description, attendees, uEmail, uDate} = req.body;
 
         // Function to create notifications for each attendee
         const createNotifications = async (attendees) => {
@@ -28,7 +27,6 @@ router.post('/createNotification', auth, async (req, res) => {
 
                 const newNotification = new Notification({
                     receiverEmail,
-                    bookingId:bookingId,
                     senderEmail,
                     labSessionTitle: title,
                     labDate: uDate,
@@ -92,7 +90,7 @@ router.put('/markRead/:id', auth, async (req, res) => {
           }
         const notification = await Notification.findOneAndUpdate(
             { _id: id, receiverEmail: userEmail },
-            { isRead: false },
+            { isRead: true },
             { new: true } // Return updated document
         );
 
@@ -108,7 +106,7 @@ router.put('/markRead/:id', auth, async (req, res) => {
 });
 
 
-/*// POST route to update isReceiverConfirm for notifications for the authenticated user
+// POST route to update isReceiverConfirm for notifications for the authenticated user
 router.post('/updateIsReceiverConfirm/:notificationId', auth, async (req, res) => {
     const { notificationId } = req.params;
     const userEmail = req.user.email; 
@@ -127,45 +125,6 @@ router.post('/updateIsReceiverConfirm/:notificationId', auth, async (req, res) =
         res.status(200).json({ message: 'isReceiverConfirm updated successfully', notification });
     } catch (error) {
         console.error('Error updating isReceiverConfirm:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});*/
-
-// POST route to update isReceiverConfirm for notifications and update booking type
-router.post('/updateIsReceiverConfirm/:notificationId/:bookingId', auth, async (req, res) => {
-    const { notificationId, bookingId } = req.params;
-    const userEmail = req.user.email; 
-
-    try {
-        // Find and update the notification
-        const notification = await Notification.findOneAndUpdate(
-            { _id: notificationId, receiverEmail: userEmail },
-            { isReceiverConfirm: true, type: 'booking_confirmation' },
-            { new: true } // Return updated document
-        );
-
-        if (!notification) {
-            return res.status(404).json({ message: 'Notification not found for the current user' });
-        }
-
-        // Find and update the booking
-        const booking = await Booking.findOneAndUpdate(
-            { _id: bookingId },
-            { status: 'confirmed' },
-            { new: true } // Return updated document
-        );
-
-        if (!booking) {
-            return res.status(404).json({ message: 'Booking not found' });
-        }
-
-        res.status(200).json({
-            message: 'isReceiverConfirm and booking type updated successfully',
-            notification,
-            booking
-        });
-    } catch (error) {
-        console.error('Error updating isReceiverConfirm and booking type:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
