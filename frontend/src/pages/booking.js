@@ -29,7 +29,7 @@ export default function MyApp() {
   useEffect(() => {
     if (location.state && location.state.event) {
       const { event } = location.state;
-      setId(event.state.id);
+      setId(event.id);
       setTitle(event.title);
       setSelectedDate(moment(event.start).format('YYYY-MM-DD'));
       setStartTime(moment(event.start).format('HH:mm'));
@@ -50,7 +50,7 @@ export default function MyApp() {
           });
           const user = response.data;
           setEmail(user.email);
-          console.log('Fetched user:', user);
+          //console.log('Fetched user:', user);
           setTextContainerText("Edit User Details");
         } catch (error) {
           console.error('Error fetching user:', error);
@@ -70,7 +70,7 @@ export default function MyApp() {
           }
         });
         setUsers(response.data);
-        console.log('users from booking page:', response.data);
+        //console.log('users from booking page:', response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -95,7 +95,7 @@ export default function MyApp() {
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString()
     };
 
-    console.log('Checking availability with data:', checkData);
+    //console.log('Checking availability with data:', checkData);
 
     try {
       const response = await axios.post('/api/bookings/check-availability', checkData, {
@@ -104,7 +104,7 @@ export default function MyApp() {
           'Authorization': `Bearer ${token}`
         }
       });
-      console.log('Availability check response:', response.data);
+      //console.log('Availability check response:', response.data);
       setAvailabilityMessage(response.data.message);
     } catch (error) {
       console.error('Availability check error:', error);
@@ -125,28 +125,19 @@ export default function MyApp() {
       attendees: attendees.map(user => user.email)
     };
   
-  
-    const notificationData = {
-      title: bookingData.title,
-      startTime: bookingData.startTime,
-      endTime: bookingData.endTime,
-      description: bookingData.description,
-      attendees: bookingData.attendees,
-      uEmail: email,
-      uDate: new Date(`${selectedDate}`).toISOString() // Convert selected date to ISO format
-    };
-  
-    console.log('Saving booking with data:', bookingData);
-    console.log('Saving booking with data:', notificationData);
+    //console.log('Saving booking with data:', bookingData);
   
     try {
-      const response = await axios.post('/api/bookings', bookingData, {
+      const bookingResponse = await axios.post('/api/bookings', bookingData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
   
+      const bookingId = bookingResponse.data._id; 
+  
+      // If there is an existing booking, delete it
       if (location.state && location.state.event) {
         await axios.delete(`/api/bookings/${location.state.event.id}`, {
           headers: {
@@ -155,8 +146,40 @@ export default function MyApp() {
         });
       }
   
-      console.log('Booking save response:', response.data);
+      //console.log('Booking save response:', bookingResponse.data);
       alert('Booking Successful');
+  
+      // Now create the notification with the newly created booking ID
+      const notificationData = {
+        title: bookingData.title,
+        startTime: bookingData.startTime,
+        endTime: bookingData.endTime,
+        description: bookingData.description,
+        attendees: bookingData.attendees,
+        uEmail: email,
+        uDate: new Date(`${selectedDate}`).toISOString() ,
+        bookingId
+      };
+  
+      console.log('Saving notification with data:', notificationData);
+  
+      try {
+        const notificationResponse = await axios.post('/api/notification/createNotification', notificationData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
+        console.log('Notification creation response:', notificationResponse.data);
+      } catch (notificationError) {
+        console.error('Notification creation error:', notificationError);
+        if (notificationError.response && notificationError.response.data && notificationError.response.data.message) {
+          setErrorMessage(notificationError.response.data.message);
+        } else {
+          setErrorMessage('Failed to create notification');
+        }
+      }
     } catch (error) {
       console.error('Booking error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -165,20 +188,8 @@ export default function MyApp() {
         setErrorMessage('Server error');
       }
     }
-  
-    try {
-      const notificationResponse = await axios.post('/api/notification/createNotification', notificationData);
-  
-      console.log('Notification creation response:', notificationResponse.data);
-    } catch (error) {
-      console.error('Notification creation error:', error);
-      if (error.response && error.response.data && error.response.data.message) {
-        setErrorMessage(error.response.data.message);
-      } else {
-        setErrorMessage('Failed to create notification');
-      }
-    }
   };
+  
   
 
   const handleUserIconClick = () => {
