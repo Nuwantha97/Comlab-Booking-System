@@ -1,142 +1,245 @@
-// Notification.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Header from '../components/Header';
 import '../components/notification.css';
 import Profile from '../components/Profile';
 
+const token = localStorage.getItem('token');
+
+
+
 export default function Notification() {
-  const [previewContent, setPreviewContent] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [filteredNotifications, setFilteredNotifications] = useState([]);
+  const [selectedType, setSelectedType] = useState('');
   const [labDetails, setLabDetails] = useState(null);
   const [selectedNotification, setSelectedNotification] = useState(null);
-  const [showOkButton, setShowOkButton] = useState(false);
-  const profileRef = useRef(null);
-  const labDetailsRef = useRef(null);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [isBoxVisible, setIsBoxVisible] = useState(false);
 
-  const notifications = {
-    All: ['Notification 1 for All', 'Notification 2 for All', 'Notification 3 for All'],
-    Unread: ['Notification 1 for Unread', 'Notification 2 for Unread', 'Notification 3 for Unread'],
-    'Booking Confirmations': ['Notification 1 for Booking Confirmations', 'Notification 2 for Booking Confirmations', 'Notification 3 for Booking Confirmations'],
-    Requests: ['Notification 1 for Requests', 'Notification 2 for Requests', 'Notification 3 for Requests'],
-    Cancellations: ['Notification 1 for Cancellations', 'Notification 2 for Cancellations', 'Notification 3 for Cancellations'],
-    Reminders: ['Notification 1 for Reminders', 'Notification 2 for Reminders', 'Notification 3 for Reminders'],
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get('/api/notification/', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        setNotifications(response.data);
+        setFilteredNotifications(response.data);
+        console.log('Fetched notifications:', response.data);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+    fetchNotifications();
+  }, [token]);
+
+  useEffect(() => {
+    filterNotifications(selectedType);
+  }, [selectedType, notifications]);
+
+
+  const filterNotifications = (type) => {
+    if (type === 'unread') {
+      setFilteredNotifications(notifications.filter(notification => !notification.isRead));
+    } else if (type === 'reminder') {
+      const now = new Date();
+      const nearbyReminders = notifications.filter(notification => {
+        const labStartTime = new Date(notification.labDate);
+        const timeDiff = labStartTime.getTime() - now.getTime();
+        const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+        return (labStartTime.toDateString() === now.toDateString() && minutesDiff <= 30 && minutesDiff >= 0);
+      });
+      setFilteredNotifications(nearbyReminders);
+    } else if (type === '') {
+      setFilteredNotifications(notifications);
+    } else {
+      setFilteredNotifications(notifications.filter(notification => notification.type === type));
+    }
   };
 
-  const labDetailsData = {
-    'Notification 1 for All': 'Lab details for Notification 1 for All',
-    'Notification 2 for All': 'Lab details for Notification 2 for All',
-    'Notification 3 for All': 'Lab details for Notification 3 for All',
-    'Notification 1 for Unread': 'Lab details for Notification 1 for Unread',
-    'Notification 2 for Unread': 'Lab details for Notification 2 for Unread',
-    'Notification 3 for Unread': 'Lab details for Notification 3 for Unread',
-    'Notification 1 for Booking Confirmations': 'Lab details for Notification 1 for Booking Confirmations',
-    'Notification 2 for Booking Confirmations': 'Lab details for Notification 2 for Booking Confirmations',
-    'Notification 3 for Booking Confirmations': 'Lab details for Notification 3 for Booking Confirmations',
-    'Notification 1 for Requests': 'Lab details for Notification 1 for Requests',
-    'Notification 2 for Requests': 'Lab details for Notification 2 for Requests',
-    'Notification 3 for Requests': 'Lab details for Notification 3 for Requests',
-    'Notification 1 for Cancellations': 'Lab details for Notification 1 for Cancellations',
-    'Notification 2 for Cancellations': 'Lab details for Notification 2 for Cancellations',
-    'Notification 3 for Cancellations': 'Lab details for Notification 3 for Cancellations',
-    'Notification 1 for Reminders': 'Lab details for Notification 1 for Reminders',
-    'Notification 2 for Reminders': 'Lab details for Notification 2 for Reminders',
-    'Notification 3 for Reminders': 'Lab details for Notification 3 for Reminders',
-  };
-
-  const handleButtonClick = (content) => {
-    const notificationsContent = notifications[content] || [];
-    setPreviewContent(notificationsContent);
-    // Reset lab details and selected notification when a new category is clicked
+  const handleButtonClick = (type) => {
+    setSelectedType(type);
     setLabDetails(null);
     setSelectedNotification(null);
-    setShowOkButton(false);
+    setIsDialogVisible(false);
   };
 
   const handleNotificationClick = (notification) => {
-    // Set lab details corresponding to the clicked notification
-    setLabDetails(labDetailsData[notification]);
+    setLabDetails(notification);
     setSelectedNotification(notification);
-    setShowOkButton(notification.includes('Cancellations'));
+    setIsDialogVisible(true);
   };
 
-  const handleOkClick = () => {
-    // Handle OK button click (e.g., close the lab details box)
-    setLabDetails(null);
-    setSelectedNotification(null);
-    setShowOkButton(false);
+
+  const handleOkClick = async () => {
+    console.log('handleOKClick called');
+
+
+    if (!selectedNotification) {
+      console.error('No selected notification');
+      return;
+    }
+
+    try {
+      const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Marked notification as read:', response.data);
+
+      const updatedNotifications = notifications.map(notif =>
+        notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
+      );
+      setNotifications(updatedNotifications);
+      setFilteredNotifications(updatedNotifications);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+
+    setIsDialogVisible(false);
   };
 
-  const [isBoxVisible, setIsBoxVisible] = useState(false);
+  const handleAcceptClick = async () => {
+    try {
+      const response = await axios.post(
+        `/api/notifications/updateIsReceiverConfirm/${selectedNotification._id}/${selectedNotification.bookingId}`, 
+        {}, 
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Updated isReceiverConfirm and booking status:', response.data);
+    } catch (error) {
+      console.error('Error updating isReceiverConfirm and booking status:', error);
+    }
+    setIsDialogVisible(false);
+  };
+
+  const handleCancelClick = async () => {
+    setIsDialogVisible(false);
+  };
+
+  const handleConClick = async () => {
+    setIsDialogVisible(false);
+  };
 
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
   };
 
-  const handleClickOutside = (event) => {
-    if (profileRef.current && !profileRef.current.contains(event.target)) {
-      setIsBoxVisible(false);
-    }
-    if (labDetailsRef.current && !labDetailsRef.current.contains(event.target)) {
-      setLabDetails(null);
-      setSelectedNotification(null);
-      setShowOkButton(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   return (
-    <div className='nnn'>
+    <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="notification-container">
-        {/* Left side with toolbars */}
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
-            <button className="toolbar-button" onClick={() => handleButtonClick('All')}>All</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('Unread')}>Unread</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('Booking Confirmations')}>Booking Confirmations</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('Requests')}>Requests</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('Cancellations')}>Cancellations</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('Reminders')}>Reminders</button>
+            <button className="toolbar-button" onClick={() => handleButtonClick('')}>All</button>
+            <button className="toolbar-button" onClick={() => handleButtonClick('unread')}>Unread</button>
+            <button className="toolbar-button" onClick={() => handleButtonClick('request')}>Requests</button>
+            <button className="toolbar-button" onClick={() => handleButtonClick('cancellation')}>Cancellations</button>
+            <button className="toolbar-button" onClick={() => handleButtonClick('reminder')}>Reminders</button>
+            <button className="toolbar-button" onClick={() => handleButtonClick('booking_confirmation')}>Booking Confirmations</button>
           </ul>
         </div>
-        {/* Right side with preview */}
         <div className="right-side">
-          {/* Display preview content here */}
           <div className="scroll-container">
             <ul className="preview-list">
-              {previewContent.map((notification, index) => (
+              {filteredNotifications.map((notification, index) => (
                 <li
                   key={index}
                   onClick={() => handleNotificationClick(notification)}
                   className={notification === selectedNotification ? 'selected' : ''}
                 >
-                  {notification}
+                  {notification.message}
                 </li>
               ))}
             </ul>
           </div>
-          {labDetails && (
-            <div className="lab-details-box" ref={labDetailsRef}>
+          {isDialogVisible && labDetails && (
+            <div className="lab-details-box">
               <div className="lab-details">
-                <h2>Lab Details</h2>
-                <p style={{ color: '#205464' }}>{labDetails}</p>
-                {showOkButton && (
-                  <button onClick={handleOkClick} className="ok-button">
-                    OK
-                  </button>
+                {selectedNotification.type === 'unread' && (
+                  <>
+                    <h2>{labDetails.labSessionTitle}</h2>
+                    <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
+                    <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
+                    <p>Message: {labDetails.message}</p>
+                    <button onClick={handleOkClick} className="ok-button">
+                      OK
+                    </button>
+                  </>
+                )}
+                {selectedNotification.type === 'request' && (
+                  <>
+                    <h2>Lab Session Request</h2>
+                    <p>From: {labDetails.senderEmail}</p>
+                    <p>Lab Session: {labDetails.labSessionTitle}</p>
+                    <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
+                    <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
+                    <p>Message: {labDetails.message}</p>
+                    <button onClick={handleAcceptClick} className="ok-button">
+                      Accept
+                    </button>
+                  </>
+                )}
+                {selectedNotification.type === 'cancellation' && (
+                  <>
+                    <h2>Lab Session Cancellation</h2>
+                    <p>From: {labDetails.senderEmail}</p>
+                    <p>Lab Session: {labDetails.labSessionTitle}</p>
+                    <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
+                    <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
+                    <p>Message: {labDetails.message}</p>
+                    <button onClick={handleCancelClick} className="ok-button">
+                      OK
+                    </button>
+                  </>
+                )}
+                {selectedNotification.type === 'reminder' && (
+                  <>
+                    <h2>Reminder</h2>
+                    <p>{labDetails.labSessionTitle}</p>
+                    <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
+                    <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
+                    <p>Remaining Time: {calculateRemainingTime(labDetails.labDate, labDetails.labStartTime)}</p>
+                    <button onClick={handleConClick} className="ok-button">
+                      OK
+                    </button>
+                  </>
+                )}
+                {selectedNotification.type === 'booking_confirmation' && (
+                  <>
+                    <h2>Booking Confirmation</h2>
+                    <p>From: {labDetails.senderEmail}</p>
+                    <p>Lab Session: {labDetails.labSessionTitle}</p>
+                    <p>Date: {new Date(labDetails.labDate).toDateString()}</p>
+                    <p>Time: {labDetails.labStartTime} - {labDetails.labEndTime}</p>
+                    <p>Message: {labDetails.message}</p>
+                    <button onClick={handleConClick} className="ok-button">
+                      OK
+                    </button>
+                  </>
                 )}
               </div>
             </div>
           )}
         </div>
-        {isBoxVisible && <Profile profileRef={profileRef} />}
+        {isBoxVisible && <Profile />}
       </div>
     </div>
   );
+}
+
+function calculateRemainingTime(labDate, labStartTime) {
+  const now = new Date();
+  const sessionStartTime = new Date(labDate + ' ' + labStartTime);
+  const timeDiff = sessionStartTime.getTime() - now.getTime();
+  const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+  return minutesDiff;
 }
