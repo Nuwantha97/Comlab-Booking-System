@@ -56,6 +56,7 @@ export default function MyApp() {
           });
           const user = response.data;
           setEmail(user.email);
+
         } catch (error) {
           console.error('Error fetching user:', error);
         }
