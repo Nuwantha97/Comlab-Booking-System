@@ -92,8 +92,9 @@ export default function Notification() {
   return (
     <div className='nnn'>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
+
       <div className="notification-container">
-        {/* Left side with toolbars */}
+        
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
@@ -105,10 +106,8 @@ export default function Notification() {
             <button className="toolbar-button" onClick={() => handleButtonClick('Reminders')}>Reminders</button>
           </ul>
         </div>
-        {/* Right side with preview */}
+       
         <div className="right-side">
-          {/* Display preview content here */}
-          <div className="scroll-container">
             <ul className="preview-list">
               {previewContent.map((notification, index) => (
                 <li
@@ -120,7 +119,8 @@ export default function Notification() {
                 </li>
               ))}
             </ul>
-          </div>
+        </div>
+
           {labDetails && (
             <div className="lab-details-box" ref={labDetailsRef}>
               <div className="lab-details">
@@ -134,9 +134,10 @@ export default function Notification() {
               </div>
             </div>
           )}
-        </div>
-        {isBoxVisible && <Profile profileRef={profileRef} />}
       </div>
+
+        {isBoxVisible && <Profile profileRef={profileRef} />}
+        
     </div>
   );
 }

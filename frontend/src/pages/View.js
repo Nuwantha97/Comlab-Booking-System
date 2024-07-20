@@ -17,6 +17,7 @@ function CalendarView() {
   const [isCancelConfirmationVisible, setIsCancelConfirmationVisible] = useState(false);
   const [attendeesInput, setAttendeesInput] = useState('');
   const profileRef = useRef(null);
+  const eventDetailsRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,12 +30,12 @@ function CalendarView() {
           }
         });
         setEvents(response.data.map(booking => ({
-          id: booking._id, // Add booking ID for deletion
+          id: booking._id,
           title: booking.title,
           start: new Date(booking.startTime),
           end: new Date(booking.endTime),
           description: booking.description,
-          attendees: booking.attendees // Assuming attendees is an array of strings
+          attendees: booking.attendees || [] // Ensure it's an array
         })));
       } catch (error) {
         console.error('Error fetching bookings:', error);
@@ -52,12 +53,10 @@ function CalendarView() {
     navigate('/booking', { state: { event: selectedEvent } });
   };
 
-  const handleCancelEvent = async () => {
-    if (!selectedEvent) {
-      return;
+  const handleCancelEvent = () => {
+    if (selectedEvent) {
+      setIsCancelConfirmationVisible(true);
     }
-
-    setIsCancelConfirmationVisible(true);
   };
 
   const handleConfirmCancel = async () => {
@@ -69,10 +68,9 @@ function CalendarView() {
         }
       });
 
-      // Remove the selected event from the events array
       const updatedEvents = events.filter((event) => event.id !== selectedEvent.id);
       setEvents(updatedEvents);
-      setSelectedEvent(null); // Clear the selectedEvent state
+      setSelectedEvent(null);
     } catch (error) {
       console.error('Error deleting booking:', error);
     }
@@ -89,17 +87,13 @@ function CalendarView() {
       return;
     }
 
-    // Assuming attendees are stored as an array in the event object
     const updatedEvent = {
       ...selectedEvent,
       attendees: [...selectedEvent.attendees, attendeesInput]
     };
 
-    // Update the events array with the new attendee
     const updatedEvents = events.map(event => event.id === selectedEvent.id ? updatedEvent : event);
     setEvents(updatedEvents);
-
-    // Clear the input field
     setAttendeesInput('');
   };
 
@@ -124,28 +118,28 @@ function CalendarView() {
   };
 
   const handleClickOutside = (event) => {
-    if (profileRef.current && !profileRef.current.contains(event.target)) {
+    if (
+      (profileRef.current && !profileRef.current.contains(event.target)) &&
+      (eventDetailsRef.current && !eventDetailsRef.current.contains(event.target))
+    ) {
       setIsBoxVisible(false);
+      setSelectedEvent(null); // Close event-details
     }
   };
 
   useEffect(() => {
-    if (isBoxVisible) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isBoxVisible]);
+  }, []);
 
   return (
     <div className='view_container'>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='view_body'>
         <div style={{ padding: '50px' }}>
-          <div style={{backgroundColor:'white'}}>
+          <div style={{ backgroundColor: 'white' }}>
             <Calendar
               localizer={localizer}
               events={events}
@@ -164,18 +158,18 @@ function CalendarView() {
             />
           </div>
           {selectedEvent && (
-            <div className="event-details">
+            <div ref={eventDetailsRef} className="event-details">
+              <button className="close-button" onClick={() => setSelectedEvent(null)}>×</button>
               <h3>{selectedEvent.title}</h3>
               <p>{selectedEvent.description}</p>
               <p>Start: {selectedEvent.start.toLocaleString()}</p>
               <p>End: {selectedEvent.end.toLocaleString()}</p>
               <p>Attendees:</p>
               <ul>
-  {selectedEvent.attendees.map((attendee, index) => (
-    <li key={index} style={{ color: 'white' }}>{attendee}</li>
-  ))}
-</ul>
-
+                {selectedEvent.attendees.map((attendee, index) => (
+                  <li key={index} style={{ color: 'white' }}>{attendee}</li>
+                ))}
+              </ul>
               <div className="button-group">
                 <button onClick={handleEditEvent}>Edit</button>
                 <button onClick={handleCancelEvent}>Cancel</button>
@@ -193,8 +187,7 @@ function CalendarView() {
             </div>
           </div>
         )}
-
-        {isBoxVisible && <Profile profileRef={profileRef}/>}
+        {isBoxVisible && <Profile ref={profileRef} />}
       </div>
     </div>
   );
