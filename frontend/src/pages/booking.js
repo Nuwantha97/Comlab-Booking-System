@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
 import axios from 'axios';
+import Profile from '../components/Profile';
 import moment from 'moment';
 import { jwtDecode } from 'jwt-decode';
 
+
 export default function MyApp() {
-  const [id, setId] = useState('');
   const [title, setTitle] = useState("");
   const [attendees, setAttendees] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
+  const [formattedDate, setFormattedDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
@@ -18,10 +20,12 @@ export default function MyApp() {
   const [errorMessage, setErrorMessage] = useState('');
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
+  const [isPollVisible, setIsPollVisible] = useState(false); // State to control visibility of the poll div
+  const [pollDate, setPollDate] = useState(""); // State for the poll date
   const [uEmail, setEmail] = useState("");
-
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token'); 
   const navigate = useNavigate();
+
   const location = useLocation();
 
   useEffect(() => {
@@ -74,6 +78,8 @@ export default function MyApp() {
           }
         });
         setUsers(response.data);
+        console.log('users from booking page:', response.data);
+
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -82,9 +88,15 @@ export default function MyApp() {
     fetchUsers();
   }, [token]);
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   const handleDateChange = (event) => {
     const inputDate = event.target.value;
     setSelectedDate(inputDate);
+    setFormattedDate(formatDate(inputDate));
   };
 
   const handleCheckButton = async () => {
@@ -98,6 +110,11 @@ export default function MyApp() {
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString()
     };
 
+
+    console.log('Checking availability with data:', checkData);
+
+
+
     try {
       const response = await axios.post('/api/bookings/check-availability', checkData, {
         headers: {
@@ -105,6 +122,9 @@ export default function MyApp() {
           'Authorization': `Bearer ${token}`
         }
       });
+
+      console.log('Availability check response:', response.data);
+
       setAvailabilityMessage(response.data.message);
     } catch (error) {
       console.error('Availability check error:', error);
@@ -122,16 +142,24 @@ export default function MyApp() {
       startTime: new Date(`${selectedDate}T${startTime}`).toISOString(),
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString(),
       description,
-      attendees: attendees.map(user => user.email)
+      attendees: attendees.map(user => user.email) // Using the selected attendees' emails
     };
 
+
+    console.log('Saving booking with data:', bookingData);
+
     try {
-      const bookingResponse = await axios.post('/api/bookings', bookingData, {
+      const response = await axios.post('/api/bookings', bookingData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
+
+      console.log('Booking save response:', response.data);
+      alert('Booking Successful');
+      window.location.reload();
+
 
       const bookingId = bookingResponse.data._id;
 
@@ -175,6 +203,7 @@ export default function MyApp() {
           setErrorMessage('Failed to create notification');
         }
       }
+
     } catch (error) {
       console.error('Booking error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -194,22 +223,42 @@ export default function MyApp() {
     setAttendees(selectedOptions.map(option => JSON.parse(option.value)));
   };
 
+  const handlePollButtonClick = () => {
+    setIsPollVisible(true);
+  };
+
+  const handleClosePollClick = () => {
+    setIsPollVisible(false);
+  };
+
+  // Determine the rectangle color based on availabilityMessage
+  const rectangleClass = availabilityMessage === "Time slot is available" || availabilityMessage === '' ? 'green-rectangle' : 'red-rectangle';
+
   return (
     <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="my-app">
         <div className="booking-body">
           <div className="right">
+
+            
+            <div className={`container-11 ${isPollVisible ? 'hidden' : ''}`}>
+              <h3>CO1 Lab Availability</h3>
+              <div className={rectangleClass}>
+                <div>{formattedDate}</div>
+                <div>{startTime} - {endTime}</div>
+
             <div className="container-11">
               <h3>CO1 Lab Availability</h3>
               <div className="green-rectangle">
                 {selectedDate}
+
               </div>
               {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
             </div>
           </div>
           <div className="left">
-            <h1>{location.state && location.state.event ? 'Edit Booking' : 'Book Lab Session'}</h1>
+            <h1>Book Lab Session</h1>
             <div className="form-group">
               <label htmlFor="title">Add Title:</label>
               <input type="text" id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -223,11 +272,11 @@ export default function MyApp() {
 
               <label htmlFor="date">Date:</label>
               <div className="inline-container">
-                <input type="date" id="date" name="date" style={{ width: '150px' }} value={selectedDate} onChange={handleDateChange} />
+                <input type="date" id="date" name="date" style={{ width: '150px' }} onChange={handleDateChange} />
                 <label htmlFor="startTime">From:</label>
-                <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+                <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} onChange={(e) => setStartTime(e.target.value)} />
                 <label htmlFor="endTime">To:</label>
-                <input type="time" id="endTime" name="endTime" style={{ width: '90px' }} value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+                <input type="time" id="endTime" name="endTime" style={{ width: '90px' }} onChange={(e) => setEndTime(e.target.value)} />
                 <button className="check-button" onClick={handleCheckButton}>Check</button>
               </div>
 
@@ -242,6 +291,8 @@ export default function MyApp() {
           </div>
         </div>
       </div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {isBoxVisible && <Profile />}
     </div>
   );
 }
