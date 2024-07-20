@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback ,useRef } from 'react';
 import axios from 'axios';
 import ToHeader from '../components/ToHeder'
 import '../components/notification.css';
@@ -12,6 +12,7 @@ export default function ToNotification() {
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
+  const profileRef = useRef(null);
 
   const token = localStorage.getItem('token');
 
@@ -186,6 +187,23 @@ export default function ToNotification() {
     setIsBoxVisible(!isBoxVisible);
   };
 
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsBoxVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isBoxVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBoxVisible]);
+
   return (
     <div>
       <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
@@ -285,7 +303,7 @@ export default function ToNotification() {
           )}
         </div>
       </div>
-      {isBoxVisible && <Profile />}
+      {isBoxVisible && <Profile profileRef={profileRef}/>}
     </div>
   );
 }

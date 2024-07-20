@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
@@ -13,6 +13,7 @@ export default function () {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -57,9 +58,28 @@ export default function () {
     );
   };
 
+  
+
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
   };
+
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsBoxVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isBoxVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBoxVisible]);
 
   const customEventStyleGetter = (event, start, end, isSelected) => {
     const style = {
@@ -124,7 +144,7 @@ export default function () {
             </div>
           )}
         </div>
-        {isBoxVisible && <Profile />}
+        {isBoxVisible && <Profile profileRef={profileRef}/>}
       </div>
     </div>
   );
