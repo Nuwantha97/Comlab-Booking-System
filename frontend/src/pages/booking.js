@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
 import axios from 'axios';
-import moment from 'moment';
+import Profile from '../components/Profile';
 
 export default function MyApp() {
-  const [id, setId] = useState('');
   const [title, setTitle] = useState("");
   const [attendees, setAttendees] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
+  const [formattedDate, setFormattedDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [description, setDescription] = useState("");
@@ -17,46 +17,11 @@ export default function MyApp() {
   const [errorMessage, setErrorMessage] = useState('');
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
-  const [email, setEmail] = useState("");
+  const [isPollVisible, setIsPollVisible] = useState(false); // State to control visibility of the poll div
+  const [pollDate, setPollDate] = useState(""); // State for the poll date
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token'); 
   const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state && location.state.event) {
-      const { event } = location.state;
-      setId(event.state.id);
-      setTitle(event.title);
-      setSelectedDate(moment(event.start).format('YYYY-MM-DD'));
-      setStartTime(moment(event.start).format('HH:mm'));
-      setEndTime(moment(event.end).format('HH:mm'));
-      setDescription(event.description);
-      setAttendees(event.attendees || []);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    if (id) {
-      const fetchUser = async () => {
-        try {
-          const response = await axios.get(`/api/users/${id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          const user = response.data;
-          setEmail(user.email);
-          //console.log('Fetched user:', user);
-          setTextContainerText("Edit User Details");
-        } catch (error) {
-          console.error('Error fetching user:', error);
-        }
-      };
-
-      fetchUser();
-    }
-  }, [id, token]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -67,7 +32,7 @@ export default function MyApp() {
           }
         });
         setUsers(response.data);
-        //console.log('users from booking page:', response.data);
+        console.log('users from booking page:', response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -76,9 +41,15 @@ export default function MyApp() {
     fetchUsers();
   }, [token]);
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   const handleDateChange = (event) => {
     const inputDate = event.target.value;
     setSelectedDate(inputDate);
+    setFormattedDate(formatDate(inputDate));
   };
 
   const handleCheckButton = async () => {
@@ -92,7 +63,7 @@ export default function MyApp() {
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString()
     };
 
-    //console.log('Checking availability with data:', checkData);
+    console.log('Checking availability with data:', checkData);
 
     try {
       const response = await axios.post('/api/bookings/check-availability', checkData, {
@@ -101,7 +72,7 @@ export default function MyApp() {
           'Authorization': `Bearer ${token}`
         }
       });
-      //console.log('Availability check response:', response.data);
+      console.log('Availability check response:', response.data);
       setAvailabilityMessage(response.data.message);
     } catch (error) {
       console.error('Availability check error:', error);
@@ -119,64 +90,21 @@ export default function MyApp() {
       startTime: new Date(`${selectedDate}T${startTime}`).toISOString(),
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString(),
       description,
-      attendees: attendees.map(user => user.email)
+      attendees: attendees.map(user => user.email) // Using the selected attendees' emails
     };
-  
-    //console.log('Saving booking with data:', bookingData);
-  
+
+    console.log('Saving booking with data:', bookingData);
+
     try {
-      const bookingResponse = await axios.post('/api/bookings', bookingData, {
+      const response = await axios.post('/api/bookings', bookingData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
-  
-      const bookingId = bookingResponse.data._id; 
-  
-      // If there is an existing booking, delete it
-      if (location.state && location.state.event) {
-        await axios.delete(`/api/bookings/${location.state.event.id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-      }
-  
-      //console.log('Booking save response:', bookingResponse.data);
+      console.log('Booking save response:', response.data);
       alert('Booking Successful');
-  
-      // Now create the notification with the newly created booking ID
-      const notificationData = {
-        title: bookingData.title,
-        startTime: bookingData.startTime,
-        endTime: bookingData.endTime,
-        description: bookingData.description,
-        attendees: bookingData.attendees,
-        uEmail: email,
-        uDate: new Date(`${selectedDate}`).toISOString() ,
-        bookingId
-      };
-  
-      console.log('Saving notification with data:', notificationData);
-  
-      try {
-        const notificationResponse = await axios.post('/api/notification/createNotification', notificationData, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-  
-        console.log('Notification creation response:', notificationResponse.data);
-      } catch (notificationError) {
-        console.error('Notification creation error:', notificationError);
-        if (notificationError.response && notificationError.response.data && notificationError.response.data.message) {
-          setErrorMessage(notificationError.response.data.message);
-        } else {
-          setErrorMessage('Failed to create notification');
-        }
-      }
+      window.location.reload();
     } catch (error) {
       console.error('Booking error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -186,8 +114,6 @@ export default function MyApp() {
       }
     }
   };
-  
-  
 
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
@@ -198,22 +124,35 @@ export default function MyApp() {
     setAttendees(selectedOptions.map(option => JSON.parse(option.value)));
   };
 
+  const handlePollButtonClick = () => {
+    setIsPollVisible(true);
+  };
+
+  const handleClosePollClick = () => {
+    setIsPollVisible(false);
+  };
+
+  // Determine the rectangle color based on availabilityMessage
+  const rectangleClass = availabilityMessage === "Time slot is available" || availabilityMessage === '' ? 'green-rectangle' : 'red-rectangle';
+
   return (
     <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="my-app">
         <div className="booking-body">
-            <div className="right">
-              <div className="container-11">
-                <h3>CO1 Lab Availability</h3>
-                <div className="green-rectangle">
-                  {selectedDate}
-                </div>
-                {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
+          <div className="right">
+            
+            <div className={`container-11 ${isPollVisible ? 'hidden' : ''}`}>
+              <h3>CO1 Lab Availability</h3>
+              <div className={rectangleClass}>
+                <div>{formattedDate}</div>
+                <div>{startTime} - {endTime}</div>
               </div>
+              {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
             </div>
+          </div>
           <div className="left">
-            <h1>{location.state && location.state.event ? 'Edit Booking' : 'Book Lab Session'}</h1>
+            <h1>Book Lab Session</h1>
             <div className="form-group">
               <label htmlFor="title">Add Title:</label>
               <input type="text" id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -227,11 +166,11 @@ export default function MyApp() {
 
               <label htmlFor="date">Date:</label>
               <div className="inline-container">
-                <input type="date" id="date" name="date" style={{ width: '150px' }} value={selectedDate} onChange={handleDateChange} />
+                <input type="date" id="date" name="date" style={{ width: '150px' }} onChange={handleDateChange} />
                 <label htmlFor="startTime">From:</label>
-                <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+                <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} onChange={(e) => setStartTime(e.target.value)} />
                 <label htmlFor="endTime">To:</label>
-                <input type="time" id="endTime" name="endTime" style={{ width: '90px' }} value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+                <input type="time" id="endTime" name="endTime" style={{ width: '90px' }} onChange={(e) => setEndTime(e.target.value)} />
                 <button className="check-button" onClick={handleCheckButton}>Check</button>
               </div>
 
@@ -246,6 +185,7 @@ export default function MyApp() {
         </div>
       </div>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {isBoxVisible && <Profile />}
     </div>
   );
 }

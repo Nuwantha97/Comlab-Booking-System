@@ -17,7 +17,7 @@ function NavBarBL() {
                 <img
                   alt=""
                   src={logo}
-                  style={{ width: '30px', height: '30px', marginRight: '10px' }}
+                  style={{ width: '70px', height: '70px', marginRight: '10px' }}
                 />
                 <div>
                   <h3>CO1 Lab Booking System</h3>

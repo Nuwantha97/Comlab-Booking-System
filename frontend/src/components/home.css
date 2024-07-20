@@ -1,3 +1,14 @@
+.hhh {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+.hhh > div {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .home {
   position: relative;
   background-image: url('../images/home.jpg');
@@ -6,6 +17,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: auto;
 }
 
 .home::before {
@@ -15,8 +27,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(28, 59, 87, 0.8); /* Dark overlay for better text contrast */
-  backdrop-filter: blur(5px); /* Add blur effect */
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
   z-index: 1;
 }
 
@@ -29,21 +41,26 @@
   font-weight: 600;
   line-height: 88px;
   padding: 20px;
+  animation: text-flicker 3s infinite;
 }
 
 .text-home h1 {
   margin: 0;
-  font-size: 3em;
+  font-size: 7em;
+  font-weight: bold;
+  color: #1A4350
 }
 
 .text-home h3 {
-  font-size: 1.5em;
-  font-weight: normal;
+  font-size: 3.5em;
+  font-weight: bold;
+  color: #1A4350
 }
 
 .text-home p {
-  font-size: 1.2em;
+  font-size: 2.5em;
   line-height: 1.5em;
+  color: #1A4350
 }
 
 .button-row {
@@ -59,36 +76,60 @@
   margin-right: 0;
 }
 
-/* Button Styles */
 button {
   border-radius: 0;
-  width: 95px;
-  padding: 10px;
-  font-size: 1em;
+  width: 150px; /* Increased button width */
+  padding: 15px; /* Increased button padding */
+  font-size: 1.2em; /* Increased font size */
   color: white;
   background-color: #1A4350;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  perspective: 1000px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Hover Effects */
+
 button:hover {
   background-color: #16334a;
-  transform: translateY(-3px); /* Slight lift */
+  transform: scale(1.05) rotateY(20deg) rotateX(10deg);
 }
 
-/* Click Effects */
-button:active {
-  background-color: #0e2333;
-  transform: scale(0.95); /* Slight shrink */
+button::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.5s;
 }
 
-/* 3D Effects */
-button {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+button:active::after {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: 0s;
 }
 
-button:hover {
-  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+@keyframes text-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.icon-button .icon {
+  transition: transform 0.3s ease;
+}
+
+.icon-button:hover .icon {
+  transform: rotate(360deg);
 }
