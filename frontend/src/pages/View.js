@@ -19,11 +19,11 @@ function CalendarView() {
   const profileRef = useRef(null);
   const eventDetailsRef = useRef(null);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const token = localStorage.getItem('token');
         const response = await axios.get('/api/bookings', {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -43,7 +43,7 @@ function CalendarView() {
     };
 
     fetchBookings();
-  }, []);
+  }, [token]);
 
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
@@ -60,7 +60,7 @@ function CalendarView() {
   };
 
   const handleConfirmCancel = async () => {
-    try {
+    /*try {
       const token = localStorage.getItem('token');
       await axios.delete(`/api/bookings/${selectedEvent.id}`, {
         headers: {
@@ -73,7 +73,28 @@ function CalendarView() {
       setSelectedEvent(null);
     } catch (error) {
       console.error('Error deleting booking:', error);
+    }*/
+
+    try {
+      const response = await axios.post(
+        `/api/bookings/cancelLabSession/${selectedEvent.id}`, 
+        {}, 
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      console.log('Updated booking status:', response.data);
+      const updatedEvents = events.filter((event) => event.id !== selectedEvent.id);
+      setEvents(updatedEvents);
+      setSelectedEvent(null); // Clear the selectedEvent state
+
+    } catch (error) {
+      console.error('Error updating booking status:', error);
     }
+
 
     setIsCancelConfirmationVisible(false);
   };
@@ -135,7 +156,7 @@ function CalendarView() {
   }, []);
 
   return (
-    <div className='view_container'>
+    <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='view_body'>
         <div style={{ padding: '50px' }}>

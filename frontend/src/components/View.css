@@ -32,6 +32,7 @@ body{
 .view_body > div {
   flex: 1; /* Allow the div to grow and take up remaining space */
   overflow-y: auto; /* Enable vertical scrolling if content exceeds the div's height */
+
 }
 
 .calendar-container {

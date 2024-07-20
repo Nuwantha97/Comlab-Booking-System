@@ -5,6 +5,7 @@ import '../components/dashboard.css';
 import Profile from '../components/Profile';
 import Footer from '../components/Footer';
 
+
 export default function Dashboard() {
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const profileRef = useRef(null);

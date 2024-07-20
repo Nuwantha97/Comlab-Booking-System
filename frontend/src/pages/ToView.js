@@ -92,7 +92,7 @@ export default function () {
   };
 
   return (
-    <div className='view_container'>
+    <div>
       <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
       <div className='view_body'>
         <div className='calendar-container'>

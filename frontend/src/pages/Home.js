@@ -6,7 +6,7 @@ import Buttons from '../components/Buttons';
 
 export default function Home() {
   return (
-    <div className='hhh'>
+    <div>
       <NavBarBL />
       <div className='home'>
         <div className='text-home'>
