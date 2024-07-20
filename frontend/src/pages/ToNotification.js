@@ -269,7 +269,7 @@ export default function ToNotification() {
                 )}
                 {selectedNotification.type === 'confirmed' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>confirmed Notice</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
