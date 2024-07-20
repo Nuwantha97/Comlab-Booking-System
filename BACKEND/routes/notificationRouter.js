@@ -331,5 +331,28 @@ router.post('/updateNotificationType/:notificationId', auth, async (req, res) =>
     }
 });
 
+//fetch attendees and their types by bookingId
+router.get('/attendeesAndTypeByBookingId/:bookingId', auth, async (req, res) => {
+    try {
+        const { bookingId } = req.params;
+
+        // Find notifications by bookingId
+        const notifications = await Notification.find({ bookingId });
+
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({ error: "No notifications found for the provided bookingId." });
+        }
+
+        // Map notifications to the desired format
+        const attendeesType = notifications.map(notification => ({
+            [notification.receiverEmail]: notification.type
+        }));
+
+        res.status(200).json(attendeesType);
+    } catch (error) {
+        console.error('Error fetching attendees by bookingId:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 module.exports = router;
