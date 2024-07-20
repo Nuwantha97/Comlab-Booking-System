@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components/forgotPassword.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Buttons from '../components/submitButton';
 import FacultyImage from '../images/faculty.jpg';
-import BeatLoader from "react-spinners/BeatLoader";
+
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -17,30 +17,21 @@ export default function ForgotPassword() {
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-
-    }, 500)
-  }, []);
 
   const sendData = async (e) => {
     e.preventDefault();
-
+  
     const userData = {
       email,
       password
     };
-
+  
     try {
       let response;
-
+  
       if (password === confirmPassword && otp === inOtp) {
         response = await axios.post('/api/users/update-password', userData);
-
+  
         alert('Password updated successfully!');
         console.log('Update password response:', response.data);
         navigate('./userSingIn');
@@ -58,15 +49,15 @@ export default function ForgotPassword() {
       alert('Error updating password');
     }
   };
-
+  
   const getCode = async () => {
-    setLoading(true);
     try {
       const response = await axios.get(`/api/users/verify-email?email=${email}`);
 
       setMessage(response.data.message);
       setOtp(response.data.otp);
-      setEmail(response.data.email)
+      setEmail(response.data.email);
+
       if (response.data.message === 'Email found') {
         setIsCodeSent(true);
         setErrorMessage('');
@@ -75,14 +66,12 @@ export default function ForgotPassword() {
       if (error.response && error.response.data && error.response.data.error) {
         setErrorMessage(error.response.data.error);
       } else {
-        setErrorMessage('Server error');
+        setErrorMessage('Server i error');
       }
-    } finally {
-      setLoading(false);
+      
     }
   };
-
-
+  
   return (
     <div className='main-page-container-forgot-password'>
       <div className="image-container-forgot-password">
@@ -104,13 +93,7 @@ export default function ForgotPassword() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <Link to="#" onClick={getCode}>
-                  {loading ? (
-                    <div className="loading-spinner">
-                      <BeatLoader color={"#000000"} loading={true} size={20} />
-                    </div>
-                  ) : (
-                    <Buttons className="get-code-button" text="Get Code" borderRadius="10px" width="95px" />
-                  )}
+                  <Buttons className="get-code-button" text="Get Code" borderRadius="10px" width="95px" />
                 </Link>
               </div>
             </div>

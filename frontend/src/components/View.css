@@ -1,31 +1,6 @@
-
-
-.view_container{
-  width: 100%;
-  height: 100vh; /* Make the main container full height of viewport */
-  display: flex;
-  flex-direction: column; /* Stack children vertically */
-  margin: 0; /* Remove any margin */
-  padding: 0; /* Remove any padding */
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
 .view_body {
-  display: flex;
-  flex-direction: row;
-  justify-content: center ;
-  align-items: center;
-  flex-grow: 1;
-  width: 100%;
-  margin: 0; /* Remove any margin */
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.view_body > div {
-  flex: 1; /* Allow the div to grow and take up remaining space */
-  overflow-y: auto; /* Enable vertical scrolling if content exceeds the div's height */
+  padding: 50px;
+  background-color: #1A4350;
 }
 
 .calendar-container {
@@ -91,22 +66,18 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #366574;
-  padding: 20px;
+  padding: 50px 20px;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   display: flex; /* Use flexbox */
-  justify-content: center;
+  justify-content: center; 
   align-items: center; /* Center items vertically */
   flex-direction: column; /* Align items in a column */
-  width: auto; /* Adjust width according to content */
-  max-width: 90%; /* Responsive max-width */
-  max-height: 80vh; /* Max height */
-  overflow-y: auto; /* Scroll if content overflows */
 }
 
 .event-details h3, .event-details p {
-  margin-top: 20px;
+  margin-top: 0;
   color: white;
 }
 
@@ -156,8 +127,8 @@
   border: none;
   font-size: 1em;
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
   cursor: pointer;
 }
 .close-button:hover{
@@ -205,66 +176,4 @@
 
 .confirmation-box .not-now-button {
   background-color: #1a4350; /* Custom background color */
-}
-@media screen and (max-width: 1071px) {
-  .event-details {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: #366574;
-    padding: 50px 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex; /* Use flexbox */
-    justify-content: center; 
-    align-items: center; /* Center items vertically */
-    flex-direction: column; /* Align items in a column */
-  }
-
-  .confirmation-box {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border: 1px solid #ccc;
-    z-index: 1000;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 40%;
-    text-align: center;
-  }
-
-  @media screen and (max-width: 637px) and (max-height: 600px) {
-    .event-details{
-      display: flex;
-      flex-direction: column;
-   
-      box-sizing: border-box;
-      width: 100%;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    .event-details h3,p,ul{
-      margin: 0px;
-      padding: 10px;
-      box-sizing: border-box;
-      width: 100%;
-
-    }
-    .event-details h3{
-      margin-top: 230px;
-
-    }
-
-  
-  .event-details .button-group{
-    display:flex ;
-    flex-direction: column;
-  }
-
-}
-
-
 }

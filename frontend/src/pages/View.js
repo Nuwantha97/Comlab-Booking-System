@@ -16,27 +16,25 @@ function CalendarView() {
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const [isCancelConfirmationVisible, setIsCancelConfirmationVisible] = useState(false);
   const [attendeesInput, setAttendeesInput] = useState('');
-  const [selectedMonth, setSelectedMonth] = useState(moment().format('YYYY-MM')); // Default to current month
   const profileRef = useRef(null);
-  const eventDetailsRef = useRef(null);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const token = localStorage.getItem('token');
         const response = await axios.get('/api/bookings', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         setEvents(response.data.map(booking => ({
-          id: booking._id,
+          id: booking._id, // Add booking ID for deletion
           title: booking.title,
           start: new Date(booking.startTime),
           end: new Date(booking.endTime),
           description: booking.description,
-          attendees: booking.attendees || [] // Ensure it's an array
+          attendees: booking.attendees // Assuming attendees is an array of strings
         })));
       } catch (error) {
         console.error('Error fetching bookings:', error);
@@ -44,7 +42,7 @@ function CalendarView() {
     };
 
     fetchBookings();
-  }, []);
+  }, [token]);
 
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
@@ -54,14 +52,16 @@ function CalendarView() {
     navigate('/booking', { state: { event: selectedEvent } });
   };
 
-  const handleCancelEvent = () => {
-    if (selectedEvent) {
-      setIsCancelConfirmationVisible(true);
+  const handleCancelEvent = async () => {
+    if (!selectedEvent) {
+      return;
     }
+
+    setIsCancelConfirmationVisible(true);
   };
 
   const handleConfirmCancel = async () => {
-    try {
+    /*try {
       const token = localStorage.getItem('token');
       await axios.delete(`/api/bookings/${selectedEvent.id}`, {
         headers: {
@@ -69,12 +69,34 @@ function CalendarView() {
         }
       });
 
+      // Remove the selected event from the events array
       const updatedEvents = events.filter((event) => event.id !== selectedEvent.id);
       setEvents(updatedEvents);
-      setSelectedEvent(null);
+      setSelectedEvent(null); // Clear the selectedEvent state
     } catch (error) {
       console.error('Error deleting booking:', error);
+    }*/
+
+    try {
+      const response = await axios.post(
+        `/api/bookings/cancelLabSession/${selectedEvent.id}`, 
+        {}, 
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      console.log('Updated booking status:', response.data);
+      const updatedEvents = events.filter((event) => event.id !== selectedEvent.id);
+      setEvents(updatedEvents);
+      setSelectedEvent(null); // Clear the selectedEvent state
+
+    } catch (error) {
+      console.error('Error updating booking status:', error);
     }
+
 
     setIsCancelConfirmationVisible(false);
   };
@@ -88,35 +110,30 @@ function CalendarView() {
       return;
     }
 
+    // Assuming attendees are stored as an array in the event object
     const updatedEvent = {
       ...selectedEvent,
       attendees: [...selectedEvent.attendees, attendeesInput]
     };
 
+    // Update the events array with the new attendee
     const updatedEvents = events.map(event => event.id === selectedEvent.id ? updatedEvent : event);
     setEvents(updatedEvents);
+
+    // Clear the input field
     setAttendeesInput('');
   };
 
   const CustomToolbar = () => {
     return (
       <div className="rbc-toolbar" style={{ backgroundColor: '#A6BBC1', padding: '10px' }}>
-        <div style={{ color: 'red', display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+        <div style={{ color: '#638793', display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
           <div style={{ marginLeft: '20px' }}>
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              style={{ padding: '5px', fontSize: '16px' }}
-            >
-              {Array.from({ length: 12 }).map((_, i) => {
-                const month = moment().month(i).format('YYYY-MM');
-                return (
-                  <option key={month} value={month}>
-                    {moment(month).format('MMMM YYYY')}
-                  </option>
-                );
-              })}
-            </select>
+            <div style={{ color: '#fff' }}>
+              <div style={{ backgroundColor: '#638793', width: '120px', height: '50px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '16px' }}>
+                {moment().format('MMMM')} {moment().format('YYYY')}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -128,28 +145,28 @@ function CalendarView() {
   };
 
   const handleClickOutside = (event) => {
-    if (
-      (profileRef.current && !profileRef.current.contains(event.target)) &&
-      (eventDetailsRef.current && !eventDetailsRef.current.contains(event.target))
-    ) {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
       setIsBoxVisible(false);
-      setSelectedEvent(null); // Close event-details
     }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    if (isBoxVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [isBoxVisible]);
 
   return (
-    <div className='view_container'>
+    <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='view_body'>
         <div style={{ padding: '50px' }}>
-          <div style={{ backgroundColor: 'white' }}>
+          <div style={{backgroundColor:'white'}}>
             <Calendar
               localizer={localizer}
               events={events}
@@ -165,23 +182,21 @@ function CalendarView() {
               components={{
                 toolbar: CustomToolbar,
               }}
-              date={moment(selectedMonth).toDate()} // Set the calendar date to the selected month
             />
           </div>
-
           {selectedEvent && (
-            <div ref={eventDetailsRef} className="event-details">
-              <button className="close-button" onClick={() => setSelectedEvent(null)}>×</button>
+            <div className="event-details">
               <h3>{selectedEvent.title}</h3>
               <p>{selectedEvent.description}</p>
               <p>Start: {selectedEvent.start.toLocaleString()}</p>
               <p>End: {selectedEvent.end.toLocaleString()}</p>
               <p>Attendees:</p>
               <ul>
-                {selectedEvent.attendees.map((attendee, index) => (
-                  <li key={index} style={{ color: 'white' }}>{attendee}</li>
-                ))}
-              </ul>
+  {selectedEvent.attendees.map((attendee, index) => (
+    <li key={index} style={{ color: 'white' }}>{attendee}</li>
+  ))}
+</ul>
+
               <div className="button-group">
                 <button onClick={handleEditEvent}>Edit</button>
                 <button onClick={handleCancelEvent}>Cancel</button>
@@ -189,7 +204,6 @@ function CalendarView() {
             </div>
           )}
         </div>
-        
         {isCancelConfirmationVisible && (
           <div className="confirmation-box">
             <h2>Cancel scheduled lab session?</h2>
@@ -200,7 +214,8 @@ function CalendarView() {
             </div>
           </div>
         )}
-            {isBoxVisible && <Profile profileRef={profileRef} />}
+
+        {isBoxVisible && <Profile profileRef={profileRef}/>}
       </div>
     </div>
   );
