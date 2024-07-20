@@ -1,4 +1,11 @@
 
+.nnn {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 .notification-container {
     display: flex;
     height: 100vh; 
@@ -8,6 +15,8 @@
   .left-side {
     flex: 0.3;
     background-color: #205464;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   
   .toolbars {
@@ -40,6 +49,8 @@
     padding: 10px;
     background-color: white;
     position: relative; 
+    height: 100vh;
+    overflow-y: auto;
   }
   
   .title {
@@ -70,13 +81,19 @@
     border: 2px solid #205464;
   }
   
-  .scroll-container {
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-  
-  .ok-button:hover {
-    background-color: #638793;
+  .lab-details-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    max-width: 400px;
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    z-index: 100; 
+    text-align: center; 
   }
   
   .overlay {
@@ -100,55 +117,11 @@
     width: 90%;
     max-width: 400px;
   }
-}
-.dialog-box-noti {
-  background-color: rgb(197, 223, 244);
-  padding: 10px;
-  padding-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 50%;
-  max-width: 400px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 100;
-  text-align: left;
-  position: relative; 
-  color: #366574;
-}
-
-.close-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  color: #366574;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  background-color: transparent;
-}
-
-.button-group {
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-start;
-  gap: 5%;
-  position: relative;
-  width: 100%;
-}
-
-.ok-button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #366574;
-  color: white;
-  cursor: pointer;
-}
-
-.ok-button:hover {
-  background-color: #27485a;
-}
+  
+  @media screen and (max-width: 762px){
+    .notification-container{
+      flex-direction: column;
+      justify-content: start;
+    }
+    
+  }

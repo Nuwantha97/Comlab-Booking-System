@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
-import ToHeader from '../components/ToHeder';
+// Notification.js
+import React, { useState, useRef, useEffect } from 'react';
+import Header from '../components/Header';
 import '../components/notification.css';
-import Profile from '../components/Profile'
+import Profile from '../components/Profile';
 
-export default function ToNotification() {
+export default function Notification() {
   const [previewContent, setPreviewContent] = useState([]);
   const [labDetails, setLabDetails] = useState(null);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showOkButton, setShowOkButton] = useState(false);
+  const profileRef = useRef(null);
+  const labDetailsRef = useRef(null);
 
   const notifications = {
     All: ['Notification 1 for All', 'Notification 2 for All', 'Notification 3 for All'],
@@ -61,17 +64,36 @@ export default function ToNotification() {
     setSelectedNotification(null);
     setShowOkButton(false);
   };
+
   const [isBoxVisible, setIsBoxVisible] = useState(false);
 
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
   };
 
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsBoxVisible(false);
+    }
+    if (labDetailsRef.current && !labDetailsRef.current.contains(event.target)) {
+      setLabDetails(null);
+      setSelectedNotification(null);
+      setShowOkButton(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div>
-      <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
+    <div className='nnn'>
+      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="notification-container">
-        {/* Left side with toolbars */}
+        
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
@@ -83,10 +105,8 @@ export default function ToNotification() {
             <button className="toolbar-button" onClick={() => handleButtonClick('Reminders')}>Reminders</button>
           </ul>
         </div>
-        {/* Right side with preview */}
+       
         <div className="right-side">
-          {/* Display preview content here */}
-          <div className="scroll-container">
             <ul className="preview-list">
               {previewContent.map((notification, index) => (
                 <li
@@ -98,9 +118,10 @@ export default function ToNotification() {
                 </li>
               ))}
             </ul>
-          </div>
+        </div>
+
           {labDetails && (
-            <div className="lab-details-box">
+            <div className="lab-details-box" ref={labDetailsRef}>
               <div className="lab-details">
                 <h2>Lab Details</h2>
                 <p style={{ color: '#205464' }}>{labDetails}</p>
@@ -112,9 +133,10 @@ export default function ToNotification() {
               </div>
             </div>
           )}
-        </div>
-        {isBoxVisible && <Profile />}
       </div>
-    </div>  
+
+        {isBoxVisible && <Profile profileRef={profileRef} />}
+        
+    </div>
   );
 }

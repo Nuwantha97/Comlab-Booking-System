@@ -1,70 +1,69 @@
-/* dashboard.css */
-/* .main-container {
-    background-color: #1A4350;
-    width: 100%;
-    flex: 1; /* Grow to fill remaining space */
-    /* display: flex;
-    justify-content: center; /* Center align horizontally */
-    /* align-items: center;  */ 
-  /* }  */
+.dashboard_body {
+  background-color: #1A4350;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
 
+.homebox {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+}
 
+.image-container {
+  display: flex;
+  justify-content: center; /* Center align horizontally */
+  width: 100%;  
+}
 
-  .dashboard_body{
-    background-color:#1A4350;
-  }
-  
-  .text-container {
-    display: flex;
-    justify-content: center; /* Center align horizontally */
-    align-items: center;
-    margin-top: 0; /* Remove the top margin */
-    margin-bottom: 0;
-    height: 200px;
-   
-  }
-  
-  .image-container {
-    display: flex;
-    justify-content: center; /* Center align horizontally */
-  
-  }
-  .uniImage {
-    width: 900px;
-    height: 320px;
-    top: 359px;
-    left: 248px;
-    gap: 0px;
-    border: 0px 0px 1px 0px;
-    opacity: 0px;
-  }
+.uniImage {
+  width: 100%;
+  height: auto;
+  border: 0px 0px 1px 0px;
+}
 
-  
-  .text-container {
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
-    justify-content: center; /* Center align horizontally */
-    align-items: center; /* Center align vertically */
-    margin-top: 0; /* Remove the top margin */
-    margin-bottom: 0;
-    height: 200px;
-    font-family: 'Roboto Slab', serif;
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 40px;
-    text-align: center;
-    color: white;
-  }
+.text-container {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center align horizontally */
+  align-items: center; /* Center align vertically */
+  margin: 20px 0;
+  font-family: 'Roboto', serif;
+  text-align: center;
+  color: white;
+}
 
-  
-  .text {
-    font-family: 'Roboto Slab', serif;
+.text-container h1 {
+  font-size: 68px; 
+  font-weight: 400;
+  line-height: 88px; 
+  margin: 0;
+}
+
+.text-container h3 {
   font-size: 32px;
   font-weight: 400;
   line-height: 40px;
-  text-align: center;
-  color: white;
+  margin: 0;
+}
+
+@media screen and (max-width: 620px) {
+  .text-container h1 {
+    font-size: 34px; 
+    font-weight: 400;
+    line-height: 44px; 
   }
-  
-  
-  
+
+  .text-container h3 {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+
+  .homebox {
+    padding: 10px;
+  }
+}

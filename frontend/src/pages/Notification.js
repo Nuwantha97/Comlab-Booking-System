@@ -235,6 +235,7 @@ export default function Notification() {
   return (
     <div>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
+
       <div className="notification-container">
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
@@ -247,8 +248,8 @@ export default function Notification() {
             <button className="toolbar-button" onClick={() => handleButtonClick('booking_confirmation')}>Booking Confirmations</button>
           </ul>
         </div>
+       
         <div className="right-side">
-          <div className="scroll-container">
             <ul className="preview-list">
               {filteredNotifications.map((notification, index) => (
                 <li
@@ -260,9 +261,11 @@ export default function Notification() {
                 </li>
               ))}
             </ul>
-          </div>
-          {isDialogVisible && labDetails && (
-            <div className="lab-details-box">
+
+        </div>
+
+          {labDetails && (
+            <div className="lab-details-box" ref={labDetailsRef}>
               <div className="lab-details">
                 {selectedNotification.type === 'unread' && (
                   <div className="dialog-box-noti">
@@ -403,9 +406,11 @@ export default function Notification() {
               </div>
             </div>
           )}
-        </div>
-        {isBoxVisible && <Profile />}
+
       </div>
+
+        {isBoxVisible && <Profile profileRef={profileRef} />}
+        
     </div>
   );
 }

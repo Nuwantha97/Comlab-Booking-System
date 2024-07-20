@@ -1,6 +1,38 @@
+body{
+  margin: 0; /* Remove default body margin */
+  height: 100vh; /* Ensure body height is 100% of the viewport height */
+  display: flex;
+  flex-direction: column;
+
+}
+
+.view_container{
+  width: 100%;
+  height: 100vh; /* Make the main container full height of viewport */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
 .view_body {
-  padding: 50px;
-  background-color: #1A4350;
+  display: flex;
+  flex-direction: row;
+  justify-content: center ;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+  margin: 0; /* Remove any margin */
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.view_body > div {
+  flex: 1; /* Allow the div to grow and take up remaining space */
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds the div's height */
+
 }
 
 .calendar-container {
@@ -176,4 +208,35 @@
 
 .confirmation-box .not-now-button {
   background-color: #1a4350; /* Custom background color */
+}
+@media screen and (max-width: 1071px) {
+  .event-details {
+    position: absolute;
+    top: 70%;
+    left: 48%;
+    background-color: #366574;
+    padding: 50px 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex; /* Use flexbox */
+    justify-content: center; 
+    align-items: center; /* Center items vertically */
+    flex-direction: column; /* Align items in a column */
+  }
+
+  .confirmation-box {
+    position: fixed;
+    top: 70%;
+    left: 35%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    text-align: center;
+  }
+
+
 }

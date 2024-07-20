@@ -53,26 +53,34 @@ export default function Profile({ profileRef }) {
 
   return (
     <div className='profile-container' ref={profileRef}>
+
       <div className='containerProfile-2'>
         <img src={userIconProfile} alt="user-icon" className='userIconProfile' />
+
         <div className='info'>
-          <h4 style={{ fontSize: '24px', lineHeight: '36px', textAlign: 'center', fontWeight: '400' }}>
+          <h4 className='infoh1'>
             {`${userData.firstName} ${userData.lastName}`}
           </h4>
-          <h4 style={{ fontSize: '18px', lineHeight: '24px', textAlign: 'center', fontWeight: '400' }}>
+          <h4 className='infoh2'>
             {userData.email}
           </h4>
         </div>
+
         <Link to="/" > 
-          <Buttons text="Sign out" borderRadius="50px" width="175px" height="60px" marginTop="25px" onClick={handleSignOut}/>
+          <Buttons className='profilebutton'text="Sign out"  onClick={handleSignOut}/>
         </Link>
+
       </div>
+
       <div className='containerProfile-3'>
+
         <img src={settingIcon} alt="setting-icon" className='settingIcon' />
         <span className='profile-settings-text' onClick={handleProfileSettingsClick}>
           Profile settings
         </span>
+        
       </div>
+
     </div>
   );
 }
