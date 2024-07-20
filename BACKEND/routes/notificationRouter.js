@@ -57,7 +57,7 @@ router.post('/createNotification', auth, async (req, res) => {
 });
 
 // GET route to fetch all notifications
-router.get('/', auth, async (req, res) => {
+/*router.get('/', auth, async (req, res) => {
     const requestUser = await User.findById(req.user._id);
     const userEmail = requestUser.email; 
 
@@ -72,12 +72,58 @@ router.get('/', auth, async (req, res) => {
         console.error('Error fetching notifications:', error);
         res.status(500).json({ message: 'Server error' });
     }
+});*/
+
+//fetch all notifications type is not equal to booking_confirmation
+router.get('/', auth, async (req, res) => {
+    const requestUser = await User.findById(req.user._id);
+    const userEmail = requestUser.email; 
+
+    try {
+        if (req.user.role !== 'to' && req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
+            return res.status(403).json({ error: "Access denied." });
+        }
+
+        const notifications = await Notification.find({
+            receiverEmail: userEmail,
+            type: { $ne: 'booking_confirmation' }
+        });
+
+        console.log('notifications:', notifications);
+        res.status(200).json(notifications);
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
+//fetch user, who booked lab and type is equal to booking_confirmation
+router.get('/userReciver/', auth, async (req, res) => {
+    try {
+        const requestUser = await User.findById(req.user._id);
+        const userEmail = requestUser.email;
+        if (req.user.role !== 'to' && req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
+            return res.status(403).json({ error: "Access denied." });
+        }
 
+        const notifications = await Notification.find({
+            senderEmail: userEmail,
+            type: 'booking_confirmation'
+        });
 
+        if (!notifications) {
+            return res.status(404).json({ message: 'Notification not found for the current user' });
+        }
 
-// PUT route to mark notifications as read for the authenticated user
+        console.log('notifications:', notifications);
+        res.status(200).json(notifications);
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+//mark read 
 router.put('/markRead/:id', auth, async (req, res) => {
     const { id } = req.params;
     const requestUser = await User.findById(req.user._id);
@@ -88,12 +134,18 @@ router.put('/markRead/:id', auth, async (req, res) => {
         if (req.user.role !== 'to' && req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
             return res.status(403).json({ error: "Access denied." });
           }
-        const notification = await Notification.findOneAndUpdate(
-            { _id: id, receiverEmail: userEmail },
+          const notification = await Notification.findOneAndUpdate(
+            { 
+                _id: id, 
+                $or: [
+                    { receiverEmail: userEmail },
+                    { senderEmail: userEmail }
+                ] 
+            },
+
             { isRead: true },
             { new: true } // Return updated document
         );
-
         if (!notification) {
             return res.status(404).json({ message: 'Notification not found for the current user' });
         }
@@ -106,15 +158,19 @@ router.put('/markRead/:id', auth, async (req, res) => {
 });
 
 
-// POST route to update isReceiverConfirm for notifications for the authenticated user
+// accepct
+
+
+
 router.post('/updateIsReceiverConfirm/:notificationId', auth, async (req, res) => {
     const { notificationId } = req.params;
-    const userEmail = req.user.email; 
+    const userEmail = req.user.email;
 
     try {
+        // Find and update the notification
         const notification = await Notification.findOneAndUpdate(
             { _id: notificationId, receiverEmail: userEmail },
-            { isReceiverConfirm: true, type: 'booking_confirmation' },
+            { isReceiverConfirm: true, type: 'booking_confirmation', isRead:false  },
             { new: true } // Return updated document
         );
 
@@ -122,27 +178,132 @@ router.post('/updateIsReceiverConfirm/:notificationId', auth, async (req, res) =
             return res.status(404).json({ message: 'Notification not found for the current user' });
         }
 
-        res.status(200).json({ message: 'isReceiverConfirm updated successfully', notification });
+        res.status(200).json({
+            message: 'isReceiverConfirm and booking status updated successfully',
+            notification
+        });
     } catch (error) {
-        console.error('Error updating isReceiverConfirm:', error);
+        console.error('Error updating isReceiverConfirm and booking status:', error);
         res.status(500).json({ message: 'Server error' });
     }
+
 });
 
-// POST route to update IsLabWillGoingOn and type for notifications for the authenticated user
-router.post('/updateIsLabStatus/:notificationId', auth, async (req, res) => {
+//reject
+router.post('/reject/:notificationId', auth, async (req, res) => {
     const { notificationId } = req.params;
     const userEmail = req.user.email; 
 
     try {
         const notification = await Notification.findOneAndUpdate(
             { _id: notificationId, receiverEmail: userEmail },
-            { IsLabWillGoingOn: false, type: 'cancellation' },
+            { IsLabWillGoingOn: true, 
+              type: 'rejected',
+              isRead:false,
+              isReciverConfirm:false
+            },
             { new: true } // Return updated document
         );
 
         if (!notification) {
             return res.status(404).json({ message: 'Notification not found for the current user' });
+        }
+        res.status(200).json({ message: 'IsLabWillGoingOn updated to false and type changed to cancellation', notification });
+    } catch (error) {
+        console.error('Error updating IsLabWillGoingOn and type:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
+//confirmed lab
+router.post('/confirmedLab/:notificationId', auth, async (req, res) => {
+    const { notificationId } = req.params;
+
+    try {
+        if (req.user.role !== 'lecturer' && req.user.role !== 'instructor' && req.user.role !== 'admin') {
+            return res.status(403).json({ error: "Access denied. You're not authorized to book labs." });
+        }
+        // Find and update the notification
+        const notification = await Notification.findOneAndUpdate(
+            { _id: notificationId},
+            { IsLabWillGoingOn: true, type: 'confirmed', isRead:false  },
+            { new: true } // Return updated document
+        );
+
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+
+        // Get the bookingId from the notification
+        const bookingId = notification.bookingId;
+
+        if (!bookingId) {
+            return res.status(400).json({ message: 'Booking ID not found in the notification' });
+        }
+
+        // Find and update the booking
+        const booking = await Booking.findOneAndUpdate(
+            { _id: bookingId },
+            { status: 'confirmed'},
+            { new: true } // Return updated document
+        );
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        res.status(200).json({
+            message: 'booking status updated successfully',
+            notification,
+            booking
+        });
+    } catch (error) {
+        console.error('Error updating isReceiverConfirm and booking status:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+
+});
+
+
+// lab cancel
+router.post('/updateIsLabStatus/:notificationId', auth, async (req, res) => {
+    const { notificationId } = req.params;
+
+    try {
+        if (req.user.role !== 'lecturer' && req.user.role !== 'instructor' && req.user.role !== 'admin') {
+            return res.status(403).json({ error: "Access denied. You're not authorized to book labs." });
+        }
+
+        const notification = await Notification.findOneAndUpdate(
+            { _id: notificationId},
+            { IsLabWillGoingOn: false, 
+              type: 'cancellation',
+              isRead:false
+            },
+            { new: true } // Return updated document
+        );
+
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found for the current user' });
+        }
+
+        // Get the bookingId from the notification
+        const bookingId = notification.bookingId;
+
+        if (!bookingId) {
+            return res.status(400).json({ message: 'Booking ID not found in the notification' });
+        }
+
+        // Find and update the booking
+        const booking = await Booking.findOneAndUpdate(
+            { _id: bookingId },
+            { status: 'cancelled' },
+            { new: true } // Return updated document
+        );
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
         }
 
         res.status(200).json({ message: 'IsLabWillGoingOn updated to false and type changed to cancellation', notification });

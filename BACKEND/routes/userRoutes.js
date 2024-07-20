@@ -324,16 +324,13 @@ router.put('/:id', auth, async(req, res) => {
 router.post('/update-password', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("Password: ", password);
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
+    user.password = password;
     await user.save();
-
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     console.error(error);
