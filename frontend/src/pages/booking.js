@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
 import axios from 'axios';
 import Profile from '../components/Profile';
 import moment from 'moment';
-import { jwtDecode } from 'jwt-decode';
-
+import {jwtDecode} from 'jwt-decode';
 
 export default function MyApp() {
   const [title, setTitle] = useState("");
@@ -20,12 +19,12 @@ export default function MyApp() {
   const [errorMessage, setErrorMessage] = useState('');
   const [availabilityMessage, setAvailabilityMessage] = useState('');
   const [users, setUsers] = useState([]);
-  const [isPollVisible, setIsPollVisible] = useState(false); // State to control visibility of the poll div
-  const [pollDate, setPollDate] = useState(""); // State for the poll date
+  const [isPollVisible, setIsPollVisible] = useState(false);
+  const [pollDate, setPollDate] = useState("");
   const [uEmail, setEmail] = useState("");
+  const [id, setId] = useState(""); // Added state for id
   const token = localStorage.getItem('token'); 
   const navigate = useNavigate();
-
   const location = useLocation();
 
   useEffect(() => {
@@ -38,7 +37,7 @@ export default function MyApp() {
   useEffect(() => {
     if (location.state && location.state.event) {
       const { event } = location.state;
-      setId(event.state.id);
+      setId(event.id);
       setTitle(event.title);
       setSelectedDate(moment(event.start).format('YYYY-MM-DD'));
       setStartTime(moment(event.start).format('HH:mm'));
@@ -60,7 +59,6 @@ export default function MyApp() {
           });
           const user = response.data;
           setEmail(user.email);
-
         } catch (error) {
           console.error('Error fetching user:', error);
         }
@@ -79,12 +77,10 @@ export default function MyApp() {
         });
         setUsers(response.data);
         console.log('users from booking page:', response.data);
-
       } catch (error) {
         console.error('Error fetching users:', error);
       }
     };
-
     fetchUsers();
   }, [token]);
 
@@ -110,10 +106,7 @@ export default function MyApp() {
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString()
     };
 
-
     console.log('Checking availability with data:', checkData);
-
-
 
     try {
       const response = await axios.post('/api/bookings/check-availability', checkData, {
@@ -124,7 +117,6 @@ export default function MyApp() {
       });
 
       console.log('Availability check response:', response.data);
-
       setAvailabilityMessage(response.data.message);
     } catch (error) {
       console.error('Availability check error:', error);
@@ -142,9 +134,8 @@ export default function MyApp() {
       startTime: new Date(`${selectedDate}T${startTime}`).toISOString(),
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString(),
       description,
-      attendees: attendees.map(user => user.email) // Using the selected attendees' emails
+      attendees: attendees.map(user => user.email)
     };
-
 
     console.log('Saving booking with data:', bookingData);
 
@@ -160,8 +151,7 @@ export default function MyApp() {
       alert('Booking Successful');
       window.location.reload();
 
-
-      const bookingId = bookingResponse.data._id;
+      const bookingId = response.data._id;
 
       if (location.state && location.state.event) {
         await axios.delete(`/api/bookings/${location.state.event.id}`, {
@@ -203,7 +193,6 @@ export default function MyApp() {
           setErrorMessage('Failed to create notification');
         }
       }
-
     } catch (error) {
       console.error('Booking error:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -231,7 +220,6 @@ export default function MyApp() {
     setIsPollVisible(false);
   };
 
-  // Determine the rectangle color based on availabilityMessage
   const rectangleClass = availabilityMessage === "Time slot is available" || availabilityMessage === '' ? 'green-rectangle' : 'red-rectangle';
 
   return (
@@ -240,19 +228,11 @@ export default function MyApp() {
       <div className="my-app">
         <div className="booking-body">
           <div className="right">
-
-            
             <div className={`container-11 ${isPollVisible ? 'hidden' : ''}`}>
               <h3>CO1 Lab Availability</h3>
               <div className={rectangleClass}>
                 <div>{formattedDate}</div>
                 <div>{startTime} - {endTime}</div>
-
-            <div className="container-11">
-              <h3>CO1 Lab Availability</h3>
-              <div className="green-rectangle">
-                {selectedDate}
-
               </div>
               {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
             </div>
@@ -291,7 +271,6 @@ export default function MyApp() {
           </div>
         </div>
       </div>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
       {isBoxVisible && <Profile />}
     </div>
   );
