@@ -88,6 +88,7 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+//cancel lab session
 router.post('/cancelLabSession/:labId', auth, checkRole, async (req, res) => {
   const { labId } = req.params;
   console.log ('y8gbtgbs68y7hy7uasr7ybat76', labId);
@@ -124,6 +125,69 @@ router.post('/cancelLabSession/:labId', auth, checkRole, async (req, res) => {
     console.error('Error cancel lab session:', error);
     res.status(500).json({ message: 'Server error' });
 }
+});
+
+// Edit lab session
+router.put('/editLabSession/:bookingId', auth, async (req, res) => {
+  const { bookingId } = req.params;
+
+  try {
+    const { title, startTime, endTime, description, attendees } = req.body;
+
+    // Update the lab session in the Booking collection
+    const updatelab = await Booking.findOneAndUpdate(
+      { _id: bookingId },
+      {
+        title: title,
+        startTime: startTime,
+        endTime: endTime,
+        description: description,
+        attendees: attendees
+      },
+      { new: true }
+    );
+
+    if (!updatelab) return res.status(404).json({ error: 'Lab session not found' });
+
+    // Fetch existing notifications for the bookingId
+    const notifications = await Notification.find({ bookingId: bookingId });
+    const existingAttendees = notifications.map(notification => notification.receiverEmail);
+
+    // Extract date from startTime
+    const labStartTime = new Date(startTime);
+    const formattedDate = new Date(Date.UTC(labStartTime.getUTCFullYear(), labStartTime.getUTCMonth(), labStartTime.getUTCDate(), 0, 0, 0, 0)).toISOString();
+
+    // Update or delete notifications
+    for (let i = 0; i < existingAttendees.length; i++) {
+      if (i < attendees.length && attendees[i]) {
+        // Update existing notification
+        await Notification.findOneAndUpdate(
+          { bookingId: bookingId, receiverEmail: existingAttendees[i] },
+          {
+            receiverEmail: attendees[i],
+            labSessionTitle: title,
+            labStartTime: startTime,
+            labEndTime: endTime,
+            message: description,
+            isRead: false,
+            labDate: formattedDate // Add the formatted date here
+          },
+          { new: true }
+        );
+      } else {
+        // Delete notification if attendee is empty or no corresponding new attendee
+        await Notification.findOneAndDelete({
+          bookingId: bookingId,
+          receiverEmail: existingAttendees[i]
+        });
+      }
+    }
+
+    res.json({ message: 'Lab updated successfully', updatedLab: updatelab });
+  } catch (error) {
+    console.error('Error updating lab session:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 module.exports = router;
