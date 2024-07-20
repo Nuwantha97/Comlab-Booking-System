@@ -115,7 +115,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-  
+    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -135,6 +135,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating isReceiverConfirm and booking status:', error);
     }
+    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -156,7 +157,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-  
+    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -178,7 +179,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-  
+    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -197,11 +198,13 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
+    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
   
   const handleConfirmationClick = async () => {
+    setIsDialogVisible(false);
     setIsCancelConfirmLaterVisible(true);
     window.location.reload(); // Refresh the page
   };
@@ -220,6 +223,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
+    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -238,6 +242,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
+    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -364,7 +369,6 @@ export default function Notification() {
                     <p><b>Your Request was accepted.</b></p>
                     <div className="button-group">
                       <button onClick={handleConfirmationClick} className="ok-button">OK</button>
-                      <button onClick={handleRejectClick} className="ok-button"> Cancel lab </button>
                     </div>
                   </div>
                 )}
@@ -373,9 +377,11 @@ export default function Notification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Cancel/Confirme lab session?</h2>
                     <p><br /> <br /> </p>
-                    <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
-                    <button onClick={handleConfirmeLabClick} className="ok-button"> Confirme lab </button>
-                    <button onClick={handleCancelClick} className="ok-button"> Later on </button>
+                    <div className="button-group">
+                      <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
+                      <button onClick={handleConfirmeLabClick} className="ok-button"> Confirme lab </button>
+                      <button onClick={handleCancelClick} className="ok-button"> Later on </button>
+                    </div>
                   </div>
                 )}
                 {selectedNotification.type === 'rejected' && labDetails.senderEmail === uEmail && (

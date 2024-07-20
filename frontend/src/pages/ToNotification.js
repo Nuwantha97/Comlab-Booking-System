@@ -7,7 +7,7 @@ import Profile from '../components/Profile';
 export default function ToNotification() {
   const [notifications, setNotifications] = useState([]);
   const [filteredNotifications, setFilteredNotifications] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState(localStorage.getItem('selectedType') || '');
   const [labDetails, setLabDetails] = useState(null);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -60,6 +60,7 @@ export default function ToNotification() {
 
   const handleButtonClick = (type) => {
     setSelectedType(type);
+    localStorage.setItem('selectedType', type); // Save the selected type to local storage
     setLabDetails(null);
     setSelectedNotification(null);
     setIsDialogVisible(false);
@@ -97,6 +98,7 @@ export default function ToNotification() {
     }
 
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
 
   const handleAcceptClick = async () => {
@@ -115,6 +117,7 @@ export default function ToNotification() {
       console.error('Error updating isReceiverConfirm and booking status:', error);
     }
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
 
   const handleCancelClick = async () => {
@@ -136,6 +139,7 @@ export default function ToNotification() {
     }
 
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
 
   const handleConClick = async () => {
@@ -157,6 +161,7 @@ export default function ToNotification() {
     }
 
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
 
   const handleRejectClick = async () => {
@@ -174,6 +179,7 @@ export default function ToNotification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
 
   const handleUserIconClick = () => {
@@ -214,7 +220,7 @@ export default function ToNotification() {
               <div className="lab-details">
                 {selectedNotification.type === 'unread' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>{labDetails.type}</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
@@ -231,7 +237,7 @@ export default function ToNotification() {
                 )}
                 {selectedNotification.type === 'request' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Lab Session Request</h2>
                     <p>From: {labDetails.senderEmail}</p>
                     <p>Session Title: {labDetails.labSessionTitle}</p>
@@ -245,7 +251,7 @@ export default function ToNotification() {
                 )}
                 {selectedNotification.type === 'confirmed' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>>
                     <h2>confirmed Notice</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
@@ -261,7 +267,7 @@ export default function ToNotification() {
                 )}
                 {selectedNotification.type === 'rejected' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Rejection Notice</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
