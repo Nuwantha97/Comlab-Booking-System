@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ToHeader from '../components/ToHeder';
 import frontOfAdminImage from  '../images/adminhome_backgroundjpg.jpg'
-import '../components/dashboard.css'
 import Profile from '../components/Profile'
 import '../components/adminhome.css'
 
