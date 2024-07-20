@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback,useRef,profileRef } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import '../components/notification.css';
@@ -223,7 +223,6 @@ export default function Notification() {
   
   const handleConfirmationClick = async () => {
     setIsCancelConfirmLaterVisible(true);
-    window.location.reload(); // Refresh the page
   };
   
   const handleConfirmeLabClick = async () => {
@@ -264,11 +263,30 @@ export default function Notification() {
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
   };
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsBoxVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isBoxVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBoxVisible]);
+
 
   return (
-    <div>
+    <div className='nnn'>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
+
       <div className="notification-container">
+        
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
@@ -311,6 +329,7 @@ export default function Notification() {
           </ul>
         </div>
 
+
         <div className="right-side">
         {loading ? (
             <div className="loading-spinner">
@@ -351,6 +370,8 @@ export default function Notification() {
                     </button>
                   </div>
                 )}
+
+
                 {selectedNotification.type === 'request' && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
@@ -370,6 +391,7 @@ export default function Notification() {
                     </div>
                   </div>
                 )}
+
                 
                 {selectedNotification.type === 'cancellation' && (
                   <div className="dialog-box-noti">
@@ -389,6 +411,8 @@ export default function Notification() {
                     </button>
                   </div>
                 )}
+
+
                 {selectedNotification.type === 'reminder' && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
@@ -406,6 +430,8 @@ export default function Notification() {
                     </button>
                   </div>
                 )}
+
+
                 {selectedNotification.type === 'booking_confirmation' && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
@@ -425,6 +451,8 @@ export default function Notification() {
                     </div>
                   </div>
                 )}
+
+
                 {isCancelConfirmationLaterVisible && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
@@ -435,6 +463,8 @@ export default function Notification() {
                     <button onClick={handleCancelClick} className="ok-button"> Later on </button>
                   </div>
                 )}
+
+
                 {selectedNotification.type === 'rejected' && labDetails.senderEmail === uEmail && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
@@ -454,6 +484,7 @@ export default function Notification() {
                   </div>
                 )}
 
+
                 {selectedNotification.type === 'rejected' && labDetails.receiverEmail === uEmail && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
@@ -471,6 +502,8 @@ export default function Notification() {
                     </button>
                   </div>
                 )}
+
+
                 {selectedNotification.type === 'confirmed' && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
@@ -492,8 +525,9 @@ export default function Notification() {
               </div>
             </div>
           )}
+
         </div>
-        {isBoxVisible && <Profile />}
+        {isBoxVisible && <Profile profileRef={profileRef} />}
       </div>
     </div>
   );
