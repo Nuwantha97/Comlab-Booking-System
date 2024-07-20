@@ -206,7 +206,6 @@ export default function Notification() {
   const handleConfirmationClick = async () => {
     setIsDialogVisible(false);
     setIsCancelConfirmLaterVisible(true);
-    window.location.reload(); // Refresh the page
   };
   
   const handleConfirmeLabClick = async () => {
