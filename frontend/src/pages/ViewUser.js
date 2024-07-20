@@ -6,6 +6,7 @@ import Buttons from '../components/editButton';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import BeatLoader from "react-spinners/BeatLoader";
 
 const token = localStorage.getItem('token');
 console.log('token from viewuser.js:', token);
@@ -22,6 +23,7 @@ export default function ViewUser() {
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const navigate = useNavigate();
   const profileRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {

@@ -4,6 +4,8 @@ import Header from '../components/Header';
 import '../components/notification.css';
 import Profile from '../components/Profile';
 import { jwtDecode } from 'jwt-decode';
+import BeatLoader from "react-spinners/BeatLoader";
+
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
@@ -16,6 +18,8 @@ export default function Notification() {
   const [isCancelConfirmationLaterVisible, setIsCancelConfirmLaterVisible] = useState(false);
   const [uEmail, setEmail] = useState("");
   const token = localStorage.getItem('token');
+  const [selectedButton, setSelectedButton] = useState(localStorage.getItem('selectedButton') || '');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (token) {
@@ -50,6 +54,8 @@ export default function Notification() {
     fetchNotifications();
   }, [token]);
 
+  
+
   const filterNotifications = useCallback((type) => {
     if (type === 'unread') {
       setFilteredNotifications(notifications.filter(notification => !notification.isRead));
@@ -78,19 +84,32 @@ export default function Notification() {
     filterNotifications(selectedType);
   }, [selectedType, notifications, filterNotifications]);
 
+  useEffect(()=>{
+    setLoading(true);
+    setTimeout(()=> {
+        setLoading(false);
+    
+    } ,500)
+    },[]);
+
   const handleButtonClick = (type) => {
     setSelectedType(type);
-    localStorage.setItem('selectedType', type); // Save the selected type to local storage
+    setSelectedButton(type); // Update selectedButton state
+    localStorage.setItem('selectedType', type);
+    localStorage.setItem('selectedButton', type); // Save selected button to local storage
     setLabDetails(null);
     setSelectedNotification(null);
     setIsDialogVisible(false);
   };
 
   const handleNotificationClick = (notification) => {
-    setLabDetails(notification);
-    setSelectedNotification(notification);
-    setIsDialogVisible(true);
+    if (!isDialogVisible) { // Only allow setting if no dialog is visible
+      setLabDetails(notification);
+      setSelectedNotification(notification);
+      setIsDialogVisible(true);
+    }
   };
+  
   const handleOkClick = async () => {
     console.log('handleOKClick called');
   
@@ -115,8 +134,9 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
+  
     setIsDialogVisible(false);
+  
     window.location.reload(); // Refresh the page
   };
   
@@ -135,7 +155,6 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating isReceiverConfirm and booking status:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -157,7 +176,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
+  
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -179,7 +198,7 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
+  
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -198,13 +217,11 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
   
   const handleConfirmationClick = async () => {
-    setIsDialogVisible(false);
     setIsCancelConfirmLaterVisible(true);
     window.location.reload(); // Refresh the page
   };
@@ -223,7 +240,6 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -242,7 +258,6 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
@@ -257,28 +272,65 @@ export default function Notification() {
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
-            <button className="toolbar-button" onClick={() => handleButtonClick('')}>All</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('unread')}>Unread</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('request')}>Requests</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('cancellation')}>Cancellations</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('reminder')}>Reminders</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('booking_confirmation')}>Booking Confirmations</button>
+            <button 
+              className={`toolbar-button ${selectedButton === '' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('')}
+            >
+              All
+            </button>
+            <button 
+              className={`toolbar-button ${selectedButton === 'unread' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('unread')}
+            >
+              Unread
+            </button>
+            <button 
+              className={`toolbar-button ${selectedButton === 'request' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('request')}
+            >
+              Requests
+            </button>
+            <button 
+              className={`toolbar-button ${selectedButton === 'cancellation' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('cancellation')}
+            >
+              Cancellations
+            </button>
+            <button 
+              className={`toolbar-button ${selectedButton === 'reminder' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('reminder')}
+            >
+              Reminders
+            </button>
+            <button 
+              className={`toolbar-button ${selectedButton === 'booking_confirmation' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('booking_confirmation')}
+            >
+              Booking Confirmations
+            </button>
           </ul>
         </div>
+
         <div className="right-side">
+        {loading ? (
+            <div className="loading-spinner">
+              <BeatLoader color={"#000000"} loading={true} size={20} />
+            </div>
+          ) : (
           <div className="scroll-container">
             <ul className="preview-list">
               {filteredNotifications.map((notification, index) => (
                 <li
                   key={index}
                   onClick={() => handleNotificationClick(notification)}
-                  className={notification === selectedNotification ? 'selected' : ''}
+                  className={`notification-item ${notification === selectedNotification ? 'selected' : ''} ${isDialogVisible ? 'disabled' : ''}`}
                 >
                   {notification.type}_{notification.labSessionTitle}
                 </li>
               ))}
             </ul>
           </div>
+            )}
           {isDialogVisible && labDetails && (
             <div className="lab-details-box">
               <div className="lab-details">
@@ -369,6 +421,7 @@ export default function Notification() {
                     <p><b>Your Request was accepted.</b></p>
                     <div className="button-group">
                       <button onClick={handleConfirmationClick} className="ok-button">OK</button>
+                      <button onClick={handleRejectClick} className="ok-button"> Cancel lab </button>
                     </div>
                   </div>
                 )}
@@ -377,11 +430,9 @@ export default function Notification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Cancel/Confirme lab session?</h2>
                     <p><br /> <br /> </p>
-                    <div className="button-group">
-                      <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
-                      <button onClick={handleConfirmeLabClick} className="ok-button"> Confirme lab </button>
-                      <button onClick={handleCancelClick} className="ok-button"> Later on </button>
-                    </div>
+                    <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
+                    <button onClick={handleConfirmeLabClick} className="ok-button"> Confirme lab </button>
+                    <button onClick={handleCancelClick} className="ok-button"> Later on </button>
                   </div>
                 )}
                 {selectedNotification.type === 'rejected' && labDetails.senderEmail === uEmail && (

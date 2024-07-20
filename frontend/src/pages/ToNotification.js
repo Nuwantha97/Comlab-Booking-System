@@ -98,7 +98,7 @@ export default function ToNotification() {
     }
 
     setIsDialogVisible(false);
-    window.location.reload(); // Refresh the page
+   //window.location.reload(); // Refresh the page
   };
 
   const handleAcceptClick = async () => {
@@ -117,7 +117,7 @@ export default function ToNotification() {
       console.error('Error updating isReceiverConfirm and booking status:', error);
     }
     setIsDialogVisible(false);
-    window.location.reload(); // Refresh the page
+  //  window.location.reload(); // Refresh the page
   };
 
   const handleCancelClick = async () => {
@@ -139,7 +139,7 @@ export default function ToNotification() {
     }
 
     setIsDialogVisible(false);
-    window.location.reload(); // Refresh the page
+   // window.location.reload(); // Refresh the page
   };
 
   const handleConClick = async () => {
@@ -161,7 +161,7 @@ export default function ToNotification() {
     }
 
     setIsDialogVisible(false);
-    window.location.reload(); // Refresh the page
+   // window.location.reload(); // Refresh the page
   };
 
   const handleRejectClick = async () => {
@@ -179,7 +179,7 @@ export default function ToNotification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
-    window.location.reload(); // Refresh the page
+    //window.location.reload(); // Refresh the page
   };
 
   const handleUserIconClick = () => {

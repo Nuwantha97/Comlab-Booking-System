@@ -117,14 +117,8 @@ button:active::after {
   transition: 0s;
 }
 
-@keyframes text-flicker {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
+
+
 
 .icon-button .icon {
   transition: transform 0.3s ease;
