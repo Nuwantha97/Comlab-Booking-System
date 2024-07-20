@@ -8,7 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [filteredNotifications, setFilteredNotifications] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedType, setSelectedType] = useState(localStorage.getItem('selectedType') || '');
   const [labDetails, setLabDetails] = useState(null);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
@@ -80,6 +80,7 @@ export default function Notification() {
 
   const handleButtonClick = (type) => {
     setSelectedType(type);
+    localStorage.setItem('selectedType', type); // Save the selected type to local storage
     setLabDetails(null);
     setSelectedNotification(null);
     setIsDialogVisible(false);
@@ -90,15 +91,14 @@ export default function Notification() {
     setSelectedNotification(notification);
     setIsDialogVisible(true);
   };
-
   const handleOkClick = async () => {
     console.log('handleOKClick called');
-
+  
     if (!selectedNotification) {
       console.error('No selected notification');
       return;
     }
-
+  
     try {
       const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
         headers: {
@@ -106,7 +106,7 @@ export default function Notification() {
         }
       });
       console.log('Marked notification as read:', response.data);
-
+  
       const updatedNotifications = notifications.map(notif =>
         notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
       );
@@ -115,10 +115,11 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-
+  
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
-
+  
   const handleAcceptClick = async () => {
     try {
       const response = await axios.post(
@@ -135,10 +136,10 @@ export default function Notification() {
       console.error('Error updating isReceiverConfirm and booking status:', error);
     }
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
-
+  
   const handleCancelClick = async () => {
-
     try {
       const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
         headers: {
@@ -146,7 +147,7 @@ export default function Notification() {
         }
       });
       console.log('Marked notification as read:', response.data);
-
+  
       const updatedNotifications = notifications.map(notif =>
         notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
       );
@@ -155,12 +156,12 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-
+  
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
-
+  
   const handleConClick = async () => {
-
     try {
       const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
         headers: {
@@ -168,7 +169,7 @@ export default function Notification() {
         }
       });
       console.log('Marked notification as read:', response.data);
-
+  
       const updatedNotifications = notifications.map(notif =>
         notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
       );
@@ -177,10 +178,11 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-
+  
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
-
+  
   const handleRejectClick = async () => {
     try {
       const response = await axios.post(`/api/notification/reject/${selectedNotification._id}`, 
@@ -196,16 +198,14 @@ export default function Notification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
-
-  const handleUserIconClick = () => {
-    setIsBoxVisible(!isBoxVisible);
-  };
-
+  
   const handleConfirmationClick = async () => {
     setIsCancelConfirmLaterVisible(true);
+    window.location.reload(); // Refresh the page
   };
-
+  
   const handleConfirmeLabClick = async () => {
     try {
       await axios.post(`/api/notification/confirmedLab/${selectedNotification._id}`, 
@@ -221,8 +221,9 @@ export default function Notification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
   };
-
+  
   const handleCancelLabClick = async () => {
     try {
       await axios.post(`/api/notification/updateIsLabStatus/${selectedNotification._id}`, 
@@ -238,6 +239,10 @@ export default function Notification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
+    window.location.reload(); // Refresh the page
+  };
+  const handleUserIconClick = () => {
+    setIsBoxVisible(!isBoxVisible);
   };
 
   return (
@@ -274,7 +279,7 @@ export default function Notification() {
               <div className="lab-details">
                 {selectedNotification.type === 'unread' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>{labDetails.type}</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
@@ -291,7 +296,7 @@ export default function Notification() {
                 )}
                 {selectedNotification.type === 'request' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Lab Session Request</h2>
                     <p>From: {labDetails.senderEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
@@ -311,7 +316,7 @@ export default function Notification() {
                 
                 {selectedNotification.type === 'cancellation' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Lab Cancellation</h2>
                     <p>From: {labDetails.senderEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
@@ -329,7 +334,7 @@ export default function Notification() {
                 )}
                 {selectedNotification.type === 'reminder' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Reminder</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
@@ -346,7 +351,7 @@ export default function Notification() {
                 )}
                 {selectedNotification.type === 'booking_confirmation' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Booking Confirmation</h2>
                     <p>Who Accepted: {labDetails.receiverEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
@@ -365,7 +370,7 @@ export default function Notification() {
                 )}
                 {isCancelConfirmationLaterVisible && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Cancel/Confirme lab session?</h2>
                     <p><br /> <br /> </p>
                     <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
@@ -375,7 +380,7 @@ export default function Notification() {
                 )}
                 {selectedNotification.type === 'rejected' && labDetails.senderEmail === uEmail && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Rejection Notice</h2>
                     <p>rejected by: {labDetails.receiverEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
@@ -394,7 +399,7 @@ export default function Notification() {
 
                 {selectedNotification.type === 'rejected' && labDetails.receiverEmail === uEmail && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Rejection Notice</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
@@ -411,7 +416,7 @@ export default function Notification() {
                 )}
                 {selectedNotification.type === 'confirmed' && (
                   <div className="dialog-box-noti">
-                    <button className="close-button" onClick={handleCancelClick}>x</button>
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>confirmed Notice</h2>
                     <p>{labDetails.labSessionTitle}<br />
                       {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
