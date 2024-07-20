@@ -1,5 +1,18 @@
 {
   "dependencies": {
-    "nodemailer": "^6.9.13"
-  }
+    "concurrently": "^8.2.2",
+    "i": "^0.3.7",
+    "nodemailer": "^6.9.13",
+    "nodeman": "^1.1.2"
+  },
+  "name": "comlab-booking-system",
+  "version": "1.0.0",
+  "description": "Welcome to the Lab Booking System project! This project is developed as part of our final year computer engineering project. The Lab Booking System allows users to book labs for various purposes efficiently.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"cd BACKEND && nodemon server.js\" \"cd frontend && npm start\""
+  },
+  "author": "",
+  "license": "ISC"
 }
