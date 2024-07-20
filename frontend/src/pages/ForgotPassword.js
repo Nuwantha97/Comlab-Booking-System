@@ -35,7 +35,7 @@ export default function ForgotPassword() {
   
         alert('Password updated successfully!');
         console.log('Update password response:', response.data);
-        navigate('./userSingIn');
+        navigate('/userSingIn');
       } else {
         // Handle error scenario where password or OTP does not match
         if (password !== confirmPassword) {
@@ -58,7 +58,7 @@ export default function ForgotPassword() {
       setMessage(response.data.message);
       setOtp(response.data.otp);
       setEmail(response.data.email);
-
+      console.log(message);
       if (response.data.message === 'Email found') {
         setIsCodeSent(true);
         setErrorMessage('');
