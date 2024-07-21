@@ -3,6 +3,7 @@ import axios from 'axios';
 import ToHeader from '../components/ToHeder';
 import '../components/notification.css';
 import Profile from '../components/Profile';
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function ToNotification() {
   const [notifications, setNotifications] = useState([]);
@@ -13,6 +14,7 @@ export default function ToNotification() {
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const profileRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem('token');
 
@@ -33,6 +35,13 @@ export default function ToNotification() {
     };
     fetchNotifications();
   }, [token]);
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500)
+  }, []);
 
   const filterNotifications = useCallback((type) => {
     if (type === 'unread') {
@@ -75,6 +84,7 @@ export default function ToNotification() {
     setLabDetails(notification);
     setSelectedNotification(notification);
     setIsDialogVisible(true);
+    setIsBoxVisible(false);
   };
 
   const handleOkClick = async () => {
@@ -213,28 +223,65 @@ export default function ToNotification() {
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
-            <button className="toolbar-button" onClick={() => handleButtonClick('')}>All</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('unread')}>Unread</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('request')}>Requests</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('cancellation')}>Cancellations</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('reminder')}>Reminders</button>
-            <button className="toolbar-button" onClick={() => handleButtonClick('Confirmed/Rejected')}>Confirmed/Rejected</button>
+            <button 
+              className={`toolbar-button ${selectedType === '' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('')}
+            >
+              All
+            </button>
+            <button 
+              className={`toolbar-button ${selectedType === 'unread' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('unread')}
+            >
+              Unread
+            </button>
+            <button 
+              className={`toolbar-button ${selectedType === 'request' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('request')}
+            >
+              Requests
+            </button>
+            <button 
+              className={`toolbar-button ${selectedType === 'cancellation' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('cancellation')}
+            >
+              Cancellations
+            </button>
+            <button 
+              className={`toolbar-button ${selectedType === 'reminder' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('reminder')}
+            >
+              Reminders
+            </button>
+            <button 
+              className={`toolbar-button ${selectedType === 'Confirmed/Rejected' ? 'selected' : ''}`} 
+              onClick={() => handleButtonClick('Confirmed/Rejected')}
+            >
+              Confirmed/Rejected
+            </button>
           </ul>
+
         </div>
         <div className="right-side">
+        {loading ? (
+            <div className="loading-spinner">
+              <BeatLoader color={"#000000"} loading={true} size={20} />
+            </div>
+          ) : (
           <div className="scroll-container">
             <ul className="preview-list">
               {filteredNotifications.map((notification, index) => (
                 <li
                   key={index}
                   onClick={() => handleNotificationClick(notification)}
-                  className={notification === selectedNotification ? 'selected' : ''}
+                  className={`${notification === selectedNotification ? 'selected' : ''} ${isDialogVisible ? 'disabled' : ''}`}
                 >
                   {notification.type}_{notification.labSessionTitle}
                 </li>
               ))}
             </ul>
           </div>
+              )}
           {isDialogVisible && labDetails && (
             <div className="lab-details-box">
               <div className="lab-details">

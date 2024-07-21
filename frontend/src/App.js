@@ -5,7 +5,6 @@ import { NotificationProvider } from './NotificationContext'; // Import the Noti
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import User from './pages/User';
-import AccountCreation from './pages/signup';
 import LoginForm from './pages/signIn';
 import LabBooking from './pages/booking';
 import CalendarView from './pages/View';
@@ -37,7 +36,6 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/user" element={<User />} />
-            <Route path="/signup" element={<AccountCreation />} />
             <Route path="/signin" element={<LoginForm />} />
             <Route path="/booking" element={<LabBooking />} />
             <Route path="/view" element={<CalendarView />} />
