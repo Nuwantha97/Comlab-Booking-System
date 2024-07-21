@@ -63,7 +63,7 @@ router.post('/', auth, checkRole, async (req, res) => {
 // Fetch all bookings
 router.get('/', auth, async (req, res) => {
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find({ status: { $ne: 'cancelled' } });
     res.json(bookings);
   } catch (error) {
     console.error(error);

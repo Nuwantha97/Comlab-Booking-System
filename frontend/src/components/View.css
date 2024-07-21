@@ -186,3 +186,22 @@
   cursor: pointer;
   color: #b30000;
 }
+.attendee-box {
+  background-color: #FFA000;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px 0;
+  display: block; 
+}
+
+.attendee-box.booking_confirmation {
+  background-color: green;
+}
+
+.attendee-box.rejected {
+  background-color: red;
+}
+.attendees-list {
+  display: block;
+}

@@ -17,6 +17,7 @@ function CalendarView() {
   const [isCancelConfirmationVisible, setIsCancelConfirmationVisible] = useState(false);
   const [attendeesInput, setAttendeesInput] = useState('');
   const [currentDate, setCurrentDate] = useState(new Date()); // Add state for current date
+  const [attendeeTypes, setAttendeeTypes] = useState({});
   const profileRef = useRef(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -45,8 +46,24 @@ function CalendarView() {
     fetchBookings();
   }, [token]);
 
-  const handleSelectEvent = (event) => {
+  const handleSelectEvent = async (event) => {
     setSelectedEvent(event);
+    try {
+      const response = await axios.get(`/api/notification/attendeesAndTypeByBookingId/${event.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const attendeeTypesData = response.data.reduce((acc, obj) => {
+        const [email, type] = Object.entries(obj)[0];
+        acc[email] = type;
+        return acc;
+      }, {});
+      setAttendeeTypes(attendeeTypesData);
+      console.log(attendeeTypesData)
+    } catch (error) {
+      console.error('Error fetching attendee types:', error);
+    }
   };
 
   const handleEditEvent = () => {
@@ -63,8 +80,8 @@ function CalendarView() {
 
   const handleConfirmCancel = async () => {
     try {
-      const response = await axios.post(`/api/bookings/cancelLabSession/${selectedEvent.id}`, 
-        {}, 
+      const response = await axios.post(`/api/bookings/cancelLabSession/${selectedEvent.id}`,
+        {},
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -153,7 +170,7 @@ function CalendarView() {
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='view_body'>
         <div style={{ padding: '50px' }}>
-          <div style={{backgroundColor:'white'}}>
+          <div style={{ backgroundColor: 'white' }}>
             <Calendar
               localizer={localizer}
               events={events}
@@ -181,11 +198,24 @@ function CalendarView() {
               <p>Start: {selectedEvent.start.toLocaleString()}</p>
               <p>End: {selectedEvent.end.toLocaleString()}</p>
               <p>Attendees:</p>
-              <ul>
+              <div className="attendees-list">
                 {selectedEvent.attendees.map((attendee, index) => (
-                  <li key={index} style={{ color: 'white' }}>{attendee}</li>
+                  <div
+                    key={index}
+                    className="attendee-box"
+                    style={{
+                      backgroundColor:
+                        attendeeTypes[attendee] === 'booking_confirmation'
+                          ? 'green'
+                          : attendeeTypes[attendee] === 'rejected'
+                            ? 'red'
+                            : '#FFA000',
+                    }}
+                  >
+                    {attendee}
+                  </div>
                 ))}
-              </ul>
+              </div>
 
               <div className="button-group">
                 <button onClick={handleEditEvent}>Edit</button>
@@ -193,6 +223,7 @@ function CalendarView() {
               </div>
             </div>
           )}
+
         </div>
         {isCancelConfirmationVisible && (
           <div className="confirmation-box">
@@ -206,7 +237,7 @@ function CalendarView() {
           </div>
         )}
 
-        {isBoxVisible && <Profile profileRef={profileRef}/>}
+        {isBoxVisible && <Profile profileRef={profileRef} />}
       </div>
     </div>
   );
