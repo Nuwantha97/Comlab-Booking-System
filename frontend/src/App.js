@@ -22,7 +22,7 @@ import ViewUser from './pages/ViewUser';
 import UserList from './pages/UserList';
 import EditUser from './pages/editUser';
 import ToHome from './pages/ToHome';
-import ToView from './pages/ToView';
+import CalendarViewTo from './pages/ToView';
 import ToProfile from './pages/ToProfile';
 import ToNotification from './pages/ToNotification';
 
@@ -53,7 +53,7 @@ function App() {
             <Route path="/UserList" element={<UserList />} />
             <Route path="/editUser" element={<EditUser />} />
             <Route path="/toHome" element={<ToHome />} />
-            <Route path="/toView" element={<ToView />} />
+            <Route path="/ToView" element={<CalendarViewTo />} />
             <Route path="/toProfile" element={<ToProfile />} />
             <Route path="toNotification" element={<ToNotification />} />
             

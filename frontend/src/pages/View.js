@@ -202,15 +202,7 @@ function CalendarView() {
                 {selectedEvent.attendees.map((attendee, index) => (
                   <div
                     key={index}
-                    className="attendee-box"
-                    style={{
-                      backgroundColor:
-                        attendeeTypes[attendee] === 'booking_confirmation'
-                          ? 'green'
-                          : attendeeTypes[attendee] === 'rejected'
-                            ? 'red'
-                            : '#FFA000',
-                    }}
+                    className={`attendee-box ${attendeeTypes[attendee]}`}
                   >
                     {attendee}
                   </div>
@@ -223,6 +215,7 @@ function CalendarView() {
               </div>
             </div>
           )}
+
 
         </div>
         {isCancelConfirmationVisible && (

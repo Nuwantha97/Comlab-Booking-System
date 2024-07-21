@@ -9,56 +9,78 @@ import Profile from '../components/Profile';
 
 const localizer = momentLocalizer(moment);
 
-export default function () {
+export default function CalendarViewTo() {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isBoxVisible, setIsBoxVisible] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [attendeeTypes, setAttendeeTypes] = useState({});
   const profileRef = useRef(null);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const token = localStorage.getItem('token');
         const response = await axios.get('/api/bookings', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
-        const formattedEvents = response.data.map(booking => ({
-          id: booking._id,
+        setEvents(response.data.map(booking => ({
+          id: booking._id, // Add booking ID for deletion
+          title: booking.title,
           start: new Date(booking.startTime),
           end: new Date(booking.endTime),
-          title: booking.title,
-          description: booking.description
-        }));
-        setEvents(formattedEvents);
+          description: booking.description,
+          attendees: booking.attendees // Assuming attendees is an array of strings
+        })));
       } catch (error) {
         console.error('Error fetching bookings:', error);
       }
     };
 
     fetchBookings();
-  }, []);
+  }, [token]);
 
-  const handleSelectEvent = (event) => {
+  const handleSelectEvent = async (event) => {
     setSelectedEvent(event);
+    try {
+      const response = await axios.get(`/api/notification/attendeesAndTypeByBookingId/${event.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const attendeeTypesData = response.data.reduce((acc, obj) => {
+        const [email, type] = Object.entries(obj)[0];
+        acc[email] = type;
+        return acc;
+      }, {});
+      setAttendeeTypes(attendeeTypesData);
+      console.log(attendeeTypesData)
+    } catch (error) {
+      console.error('Error fetching attendee types:', error);
+    }
   };
 
-  const CustomToolbar = () => {
+  const CustomToolbar = ({ onNavigate }) => {
     return (
-      <div className="rbc-toolbar custom-toolbar">
-        <div className="toolbar-container">
-          <div className="toolbar-date">
-            <div className="toolbar-date-box">
-              {moment().format('MMMM')} {moment().format('YYYY')}
+      <div className="rbc-toolbar" style={{ backgroundColor: '#A6BBC1', padding: '10px' }}>
+        <div style={{ color: '#638793', display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <div>
+            <button onClick={() => onNavigate('PREV')}>&lt; Prev</button>
+            <button onClick={() => onNavigate('NEXT')}>Next &gt;</button>
+          </div>
+          <div style={{ marginLeft: '20px' }}>
+            <div style={{ color: '#fff' }}>
+              <div style={{ backgroundColor: '#638793', width: '120px', height: '50px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '16px' }}>
+                {moment(currentDate).format('MMMM YYYY')}
+              </div>
             </div>
           </div>
         </div>
       </div>
     );
   };
-
-  
 
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
@@ -81,72 +103,54 @@ export default function () {
     };
   }, [isBoxVisible]);
 
-  const customEventStyleGetter = (event, start, end, isSelected) => {
-    const style = {
-      backgroundColor: '#00b528', // Green background color
-      color: '#fff', // White text color
-      borderRadius: '0px', // Rounded corners
-      border: 'none', // No border
-      display: 'block', // Ensure block display
-      position: 'relative', // Relative positioning
-      textAlign: 'center', // Center text
-      height: '100%',
-      width: '100%'
-    };
-  
-    if (!event.start || !event.end) {
-      return { style };
-    }
-  
-    return {
-      style,
-      children: (
-        <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}></div>
-      ),
-    };
-  };
-  
-  const customFormats = {
-    dayFormat: (date, culture, localizer) => localizer.format(date, 'dddd', culture),
-    weekdayFormat: (date, culture, localizer) => localizer.format(date, 'dddd', culture)
-  };
-
   return (
     <div>
       <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
       <div className='view_body'>
-        <div className='calendar-container'>
-          <div className='calendar-wrapper'>
+        <div style={{ padding: '50px' }}>
+          <div style={{ backgroundColor: 'white' }}>
             <Calendar
               localizer={localizer}
               events={events}
               startAccessor="start"
               endAccessor="end"
-              style={{ height: '800px' }}
-              formats={customFormats}
-              eventPropGetter={customEventStyleGetter}
+              style={{ height: '600px' }}
+              date={currentDate}
+              onNavigate={(date) => setCurrentDate(date)}
+              eventPropGetter={(event, start, end, isSelected) => ({
+                style: {
+                  backgroundColor: '#00B528', // Green color
+                },
+              })}
               onSelectEvent={handleSelectEvent}
               components={{
                 toolbar: CustomToolbar,
               }}
-              dayPropGetter={date => ({
-                className: 'rbc-day-red', // Class for custom styles
-              })}
             />
           </div>
           {selectedEvent && (
             <div className="event-details">
-              <button className="close-button" onClick={() => setSelectedEvent(null)}>×</button>
+              <div className="view-close-button" onClick={() => setSelectedEvent(null)}>&times;</div> {/* Add close button */}
               <h3>{selectedEvent.title}</h3>
               <p>{selectedEvent.description}</p>
               <p>Start: {selectedEvent.start.toLocaleString()}</p>
               <p>End: {selectedEvent.end.toLocaleString()}</p>
+              <p>Attendees:</p>
+              <div className="attendees-list">
+                {selectedEvent.attendees.map((attendee, index) => (
+                  <div
+                    key={index}
+                    className={`attendee-box ${attendeeTypes[attendee]}`}
+                  >
+                    {attendee}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
-        {isBoxVisible && <Profile profileRef={profileRef}/>}
+        {isBoxVisible && <Profile profileRef={profileRef} />}
       </div>
     </div>
   );
 }
-
