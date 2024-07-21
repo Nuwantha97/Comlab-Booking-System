@@ -4,7 +4,7 @@ import Header from '../components/Header';
 import '../components/notification.css';
 import Profile from '../components/Profile';
 import { jwtDecode } from 'jwt-decode';
-import BeatLoader from "react-spinners/BeatLoader";
+import {BeatLoader} from "react-spinners/BeatLoader";
 
 export default function Notification() {
   const [notifications, setNotifications] = useState([]);

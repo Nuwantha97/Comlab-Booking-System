@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Buttons from '../components/submitButton';
 import FacultyImage from '../images/faculty.jpg';
-import BeatLoader from "react-spinners/BeatLoader";
+import {BeatLoader} from "react-spinners/BeatLoader";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');

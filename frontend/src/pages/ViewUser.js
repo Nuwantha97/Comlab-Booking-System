@@ -6,7 +6,7 @@ import Buttons from '../components/editButton';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import BeatLoader from "react-spinners/BeatLoader";
+import {BeatLoader} from "react-spinners/BeatLoader";
 
 const token = localStorage.getItem('token');
 console.log('token from viewuser.js:', token);
