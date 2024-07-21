@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Buttons from '../components/submitButton';
 import FacultyImage from '../images/faculty.jpg';
-import {BeatLoader} from "react-spinners/BeatLoader";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
   
         alert('Password updated successfully!');
         console.log('Update password response:', response.data);
-        navigate('./userSingIn');
+        navigate('/userSingIn');
       } else {
         // Handle error scenario where password or OTP does not match
         if (password !== confirmPassword) {
@@ -150,11 +150,12 @@ export default function ForgotPassword() {
                     onChange={(e) => setInOpt(e.target.value)}
                   />
                 </div>
+                <Buttons type="submit" text="Submit" borderRadius="50px" width="125px" height="50px" marginTop="20px" />
               </>
             )}
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-            <Buttons type="submit" text="Submit" borderRadius="50px" width="125px" height="50px" marginTop="20px" />
+            
           </form>
         </div>
         {/* Oblique line divider */}
