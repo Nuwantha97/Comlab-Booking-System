@@ -24,7 +24,7 @@ const transporter = nodemailer.createTransport({
 const sendMails = (email, otp) => {
   const mailOptions = {
     from: {
-      name: 'Admin',
+      name: 'LBS Administrator',
       address: process.env.EMAIL_USER
     },
     to: email,
@@ -55,7 +55,7 @@ Email Sender
 
   const mailOptions2 = {
     from: {
-      name: 'Email Sender',
+      name: 'LBS Administrator',
       address: process.env.EMAIL_USER
     },
     to: email,
@@ -81,7 +81,7 @@ Email Sender
 
   const mailOptions = {
     from: {
-      name: 'Email Sender',
+      name: 'LBS Administrator',
       address: process.env.EMAIL_USER
     },
     to: email,
@@ -111,7 +111,7 @@ Email Sender
 
   const mailOptions = {
     from: {
-      name: 'Email Sender',
+      name: 'LBS Administrator',
       address: process.env.EMAIL_USER
     },
     to: email,
@@ -144,7 +144,7 @@ Email Sender
 
   const mailOptions = {
     from: {
-      name: 'Email Sender',
+      name: 'LBS Administrator',
       address: process.env.EMAIL_USER
     },
     to: email,
