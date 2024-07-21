@@ -23,16 +23,16 @@ export default function Notification() {
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
-      setEmail(decodedToken.email || ""); 
+      setEmail(decodedToken.email || "");
     }
   }, [token]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(true);
-    setTimeout(()=> {
-        setLoading(false);
-      } ,500)
-    },[]);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500)
+  }, []);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -48,7 +48,7 @@ export default function Notification() {
           }
         });
         const combinedData = [...response1.data, ...response2.data];
-  
+
         setNotifications(combinedData);
         setFilteredNotifications(combinedData);
         console.log('Fetched combined notifications:', combinedData);
@@ -75,10 +75,10 @@ export default function Notification() {
       setFilteredNotifications(notifications);
     } else if (type === 'booking_confirmation') {
       // Filter both 'booking_confirmation' and 'reject' types
-      setFilteredNotifications(notifications.filter(notification => 
+      setFilteredNotifications(notifications.filter(notification =>
         notification.type === 'booking_confirmation' || notification.type === 'rejected' || notification.type === 'confirmed'
       ));
-    }  else {
+    } else {
       setFilteredNotifications(notifications.filter(notification => notification.type === type));
     }
   }, [notifications]);
@@ -95,6 +95,7 @@ export default function Notification() {
     setLabDetails(null);
     setSelectedNotification(null);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
   };
 
   const handleNotificationClick = (notification) => {
@@ -104,15 +105,15 @@ export default function Notification() {
       setIsDialogVisible(true);
     }
   };
-  
+
   const handleOkClick = async () => {
     console.log('handleOKClick called');
-  
+
     if (!selectedNotification) {
       console.error('No selected notification');
       return;
     }
-  
+
     try {
       const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
         headers: {
@@ -120,7 +121,7 @@ export default function Notification() {
         }
       });
       console.log('Marked notification as read:', response.data);
-  
+
       const updatedNotifications = notifications.map(notif =>
         notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
       );
@@ -129,16 +130,17 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-  
+
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
-  
+
   const handleAcceptClick = async () => {
     try {
       const response = await axios.post(
-        `/api/notification/updateIsReceiverConfirm/${selectedNotification._id}`, 
-        {}, 
+        `/api/notification/updateIsReceiverConfirm/${selectedNotification._id}`,
+        {},
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -150,9 +152,28 @@ export default function Notification() {
       console.error('Error updating isReceiverConfirm and booking status:', error);
     }
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
-  
+  const handleCancelClick2 = async () => {
+    try {
+      const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Marked notification as read:', response.data);
+
+      const updatedNotifications = notifications.map(notif =>
+        notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
+      );
+      setNotifications(updatedNotifications);
+      setFilteredNotifications(updatedNotifications);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+    setIsCancelConfirmLaterVisible(false);
+  };
   const handleCancelClick = async () => {
     try {
       const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
@@ -161,7 +182,7 @@ export default function Notification() {
         }
       });
       console.log('Marked notification as read:', response.data);
-  
+
       const updatedNotifications = notifications.map(notif =>
         notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
       );
@@ -170,11 +191,11 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-  
+
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
-  
+
   const handleConClick = async () => {
     try {
       const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
@@ -183,7 +204,7 @@ export default function Notification() {
         }
       });
       console.log('Marked notification as read:', response.data);
-  
+
       const updatedNotifications = notifications.map(notif =>
         notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
       );
@@ -192,15 +213,15 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-  
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
-  
+
   const handleRejectClick = async () => {
     try {
-      const response = await axios.post(`/api/notification/reject/${selectedNotification._id}`, 
-        {}, 
+      const response = await axios.post(`/api/notification/reject/${selectedNotification._id}`,
+        {},
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -212,18 +233,21 @@ export default function Notification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
-  
+
   const handleConfirmationClick = async () => {
+    if (!selectedNotification) {
+      return;
+    }
     setIsCancelConfirmLaterVisible(true);
-    window.location.reload(); // Refresh the page
   };
-  
+
   const handleConfirmeLabClick = async () => {
     try {
-      await axios.post(`/api/notification/confirmedLab/${selectedNotification._id}`, 
-        {}, 
+      await axios.post(`/api/notification/confirmedLab/${selectedNotification._id}`,
+        {},
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -235,13 +259,14 @@ export default function Notification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
-  
+
   const handleCancelLabClick = async () => {
     try {
-      await axios.post(`/api/notification/updateIsLabStatus/${selectedNotification._id}`, 
-        {}, 
+      await axios.post(`/api/notification/updateIsLabStatus/${selectedNotification._id}`,
+        {},
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -253,10 +278,16 @@ export default function Notification() {
       console.error('Error updating notification type:', error);
     }
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
+  };
+
+  const handleLeterOnclick = () => {
+    handleCancelClick2();
+    handleCancelClick();
   };
 
   return (
@@ -266,38 +297,38 @@ export default function Notification() {
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
           <ul className='toolbars'>
-            <button 
-              className={`toolbar-button ${selectedButton === '' ? 'selected' : ''}`} 
+            <button
+              className={`toolbar-button ${selectedButton === '' ? 'selected' : ''}`}
               onClick={() => handleButtonClick('')}
             >
               All
             </button>
-            <button 
-              className={`toolbar-button ${selectedButton === 'unread' ? 'selected' : ''}`} 
+            <button
+              className={`toolbar-button ${selectedButton === 'unread' ? 'selected' : ''}`}
               onClick={() => handleButtonClick('unread')}
             >
               Unread
             </button>
-            <button 
-              className={`toolbar-button ${selectedButton === 'request' ? 'selected' : ''}`} 
+            <button
+              className={`toolbar-button ${selectedButton === 'request' ? 'selected' : ''}`}
               onClick={() => handleButtonClick('request')}
             >
               Requests
             </button>
-            <button 
-              className={`toolbar-button ${selectedButton === 'cancellation' ? 'selected' : ''}`} 
+            <button
+              className={`toolbar-button ${selectedButton === 'cancellation' ? 'selected' : ''}`}
               onClick={() => handleButtonClick('cancellation')}
             >
               Cancellations
             </button>
-            <button 
-              className={`toolbar-button ${selectedButton === 'reminder' ? 'selected' : ''}`} 
+            <button
+              className={`toolbar-button ${selectedButton === 'reminder' ? 'selected' : ''}`}
               onClick={() => handleButtonClick('reminder')}
             >
               Reminders
             </button>
-            <button 
-              className={`toolbar-button ${selectedButton === 'booking_confirmation' ? 'selected' : ''}`} 
+            <button
+              className={`toolbar-button ${selectedButton === 'booking_confirmation' ? 'selected' : ''}`}
               onClick={() => handleButtonClick('booking_confirmation')}
             >
               Booking Confirmations
@@ -305,25 +336,25 @@ export default function Notification() {
           </ul>
         </div>
         <div className="right-side">
-        {loading ? (
+          {loading ? (
             <div className="loading-spinner">
               <BeatLoader color={"#000000"} loading={true} size={20} />
             </div>
           ) : (
-          <div className="scroll-container">
-            <ul className="preview-list">
-              {filteredNotifications.map((notification, index) => (
-                <li
-                  key={index}
-                  onClick={() => handleNotificationClick(notification)}
-                  className={`notification-item ${notification === selectedNotification ? 'selected' : ''} ${isDialogVisible ? 'disabled' : ''}`}
-                >
-                  {notification.type}_{notification.labSessionTitle}
-                </li>
-              ))}
-            </ul>
-          </div>
-             )}
+            <div className="scroll-container">
+              <ul className="preview-list">
+                {filteredNotifications.map((notification, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleNotificationClick(notification)}
+                    className={`notification-item ${notification === selectedNotification ? 'selected' : ''} ${isDialogVisible ? 'disabled' : ''}`}
+                  >
+                    {notification.type}_{notification.labSessionTitle}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {isDialogVisible && labDetails && (
             <div className="lab-details-box">
               <div className="lab-details">
@@ -332,10 +363,10 @@ export default function Notification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>{labDetails.type}</h2>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p>Message: {labDetails.message}</p>
@@ -350,10 +381,10 @@ export default function Notification() {
                     <h2>Lab Session Request</h2>
                     <p>From: {labDetails.senderEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p><b>You have a pending lab session booking request for the above details.</b></p>
@@ -363,17 +394,17 @@ export default function Notification() {
                     </div>
                   </div>
                 )}
-                
+
                 {selectedNotification.type === 'cancellation' && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Lab Cancellation</h2>
                     <p>From: {labDetails.senderEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p><b>Above mentioned lab session was cancelled.</b></p>
@@ -387,10 +418,10 @@ export default function Notification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Reminder</h2>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p><b>{calculateRemainingTime(labDetails.labDate, labDetails.labStartTime)} minutes left for the lab session to start.</b></p>
@@ -405,10 +436,10 @@ export default function Notification() {
                     <h2>Booking Confirmation</h2>
                     <p>Who Accepted: {labDetails.receiverEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p><b>Your Request was accepted.</b></p>
@@ -419,13 +450,15 @@ export default function Notification() {
                   </div>
                 )}
                 {isCancelConfirmationLaterVisible && (
-                  <div className="dialog-box-noti">
-                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
+                  <div className="CancelConfirmation-dialog-box">
+                    <button className="close-button" onClick={() => { handleCancelClick2(); window.location.reload(); }}>x</button>
                     <h2>Cancel/Confirme lab session?</h2>
                     <p><br /> <br /> </p>
-                    <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
-                    <button onClick={handleConfirmeLabClick} className="ok-button"> Confirme lab </button>
-                    <button onClick={handleCancelClick} className="ok-button"> Later on </button>
+                    <div className="button-group">
+                      <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
+                      <button onClick={handleConfirmeLabClick} className="ok-button"> Confirme lab </button>
+                      <button onClick={handleLeterOnclick} className="ok-button"> Later on </button>
+                    </div>
                   </div>
                 )}
                 {selectedNotification.type === 'rejected' && labDetails.senderEmail === uEmail && (
@@ -434,10 +467,10 @@ export default function Notification() {
                     <h2>Rejection Notice</h2>
                     <p>rejected by: {labDetails.receiverEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p><b>Your Request was rejected.</b></p>
@@ -452,10 +485,10 @@ export default function Notification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Rejection Notice</h2>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p><b>You have rejected the lab session.</b></p>
@@ -469,10 +502,10 @@ export default function Notification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>confirmed Notice</h2>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p><b>The lab session has been confirmed.</b></p>
