@@ -307,7 +307,6 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-
 //Delete the user by id
 router.delete('/:id', auth, async (req, res) => {
   try {
@@ -366,6 +365,40 @@ router.post('/update-password', async (req, res) => {
     await user.save();
     await sendPasswordChangeNotification(user.firstName, user.lastName, user.email, user.role);
     res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.get('/getDetails/:id', auth, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId).select('-password'); // Exclude password field
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+//Update user name by id
+router.post('/updateName/:id', auth, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { firstName, lastName } = req.body;
+    const updateUser = { firstName, lastName };
+
+    const user1 = await User.findById(userId).select('-password');
+    const user = await User.findByIdAndUpdate(req.params.id, updateUser, { new: true });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    await sendEditNotification(user1.firstName, user1.lastName, user1.email, user1.role);
+    res.json({ message: 'User updated successfully', updateUser });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });

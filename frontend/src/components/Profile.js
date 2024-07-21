@@ -8,7 +8,7 @@ import axios from 'axios';
 
 export default function Profile({ profileRef }) {
   const navigate = useNavigate();
-  const [userData, setUser] = useState('');
+  const [userData, setUser] = useState([]);
   const token = localStorage.getItem('token');
   console.log('token from admin profile component:', token);
 
@@ -21,7 +21,7 @@ export default function Profile({ profileRef }) {
           }
         });
         setUser(response.data);
-        console.log('token details:', response.data);
+        console.log("setUserdata", response.data);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -40,7 +40,7 @@ export default function Profile({ profileRef }) {
     if (userData.role === 'admin') {
       navigate('/adminprofile');
     } else if(userData.role === 'to') {
-      navigate('/toProfile')
+      navigate('/toProfile',{state: {id:userData._id}})
     } else {
       navigate('/');
     }

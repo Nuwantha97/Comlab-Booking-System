@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import { Link, useLocation } from 'react-router-dom';
 import '../components/toProfile.css';
 import userImage from '../images/user-image.png';
@@ -16,14 +16,13 @@ export default function ToProfile() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(""); 
+  const [role, setRole] = useState("");
   const [textContainerText, setTextContainerText] = useState("Your Account");
   const navigate = useNavigate();
-  
+
   const location = useLocation();
   const token = localStorage.getItem('token');
   console.log(location.state);
-  
   useEffect(() => {
     if (location.state && location.state.id) {
       setId(location.state.id);
@@ -31,10 +30,12 @@ export default function ToProfile() {
   }, [location.state]);
 
   useEffect(() => {
+
     if (id) {
+
       const fetchUser = async () => {
         try {
-          const response = await axios.get(`/api/users/${id}`, {
+          const response = await axios.get(`/api/users/getDetails/${id}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -44,7 +45,7 @@ export default function ToProfile() {
           setLastName(user.lastName);
           setEmail(user.email);
           setRole(user.role);
-          console.log('Fetched user:', user);
+          console.log('Fetched user:', user.data);
           setTextContainerText("Edit User Details");
         } catch (error) {
           console.error('Error fetching user:', error);
@@ -63,33 +64,21 @@ export default function ToProfile() {
     event.preventDefault();
     const userData = {
       firstName,
-      lastName,
-      email,
-      password,
-      role
+      lastName
     };
-
+    console.log('data',userData);
     try {
       let response;
       if (id) {
-        response = await axios.put(`/api/users/${id}`, userData, {
+        response = await axios.post(`/api/users/updateName/${id}`, userData, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
         });
         alert('User updated successfully!');
-      } else {
-        response = await axios.post('/api/users/add', userData, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        alert('User added successfully!');
-      }
-      console.log('Save user response:', response.data);
-      navigate('/adminhome'); 
+      } 
+      navigate('/toHome');
     } catch (error) {
       console.error('Error saving user:', error);
       alert('Error saving user');
@@ -100,9 +89,9 @@ export default function ToProfile() {
     navigate('/forgotpassword');
   };
 
-  return (    
+  return (
     <div className='main-container'>
-      <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
+      <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='container-1-to'>
         <div className='container-2-to'>
           <div className='user-logo-details-to'>
@@ -114,7 +103,7 @@ export default function ToProfile() {
           <div className='user-input-details-to'>
             <div className="inputs-wrapper-to">
               <div className='userInputs-to'>
-                <form onSubmit={handleSave} className='form-container-to'>  
+                <form onSubmit={handleSave} className='form-container-to'>
                   <label htmlFor="name" className="input-label-to">Name</label><br />
                   <input
                     type="text"
@@ -136,7 +125,6 @@ export default function ToProfile() {
                       name="password"
                       className="input-field-password-to"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                     /><br />
                     <button type="button" className="changeButton-to" onClick={handleChangeClick}>Change</button>
                   </div>
@@ -147,22 +135,17 @@ export default function ToProfile() {
                     name="email"
                     className="input-field-to"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                   /><br />
                   <label htmlFor="role" className="input-label-to">Role</label><br />
-                  <select
+                  <input
+                    type="text"
                     id="role"
                     name="role"
                     className="input-field-to"
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  >
-                    <option value="to">To</option>
-                    <option value="lecturer">Lecturer</option>
-                    <option value="instructor">Instructor</option>
-                  </select><br />
+                  /><br />
                   <div className="button-save-to">
-                    <Buttons   type="submit" text="Save" borderRadius="50px" width="125px" height="50px" marginTop="20px" />
+                    <Buttons type="submit" text="Save" borderRadius="50px" width="125px" height="50px" marginTop="20px" />
                   </div>
                 </form>
               </div>
