@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import '../components/toProfile.css';
 import userImage from '../images/user-image.png';
 import Buttons from '../components/submitButton';
@@ -19,7 +19,7 @@ export default function ToProfile() {
   const [role, setRole] = useState("");
   const [textContainerText, setTextContainerText] = useState("Your Account");
   const navigate = useNavigate();
-
+  
   const location = useLocation();
   const token = localStorage.getItem('token');
   console.log(location.state);
@@ -76,6 +76,7 @@ export default function ToProfile() {
             'Authorization': `Bearer ${token}`
           }
         });
+        console.log(response.data);
         alert('User updated successfully!');
       } 
       navigate('/toHome');

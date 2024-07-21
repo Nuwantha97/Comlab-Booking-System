@@ -38,10 +38,15 @@ export default function Profile({ profileRef }) {
 
   const handleProfileSettingsClick = () => {
     if (userData.role === 'admin') {
-      navigate('/adminprofile');
+      navigate('/adminprofile', {state: {id:userData._id}});
     } else if(userData.role === 'to') {
       navigate('/toProfile',{state: {id:userData._id}})
-    } else {
+    } else if(userData.role === 'lecturer'){
+      navigate('/lecturerInstructorProfile',{state: {id:userData._id}})
+    }else if(userData.role === 'instructor'){
+      navigate('/lecturerInstructorProfile',{state: {id:userData._id}})
+    }
+    else{
       navigate('/');
     }
   };

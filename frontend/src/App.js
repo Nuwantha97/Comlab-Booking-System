@@ -24,6 +24,7 @@ import ToHome from './pages/ToHome';
 import CalendarViewTo from './pages/ToView';
 import ToProfile from './pages/ToProfile';
 import ToNotification from './pages/ToNotification';
+import LecturerInstructorProfile from './pages/LecturerInstructorProfile';
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
             <Route path="/toHome" element={<ToHome />} />
             <Route path="/ToView" element={<CalendarViewTo />} />
             <Route path="/toProfile" element={<ToProfile />} />
+            <Route path="/lecturerInstructorProfile" element={<LecturerInstructorProfile />} />
             <Route path="toNotification" element={<ToNotification />} />
             
           </Routes>

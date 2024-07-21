@@ -5,13 +5,11 @@ import '../components/toProfile.css';
 import userImage from '../images/user-image.png';
 import Buttons from '../components/submitButton';
 import '../App.css';
+import Header from '../components/Header';
 import Profile from '../components/Profile';
 import axios from 'axios';
-import HeaderAdmin from '../components/HeaderAdmin';
 
-
-
-export default function AdminProfile() {
+export default function LecturerInstructorProfile() {
   const [id, setId] = useState('');
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -25,6 +23,7 @@ export default function AdminProfile() {
   const location = useLocation();
   const token = localStorage.getItem('token');
   console.log(location.state);
+
   useEffect(() => {
     if (location.state && location.state.id) {
       setId(location.state.id);
@@ -32,9 +31,7 @@ export default function AdminProfile() {
   }, [location.state]);
 
   useEffect(() => {
-
     if (id) {
-
       const fetchUser = async () => {
         try {
           const response = await axios.get(`/api/users/getDetails/${id}`, {
@@ -68,7 +65,7 @@ export default function AdminProfile() {
       firstName,
       lastName
     };
-    console.log('data',userData);
+    console.log('data', userData);
     try {
       let response;
       if (id) {
@@ -81,7 +78,7 @@ export default function AdminProfile() {
         console.log(response.data);
         alert('User updated successfully!');
       } 
-      navigate('/adminhome');
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error saving user:', error);
       alert('Error saving user');
@@ -94,7 +91,7 @@ export default function AdminProfile() {
 
   return (
     <div className='main-container'>
-      <HeaderAdmin onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
+      <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className='container-1-to'>
         <div className='container-2-to'>
           <div className='user-logo-details-to'>
