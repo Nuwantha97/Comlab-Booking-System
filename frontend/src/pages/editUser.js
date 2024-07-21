@@ -59,6 +59,10 @@ export default function AddUser() {
     setIsBoxVisible(!isBoxVisible);
   };
 
+  const handleImageClick = () => {
+    navigate('/editImg', { state: { id: id } });
+  };
+
   const handleSave = async (event) => {
     event.preventDefault();
     const userData = {
@@ -165,7 +169,13 @@ export default function AddUser() {
         </div>
         <div className='container-3-admin'>
           <div className='user-logo-details-admin'>
-            <img src={UserImageAdmin} alt="user-photograph" className='userImageAdmin' />
+            <img
+              src={`/api/images/get/${id}`}
+              alt="user-photograph"
+              className='userImageAdmin'
+              onError={(e) => { e.target.onerror = null; e.target.src = UserImageAdmin; }}
+              onClick={handleImageClick}
+            />
           </div>
         </div>
         {isBoxVisible && <Profile />}
