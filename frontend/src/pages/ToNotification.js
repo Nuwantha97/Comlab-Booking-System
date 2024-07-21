@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback ,useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
-import ToHeader from '../components/ToHeder'
+import ToHeader from '../components/ToHeder';
 import '../components/notification.css';
 import Profile from '../components/Profile';
 
@@ -21,7 +21,7 @@ export default function ToNotification() {
       try {
         const response1 = await axios.get('/api/notification/', {
           headers: {
-            'Authorization': `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           }
         });
         setNotifications(response1.data);
@@ -43,7 +43,11 @@ export default function ToNotification() {
         const labStartTime = new Date(notification.labDate);
         const timeDiff = labStartTime.getTime() - now.getTime();
         const minutesDiff = Math.floor(timeDiff / (1000 * 60));
-        return (labStartTime.toDateString() === now.toDateString() && minutesDiff <= 30 && minutesDiff >= 0);
+        return (
+          labStartTime.toDateString() === now.toDateString() &&
+          minutesDiff <= 30 &&
+          minutesDiff >= 0
+        );
       });
       setFilteredNotifications(nearbyReminders);
     } else if (type === '') {
@@ -61,7 +65,7 @@ export default function ToNotification() {
 
   const handleButtonClick = (type) => {
     setSelectedType(type);
-    localStorage.setItem('selectedType', type); // Save the selected type to local storage
+    localStorage.setItem('selectedType', type);
     setLabDetails(null);
     setSelectedNotification(null);
     setIsDialogVisible(false);
@@ -74,8 +78,6 @@ export default function ToNotification() {
   };
 
   const handleOkClick = async () => {
-    console.log('handleOKClick called');
-
     if (!selectedNotification) {
       console.error('No selected notification');
       return;
@@ -105,8 +107,8 @@ export default function ToNotification() {
   const handleAcceptClick = async () => {
     try {
       const response = await axios.post(
-        `/api/notification/updateIsReceiverConfirm/${selectedNotification._id}`, 
-        {}, 
+        `/api/notification/updateIsReceiverConfirm/${selectedNotification._id}`,
+        {},
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -160,15 +162,14 @@ export default function ToNotification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
   };
 
   const handleRejectClick = async () => {
     try {
-      const response = await axios.post(`/api/notification/reject/${selectedNotification._id}`, 
-        {}, 
+      const response = await axios.post(`/api/notification/reject/${selectedNotification._id}`,
+        {},
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -189,6 +190,7 @@ export default function ToNotification() {
 
   const handleClickOutside = (event) => {
     if (profileRef.current && !profileRef.current.contains(event.target)) {
+      
       setIsBoxVisible(false);
     }
   };
@@ -206,7 +208,7 @@ export default function ToNotification() {
 
   return (
     <div>
-      <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible}/>
+      <ToHeader onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="notification-container">
         <div className="left-side">
           <h2 className='title'>Notifications</h2>
@@ -241,10 +243,10 @@ export default function ToNotification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>{labDetails.type}</h2>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
                     <p>Message: {labDetails.message}</p>
@@ -258,43 +260,67 @@ export default function ToNotification() {
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
                     <h2>Lab Session Request</h2>
                     <p>From: {labDetails.senderEmail}</p>
-                    <p>Session Title: {labDetails.labSessionTitle}</p>
-                    <p>Date: {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}</p>
-                    <p>Time: {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} - {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                    <p>{labDetails.labSessionTitle}<br />
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
+                      {' '}
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
+                      {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                    </p>
+                    <p><b>You have a pending lab session booking request for the above details.</b></p>
                     <div className="button-group">
-                      <button onClick={handleAcceptClick} className="accept-button">Accept</button>
-                      <button onClick={handleRejectClick} className="reject-button">Reject</button>
+                      <button onClick={handleAcceptClick} className="ok-button"> Accept </button>
+                      <button onClick={handleRejectClick} className="ok-button"> Reject </button>
                     </div>
                   </div>
                 )}
-                {selectedNotification.type === 'confirmed' && (
-                  <div className="dialog-box-noti">
-                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>>
-                    <h2>confirmed Notice</h2>
-                    <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
-                      {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
-                      {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
-                    </p>
-                    <p><b>The lab session has been confirmed.</b></p>
-
-                    <button onClick={handleConClick} className="ok-button">OK</button>
-                  </div>
-                )}
-                {selectedNotification.type === 'rejected' && (
+                {selectedNotification.type === 'cancellation' && (
                   <div className="dialog-box-noti">
                     <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
-                    <h2>Rejection Notice</h2>
+                    <h2>Lab Cancellation</h2>
+                    <p>From: {labDetails.senderEmail}</p>
                     <p>{labDetails.labSessionTitle}<br />
-                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })} 
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
                       {' '}
-                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} 
-                      {' - '} 
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
                       {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </p>
-                    <p><b>You have rejected the lab session.</b></p>
+                    <p><b>Above mentioned lab session was cancelled.</b></p>
+                    <button onClick={handleCancelClick} className="ok-button">
+                      OK
+                    </button>
+                  </div>
+                )}
+                {selectedNotification.type === 'reminder' && (
+                  <div className="dialog-box-noti">
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
+                    <h2>Reminder</h2>
+                    <p>{labDetails.labSessionTitle}<br />
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
+                      {' '}
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
+                      {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                    </p>
+                    <p><b>{calculateRemainingTime(labDetails.labDate, labDetails.labStartTime)} minutes left for the lab session to start.</b></p>
+                    <button onClick={handleConClick} className="ok-button">
+                      OK
+                    </button>
+                  </div>
+                )}
+                {(selectedNotification.type === 'confirmed' || selectedNotification.type === 'rejected') && (
+                  <div className="dialog-box-noti">
+                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
+                    <h2>{labDetails.type}</h2>
+                    <p>{labDetails.labSessionTitle}<br />
+                      {new Date(labDetails.labDate).toLocaleDateString('en-US', { weekday: 'short', month: '2-digit', day: '2-digit', year: 'numeric' })}
+                      {' '}
+                      {new Date(labDetails.labStartTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                      {' - '}
+                      {new Date(labDetails.labEndTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                    </p>
+                    <p><b>The lab session has been {labDetails.type}.</b></p>
                     <button onClick={handleCancelClick} className="ok-button">OK</button>
                   </div>
                 )}
@@ -303,7 +329,15 @@ export default function ToNotification() {
           )}
         </div>
       </div>
-      {isBoxVisible && <Profile profileRef={profileRef}/>}
+      {isBoxVisible && <Profile ref={profileRef} />}
     </div>
   );
+}
+
+function calculateRemainingTime(labDate, labStartTime) {
+  const now = new Date();
+  const sessionStartTime = new Date(`${labDate} ${labStartTime}`);
+  const timeDiff = sessionStartTime.getTime() - now.getTime();
+  const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+  return minutesDiff;
 }
