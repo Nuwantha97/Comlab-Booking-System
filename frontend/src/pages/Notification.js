@@ -84,6 +84,7 @@ export default function Notification() {
     setLabDetails(null);
     setSelectedNotification(null);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
   };
 
   const handleNotificationClick = (notification) => {
@@ -115,8 +116,8 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
   
@@ -135,8 +136,8 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating isReceiverConfirm and booking status:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
   
@@ -157,9 +158,27 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
     window.location.reload(); // Refresh the page
+  };
+  const handleCancelClick2 = async () => {
+    try {
+      const response = await axios.put(`/api/notification/markRead/${selectedNotification._id}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('Marked notification as read:', response.data);
+  
+      const updatedNotifications = notifications.map(notif =>
+        notif._id === selectedNotification._id ? { ...notif, isRead: true } : notif
+      );
+      setNotifications(updatedNotifications);
+      setFilteredNotifications(updatedNotifications);
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+    setIsCancelConfirmLaterVisible(false);
   };
   
   const handleConClick = async () => {
@@ -179,8 +198,8 @@ export default function Notification() {
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
   
@@ -198,13 +217,15 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
   
   const handleConfirmationClick = async () => {
-    setIsDialogVisible(false);
+    if (!selectedNotification) {
+      return;
+    }
     setIsCancelConfirmLaterVisible(true);
   };
   
@@ -222,8 +243,8 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
   
@@ -241,12 +262,16 @@ export default function Notification() {
     } catch (error) {
       console.error('Error updating notification type:', error);
     }
-    setIsCancelConfirmLaterVisible(true);
     setIsDialogVisible(false);
+    setIsCancelConfirmLaterVisible(false);
     window.location.reload(); // Refresh the page
   };
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
+  };
+  const handleLeterOnclick = () => {
+    handleCancelClick2();
+    handleCancelClick();
   };
 
   return (
@@ -372,14 +397,14 @@ export default function Notification() {
                   </div>
                 )}
                 {isCancelConfirmationLaterVisible && (
-                  <div className="dialog-box-noti">
-                    <button className="close-button" onClick={() => { handleCancelClick(); window.location.reload(); }}>x</button>
+                  <div className="CancelConfirmation-dialog-box">
+                    <button className="close-button" onClick={() => { handleCancelClick2(); window.location.reload(); }}>x</button>
                     <h2>Cancel/Confirme lab session?</h2>
                     <p><br /> <br /> </p>
                     <div className="button-group">
                       <button onClick={handleCancelLabClick} className="ok-button"> Cancel lab </button>
                       <button onClick={handleConfirmeLabClick} className="ok-button"> Confirme lab </button>
-                      <button onClick={handleCancelClick} className="ok-button"> Later on </button>
+                      <button onClick={handleLeterOnclick} className="ok-button"> Later on </button>
                     </div>
                   </div>
                 )}

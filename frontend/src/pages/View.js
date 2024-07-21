@@ -63,8 +63,7 @@ function CalendarView() {
 
   const handleConfirmCancel = async () => {
     try {
-      const response = await axios.post(
-        `/api/bookings/cancelLabSession/${selectedEvent.id}`, 
+      const response = await axios.post(`/api/bookings/cancelLabSession/${selectedEvent.id}`, 
         {}, 
         {
           headers: {
@@ -176,6 +175,7 @@ function CalendarView() {
           </div>
           {selectedEvent && (
             <div className="event-details">
+              <div className="view-close-button" onClick={() => setSelectedEvent(null)}>&times;</div> {/* Add close button */}
               <h3>{selectedEvent.title}</h3>
               <p>{selectedEvent.description}</p>
               <p>Start: {selectedEvent.start.toLocaleString()}</p>
@@ -196,6 +196,7 @@ function CalendarView() {
         </div>
         {isCancelConfirmationVisible && (
           <div className="confirmation-box">
+            <div className="view-close-button" onClick={handleCancelCancel}>&times;</div> {/* Add close button */}
             <h2>Cancel scheduled lab session?</h2>
             <p>You will permanently cancel this scheduled lab session</p>
             <div className="button-group">

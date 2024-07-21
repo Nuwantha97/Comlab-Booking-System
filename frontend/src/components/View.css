@@ -177,3 +177,12 @@
 .confirmation-box .not-now-button {
   background-color: #1a4350; /* Custom background color */
 }
+
+.view-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #b30000;
+}

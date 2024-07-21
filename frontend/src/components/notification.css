@@ -115,7 +115,7 @@
   transform: translate(-50%, -50%);
   z-index: 100;
   text-align: left;
-  position: relative; 
+  position: absolute; 
   color: #366574;
 }
 
@@ -123,7 +123,7 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  color: #366574;
+  color: #a4015b;
   border: none;
   font-size: 20px;
   cursor: pointer;
@@ -151,4 +151,18 @@
 
 .ok-button:hover {
   background-color: #27485a;
+}
+
+.CancelConfirmation-dialog-box{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(231, 244, 253);
+  padding: 20px;
+  border: 1px solid #ccc;
+  z-index: 9999;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+  color: #366574;
+  border-radius: 20px;
 }
