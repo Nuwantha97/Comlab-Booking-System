@@ -132,7 +132,7 @@ export default function ToProfile() {
                       className="input-field-password-to"
                       value={password}
                     /><br />
-                    <button type="button" className="changeButton-to" onClick={handleChangeClick}>Change</button>
+                    <button type="button" className="changeButton-to" style={{border:'solid, 2px', padding:'3px'}} onClick={handleChangeClick}>Change</button>
                   </div>
                   <label htmlFor="email" className="input-label-to">Email</label><br />
                   <input

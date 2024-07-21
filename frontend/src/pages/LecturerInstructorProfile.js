@@ -96,14 +96,14 @@ export default function LecturerInstructorProfile() {
       <div className='container-1-to'>
         <div className='container-2-to'>
           <div className='user-logo-details-to'>
-            <h3 className='text-1'>{textContainerText}</h3>
+            <h3 className='text-1' style={{whiteSpace:'nowrap'}}>{textContainerText}</h3>
             <img
               src={`/api/images/get/${id}`}
               alt="user-photograph"
               className='userImage-to'
               onError={(e) => { e.target.onerror = null; e.target.src = userImage; }}
             />
-            <button className='buttons1' onClick={handleEditClick}>Edit</button>
+            <button className='buttons1' style={{borderRadius:'50px', width:'125px' ,height:'50px',  paddingTop:'10px' , borderColor:'white', borderWidth:'10px'}} onClick={handleEditClick}>Edit</button>
           </div>
 
           <div className='user-input-details-to'>
@@ -132,7 +132,7 @@ export default function LecturerInstructorProfile() {
                       className="input-field-password-to"
                       value={password}
                     /><br />
-                    <button type="button" className="changeButton-to" onClick={handleChangeClick}>Change</button>
+                    <button type="button" className="changeButton-to" style={{border:'solid, 2px', padding:'3px'}} onClick={handleChangeClick}>Change</button>
                   </div>
                   <label htmlFor="email" className="input-label-to">Email</label><br />
                   <input
@@ -151,7 +151,7 @@ export default function LecturerInstructorProfile() {
                     value={role}
                   /><br />
                   <div className="button-save-to">
-                    <button type="submit" className='button'>Save</button>
+                    <button type="submit" className='button' style={{borderRadius:'50px', width:'125px' ,height:'50px', marginTop:'20px', paddingTop:'10px' , borderColor:'#638793',borderWidth:'2px'}}>Save</button>
                   </div>
                 </form>
               </div>
