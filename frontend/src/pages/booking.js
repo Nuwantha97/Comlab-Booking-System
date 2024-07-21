@@ -233,8 +233,9 @@ export default function MyApp() {
               <div className={rectangleClass}>
                 <div>{formattedDate}</div>
                 <div>{startTime} - {endTime}</div>
+                <div><br/>{availabilityMessage && <p className="availability-message">{availabilityMessage}</p>} </div>
               </div>
-              {availabilityMessage && <p className="availability-message">{availabilityMessage}</p>}
+              
             </div>
           </div>
           <div className="left">
