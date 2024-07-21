@@ -63,6 +63,7 @@ export default function UserSignIn() {
         setErrorMessage('Server error');
       }
     }
+    window.location.reload(); // Refresh the page
   };
 
   return (
