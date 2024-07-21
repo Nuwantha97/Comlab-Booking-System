@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer'); 
+const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { setTimeout } = require('timers/promises');
 require('dotenv').config();
@@ -122,6 +122,39 @@ Email Sender
   return transporter.sendMail(mailOptions);
 };
 
+const sendPasswordChangeNotification = (firstName, lastName, email, role) => {
+  const subject = "Your Password Has Been Successfully Changed";
+  const text = `
+Dear ${firstName} ${lastName},
+
+We wanted to let you know that your password has been successfully changed.
+
+Here are your updated account details:
+Email: ${email}
+Role: ${role}
+
+For your security, please ensure that you never share your password with anyone. If you have any concerns or questions, please feel free to reach out to our support team.
+
+If you did not request this change or have any questions, please contact our support team immediately.
+Thank you for using our service.
+
+Best regards,
+Email Sender
+`;
+
+  const mailOptions = {
+    from: {
+      name: 'Email Sender',
+      address: process.env.EMAIL_USER
+    },
+    to: email,
+    subject: subject,
+    text: text,
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
 // Endpoint to verify email and send OTP
 router.get('/verify-email', async (req, res) => {
   try {
@@ -139,13 +172,13 @@ router.get('/verify-email', async (req, res) => {
     await user.save();
 
     setTimeout(async () => {
-      user.otp = ''; 
+      user.otp = '';
       await user.save();
       console.log(`OTP removed for ${email} after 5 minutes.`);
     }, 5 * 60 * 1000);
 
     await sendMails(email, otp);
-    res.json({ message: 'Email found', otp ,email});
+    res.json({ message: 'Email found', otp, email });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
@@ -171,89 +204,89 @@ router.post('/add', auth, async (req, res) => {
 
 
 //Get all users 
-router.get('/getall', auth, async(req, res) => {
+router.get('/getall', auth, async (req, res) => {
   console.log('hit getall');
-  try{
-    if(req.user.role !== 'admin'){
-      return res.status(403).json({error: "Access denied. You're not an admin."});
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. You're not an admin." });
     }
-    const getUsers = await User.find({role:{$ne: 'admin'}});
+    const getUsers = await User.find({ role: { $ne: 'admin' } });
     res.json(getUsers);
   }
-  catch(error){
+  catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Server error'});
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 //Get names and emails
-router.get('/getNames', auth, async(req, res) => {
-  try{
-    if(req.user.role !== 'lecturer' && req.user.role !== 'instructor'){
-      return res.status(403).json({error: "Access denied. You're not an admin."});
+router.get('/getNames', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'lecturer' && req.user.role !== 'instructor') {
+      return res.status(403).json({ error: "Access denied. You're not an admin." });
     }
-    const getUsers = await User.find({role:{$ne: 'admin'}});
+    const getUsers = await User.find({ role: { $ne: 'admin' } });
     res.json(getUsers);
   }
-  catch(error){
+  catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Server error'});
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 //Get all the lectures
-router.get('/lecturers', auth, async(req, res) =>{
-  try{
-    if(req.user.role !== 'admin'){
-      return res.status(403).json({error: "Access denied. You're not an admin."});
+router.get('/lecturers', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. You're not an admin." });
     }
-    const lectures = await User.find({role:'lecturer'});
+    const lectures = await User.find({ role: 'lecturer' });
     res.json(lectures);
   }
-  catch(error){
+  catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Server error'});
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 //Get all tos
-router.get('/tos', auth, async(req, res) =>{
-  try{
-    if(req.user.role !== 'admin'){
-      return res.status(403).json({error: "Access denied. You're not an admin."});
+router.get('/tos', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. You're not an admin." });
     }
-    const tos = await User.find({role:'to'});
+    const tos = await User.find({ role: 'to' });
     res.json(tos);
   }
-  catch(error){
+  catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Server error'});
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 //Get all instructors
-router.get('/instructors', auth, async(req, res) =>{
-  try{
-    if(req.user.role !== 'admin'){
-      return res.status(403).json({error: "Access denied. You're not an admin."});
+router.get('/instructors', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. You're not an admin." });
     }
-    const instructors = await User.find({role:'instructor'});
+    const instructors = await User.find({ role: 'instructor' });
     res.json(instructors);
   }
-  catch(error){
+  catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Server error'});
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-router.get('/tokenUser', auth, async(req, res) =>{
-  try{
+router.get('/tokenUser', auth, async (req, res) => {
+  try {
     const tokenUser = await User.findById(req.user._id).select('-password');
     res.json(tokenUser);
     console.log("Token api details:", tokenUser);
-  }catch(error){
+  } catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Server error'});
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -276,45 +309,45 @@ router.get('/:id', auth, async (req, res) => {
 
 
 //Delete the user by id
-router.delete('/:id', auth, async(req, res) => {
-  try{
-    if(req.user.role !== 'admin'){
-      return res.status(403).json({error: "Access denied. You're not an admin."});
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. You're not an admin." });
     }
 
     const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({error: "User not found"});
+    if (!user) return res.status(404).json({ error: "User not found" });
     await sendDeleteNotification(user.firstName, user.lastName, user.email);
     console.log("User deleted successfully: " + user);
-    res.json({message: "User deleted successfully"});
-  }catch(error){
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
     console.error(error);
-    res.status(500).json({error: 'Server error'});
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
 //Update the user by id
-router.put('/:id', auth, async(req, res) => {
-  try{
-    if(req.user.role !== 'admin'){
-      return res.status(403).json({error: "Access denied. You're not an admin."});
+router.put('/:id', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: "Access denied. You're not an admin." });
     }
 
-    const {firstName, lastName, email, role, password} = req.body;
-    if(role && !['admin', 'lecturer', 'instructor', 'to'].includes(role)){
-      return res.status(400).json({error: "Role must be either admin, lecturer, instructor or to"});
+    const { firstName, lastName, email, role, password } = req.body;
+    if (role && !['admin', 'lecturer', 'instructor', 'to'].includes(role)) {
+      return res.status(400).json({ error: "Role must be either admin, lecturer, instructor or to" });
     }
 
-    const updateUser = {firstName, lastName, email, role};
-    if(password){
+    const updateUser = { firstName, lastName, email, role };
+    if (password) {
       updateUser.password = await bcrypt.hash(password, 10);
     }
 
-    const user = await User.findByIdAndUpdate(req.params.id, updateUser, {new:true});
+    const user = await User.findByIdAndUpdate(req.params.id, updateUser, { new: true });
     if (!user) return res.status(404).json({ error: 'User not found' });
     await sendEditNotification(user.firstName, user.lastName, user.email, user.role);
     res.json({ message: 'User updated successfully', updateUser });
-  }catch (error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
@@ -331,6 +364,7 @@ router.post('/update-password', async (req, res) => {
     }
     user.password = password;
     await user.save();
+    await sendPasswordChangeNotification(user.firstName, user.lastName, user.email, user.role);
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     console.error(error);
