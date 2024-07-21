@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import frontOfAdminImage from  '../images/adminhome_backgroundjpg.jpg'
 import '../components/adminhome.css';
 import Profile from '../components/Profile'
+import Footer from '../components/Footer';
 
 
 export default function Dashboard() {
@@ -45,6 +46,7 @@ export default function Dashboard() {
         </div>
       </div>
       {isBoxVisible && <Profile profileRef={profileRef} />}
+      <Footer/>
     </div>
   );
 }

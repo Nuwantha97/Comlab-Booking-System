@@ -3,6 +3,7 @@ import ToHeader from '../components/ToHeder';
 import frontOfAdminImage from  '../images/adminhome_backgroundjpg.jpg'
 import Profile from '../components/Profile'
 import '../components/adminhome.css'
+import Footer from '../components/Footer';
 
 export default function ToHome() {
 
@@ -45,6 +46,7 @@ export default function ToHome() {
         </div>
       </div>
         {isBoxVisible && <Profile profileRef={profileRef} />}
+        <Footer />
     </div>
   )
 }

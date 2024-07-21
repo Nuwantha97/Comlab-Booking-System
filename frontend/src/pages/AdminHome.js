@@ -3,6 +3,7 @@ import HeaderAdmin from '../components/HeaderAdmin';
 import frontOfAdminImage from '../images/adminhome_backgroundjpg.jpg';
 import Profile from '../components/Profile';
 import '../components/adminhome.css';
+import Footer from '../components/Footer';
 
 export default function AdminHome() {
   const [isBoxVisible, setIsBoxVisible] = useState(false);
@@ -44,6 +45,7 @@ export default function AdminHome() {
         </div>
       </div>
       {isBoxVisible && <Profile profileRef={profileRef} />}
+      <Footer/>
     </div>
   );
 }
