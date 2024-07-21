@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../components/booking.css';
 import Header from '../components/Header';
@@ -27,6 +27,8 @@ export default function MyApp() {
   const token = localStorage.getItem('token'); 
   const navigate = useNavigate();
   const location = useLocation();
+  const profileRef = useRef(null);
+
 
   useEffect(() => {
     if (token) {
@@ -215,6 +217,23 @@ export default function MyApp() {
     setIsBoxVisible(!isBoxVisible);
   };
 
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsBoxVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isBoxVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBoxVisible]);
+
   const handleAttendeesChange = (selectedOptions) => {
     if (selectedOptions.length > 2) {
       selectedOptions = selectedOptions.slice(0, 2);
@@ -233,21 +252,12 @@ export default function MyApp() {
   const rectangleClass = availabilityMessage === "Time slot is available" || availabilityMessage === '' ? 'green-rectangle' : 'red-rectangle';
 
   return (
-    <div>
+    <div className='bbb'>
       <Header onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <div className="my-app">
+
         <div className="booking-body">
-          <div className="right">
-            <div className={`container-11 ${isPollVisible ? 'hidden' : ''}`}>
-              <h3>CO1 Lab Availability</h3>
-              <div className={rectangleClass}>
-                <div>{formattedDate}</div>
-                <div>{startTime} - {endTime}</div>
-                <div><br/>{availabilityMessage && <p className="availability-message">{availabilityMessage}</p>} </div>
-              </div>
-              
-            </div>
-          </div>
+
           <div className="left">
             <h1>Book Lab Session</h1>
             <div className="form-group">
@@ -289,9 +299,23 @@ export default function MyApp() {
               {errorMessage && <p className="error-message">{errorMessage}</p>}
             </div>
           </div>
+
+
+          <div className="right">
+            <div className={`container-11 ${isPollVisible ? 'hidden' : ''}`}>
+              <h3>CO1 Lab Availability</h3>
+              <div className={rectangleClass}>
+                <div>{formattedDate}</div>
+                <div>{startTime} - {endTime}</div>
+                <div><br/>{availabilityMessage && <p className="availability-message">{availabilityMessage}</p>} </div>
+              </div>   
+            </div>
+          </div>
+
         </div>
+
       </div>
-      {isBoxVisible && <Profile />}
+      {isBoxVisible && <Profile profileRef={profileRef} />}
     </div>
   );
 }

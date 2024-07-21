@@ -112,6 +112,11 @@ border-color: #1A4350 !important;
   width: 100%; /* Full width for both containers */
   margin-top: 20px; /* Add spacing between the elements */
 }
+.user-input-details{
+  width: 100%; /* Full width for both containers */
+      margin-top: 60px; /* Add spacing between the elements */
+     
+}
 
 .input-field{
   width: 100%;

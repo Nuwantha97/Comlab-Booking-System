@@ -32,10 +32,10 @@ export default function Header({ onUserIconClick, isProfileVisible }) {
               </div>
             </div>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ml-auto d-flex justify-content-center align-items-center w-100">
-              <div className="buttons-container">
+          <Navbar.Toggle aria-controls="basic-navbar-nav" style={{marginTop:'15px',width:'70px'}} />
+          <Navbar.Collapse id="basic-navbar-nav" >
+          <Nav className="ml-auto justify-content-end w-100">
+              <div className="buttons-container" style={{marginTop:'10px'}}>
                 <Link to="/dashboard">
                   <Buttons
                     text="Home"

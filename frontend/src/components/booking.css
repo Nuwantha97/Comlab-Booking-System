@@ -1,42 +1,40 @@
-.inline-container input[type="time"] {
-  width: 90px; /* Adjust the width to accommodate hh:mm format */
+.bbb {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: auto;
 }
 
 .my-app {
   margin: 0;
   padding: 0;
-  background-color: #93b6bf; /* Change this to the desired background color */
+  background-color: #93b6bf;
   display: flex;
   height: 100vh;
+  overflow: auto;
 }
 
-.my-app {
-  padding-left: 20px; /* Add padding from the left */
-  padding-top: 15px;
-  border-top: 2px solid black;
-}
-
-.my-app h1 {
-  color: #055366; /* Set font color as dark blue */
-}
-.container-11 {
-  background-color: #5c818a;
-  border-radius: 20px;
-  width: 40%;
-  height: 50%;
-  position: fixed;
-  top: 55%;
-  right: 30px;
-  text-align: center;
-  transform: translateY(-50%);
+.booking-body {
   display: flex;
-  flex-direction: column;
-  justify-content: center; /* Center vertically */
-  align-items: center; 
+  width: 100%;
+  overflow: auto;
+  
 }
-.container-11 h3 {
-  color: white;
+
+.left,
+.right {
+  flex: 1;
+  width: 50%; /* Ensure both sides are equal width */
+  padding: 20px;
 }
+.right {
+  margin-bottom: 100px;
+}
+
+.left h1 {
+  color: #055366;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -44,90 +42,85 @@
 }
 
 .form-group label {
-  margin-bottom: 5px; /* Adjust as needed for spacing between label and input */
+  margin-bottom: 5px;
 }
+
 .form-group input[type="text"] {
-  width: 500px;
+  width: 100%;
 }
+
+.green-rectangle,
+.red-rectangle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 30px;
+  border-radius: 20px;
+  width: 70%;
+  height: 70%;
+}
+
 .green-rectangle {
   background-color: #4cd40d;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; 
-  color: white;
-  font-size: 30px;
-  border-radius: 20px;
-  width: 70%;
-  height: 70%;
+  flex-direction: column;
 }
+
 .red-rectangle {
   background-color: red;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; 
-  color: white;
-  font-size: 30px;
-  border-radius: 20px;
-  width: 70%;
-  height: 70%;
+  flex-direction: column;
 }
 
 .inline-container {
   display: flex;
   align-items: center;
+  flex-direction: row;
 }
 
 .inline-container > * {
   margin-right: 10px;
-}  
-
-.inline-container input[type="time"] {
-  width: 90px; /* Adjust the width to accommodate hh:mm format */
 }
 
-.Scheduling-button{
+.inline-container input[type="time"] {
+  width: 90px;
+}
+
+.container-11 {
+  background-color: #5c818a;
+  border-radius: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-11 h3 {
+  color: white;
+}
+
+.Scheduling-button {
   position: absolute;
   top: 20%;
   right: 30px;
-  background-color: #1A4350;
-  font-family: 'Roboto';
-  font-size: 18px;
-  font-weight: 400;
-  color: white;
-  border: 2px solid white;
-  border-radius: 20px;
-  padding: 8px 16px;
-  cursor: pointer;
-  width: 200px;
 }
 
-.Scheduling-button:hover{
-  background-color: white;
-  color: black;
-  border: 1px solid white;
-}
-.left {
-  flex: 1; /* Takes up remaining space */
-  padding-right: 10px; /* Add some spacing */
-}
-
-.right {
-  flex: 1; /* Takes up remaining space */
-  padding-left: 10px;
-  right: 30px; /* Add some spacing */
-}
 .scheduling-box {
-  position: fixed; /* Position the div relative to the viewport */
-  top: 30%; /* Position 55% from the top of the viewport */
-  right: 20px; /* Position 20px from the right edge of the viewport */
-  width: 100px; /* Set width to 100px */
-  height: 80px; /* Set height to 80px */
-  background-color: darkblue; /* Set background color */
-  color: white; /* Set text color */
-  padding: 10px; /* Add padding */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow for better visibility */
-  z-index: 999; /* Set z-index to ensure it's above other elements */
+  position: fixed;
+  top: 30%;
+  right: 20px;
+  width: 100px;
+  height: 80px;
+  background-color: darkblue;
+  color: white;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
+
 .close-button {
   position: absolute;
   top: 5px;
@@ -137,14 +130,17 @@
   border: none;
   cursor: pointer;
 }
+
 .button-container {
   margin: 20px;
   display: flex;
   justify-content: left;
-  gap: 30px; /* Adds space between the buttons */
+  gap: 30px;
 }
-.scheduling, .check-button {
-  background-color: #1A4350;
+
+.scheduling,
+.check-button {
+  background-color: #1a4350;
   font-family: 'Roboto';
   font-size: 18px;
   font-weight: 400;
@@ -155,13 +151,50 @@
   cursor: pointer;
 }
 
-.scheduling:hover, .check-button:hover {
+.scheduling:hover,
+.check-button:hover {
   background-color: white;
   color: black;
   border: 1px solid white;
 }
 
-.green-rectangle, .red-rectangle {
-  display: flex;
+
+
+
+@media screen and (max-width: 637px) {
+
+  .bbb{
+    width: 100%;
+  }
+
+.container-11 h3{
+  font-size: 10px;
+}
+.inline-container {
   flex-direction: column;
+  align-items: start;
+}
+.check-button{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.booking-body{
+  flex-direction: column;
+}
+.availability-message{
+  font-size: 10px;
+}
+.rectangleClass{
+  font-size: 5px;
+}
+.left{
+  flex-direction: column;
+  align-items: start;
+  width:100%;
+}
+.right{
+  width:100%;
+  align-items: center;
+}
+
 }

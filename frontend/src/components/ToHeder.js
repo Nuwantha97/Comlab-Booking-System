@@ -31,10 +31,10 @@ export default function ToHeader({ onUserIconClick, isProfileVisible }) {
               </div>
             </div>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Toggle aria-controls="basic-navbar-nav" style={{marginTop:'15px',width:'70px'}}/>
           <Navbar.Collapse id="basic-navbar-nav">
           <Nav style={{display:'flex',justifyContent:'flex-end', width:'100%'}}>
-            <div className='buttons-container' >
+            <div className='buttons-container' style={{marginTop:'10px'}}>
               <Link to="/toHome">
                 <Buttons 
                   text="Home" 

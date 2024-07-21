@@ -21,6 +21,7 @@ function CalendarView() {
   const profileRef = useRef(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const [selectedMonth, setSelectedMonth] = useState(moment().format('YYYY-MM'));
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -124,20 +125,32 @@ function CalendarView() {
     setAttendeesInput('');
   };
 
-  const CustomToolbar = ({ onNavigate }) => {
+  const handleMonthChange = (e) => {
+    const selectedMonth = e.target.value;
+    setSelectedMonth(selectedMonth);
+    const newDate = moment(selectedMonth).toDate();
+    setCurrentDate(newDate);
+  };
+
+  const CustomToolbar = () => {
     return (
       <div className="rbc-toolbar" style={{ backgroundColor: '#A6BBC1', padding: '10px' }}>
-        <div style={{ color: '#638793', display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-          <div>
-            <button onClick={() => onNavigate('PREV')}>&lt; Prev</button>
-            <button onClick={() => onNavigate('NEXT')}>Next &gt;</button>
-          </div>
+        <div style={{ color: 'red', display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
           <div style={{ marginLeft: '20px' }}>
-            <div style={{ color: '#fff' }}>
-              <div style={{ backgroundColor: '#638793', width: '120px', height: '50px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '16px' }}>
-                {moment(currentDate).format('MMMM YYYY')}
-              </div>
-            </div>
+            <select
+              value={selectedMonth}
+              onChange={handleMonthChange}
+              style={{ padding: '5px', fontSize: '16px' }}
+            >
+              {Array.from({ length: 12 }).map((_, i) => {
+                const month = moment().month(i).format('YYYY-MM');
+                return (
+                  <option key={month} value={month}>
+                    {moment(month).format('MMMM YYYY')}
+                  </option>
+                );
+              })}
+            </select>
           </div>
         </div>
       </div>

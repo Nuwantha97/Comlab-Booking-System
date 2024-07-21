@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback,useRef} from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import '../components/notification.css';
@@ -19,6 +19,7 @@ export default function Notification() {
   const token = localStorage.getItem('token');
   const [selectedButton, setSelectedButton] = useState(localStorage.getItem('selectedButton') || '');
   const [loading, setLoading] = useState(true);
+  const profileRef = useRef(null);
 
   useEffect(() => {
     if (token) {
@@ -285,6 +286,23 @@ export default function Notification() {
     setIsBoxVisible(!isBoxVisible);
   };
 
+  const handleClickOutside = (event) => {
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsBoxVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isBoxVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isBoxVisible]);
+
   const handleLeterOnclick = () => {
     handleCancelClick2();
     handleCancelClick();
@@ -519,7 +537,7 @@ export default function Notification() {
             </div>
           )}
         </div>
-        {isBoxVisible && <Profile />}
+        {isBoxVisible && <Profile profileRef={profileRef} />}
       </div>
     </div>
   );

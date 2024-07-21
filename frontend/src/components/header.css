@@ -6,6 +6,22 @@
   border-radius: 50%;
   mix-blend-mode: darken;
 }
+.navbar-green .navbar-brand div h3 {
+  font-weight: 700;
+  color: #205464;
+  text-shadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'
+
+ 
+}
+
+.navbar-green .navbar-brand div p {
+  font-weight: 400;
+  color: #205464;
+  line-height: 24px;
+  font-size: 18px;
+
+
+}
 
 .userIcon:hover img,
 .userIcon.active img,
@@ -33,36 +49,30 @@
   width: 100%;
 }
 
+
+
 .buttons-container {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .buttons-container > * {
   margin-right: 20px;
 }
 
-/* Styles for the Navbar on smaller screens */
-@media (max-width: 992px) {
-  .buttons-container {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
+@media screen and (max-width: 1080px) {
+  .d-flex{
+    justify-content: center;
+  }
+  .navbar-green .navbar-brand div h3 {
+    font-size: 25px;
+    white-space: wrap;
   }
 
-  .buttons-container > * {
-    margin-right: 0;
-    margin-bottom: 10px;
+  .navbar-green .navbar-brand div p {
+    font-size: 11px;
+    white-space: wrap;
   }
-
-  .userIcon img,
-  .notificationIcon {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-@media (max-width: 767px) {
   .navbar-brand {
     width: 100%;
     text-align: center;
@@ -72,16 +82,17 @@
     width: 100%;
   }
 
-  .buttons-container {
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-  }
+
 
   .buttons-container > * {
     width: 100%;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 10px; 
+  }
+  .buttons-container {
+    display: flex;
+    align-items: start;
+   
   }
 
   .userIcon,
@@ -92,7 +103,31 @@
 
   .userIcon img,
   .notificationIcon {
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
   }
+}
+@media screen and (max-width: 530px) {
+  .d-flex{
+    margin-top: 45px;
+
+  }
+  .navbar-green .navbar-brand div h3 {
+    font-size: 20px;
+    white-space: wrap;
+  }
+
+  .navbar-green .navbar-brand div p {
+    font-size: 8px;
+    white-space: wrap;
+  }
+  .buttons-container{
+    display: flex;
+    flex-direction: column;
+
+  }
+
+
+
+
 }
