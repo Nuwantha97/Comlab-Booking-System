@@ -138,70 +138,77 @@ export default function MyApp() {
     };
 
     console.log('Saving booking with data:', bookingData);
-
     try {
-      const response = await axios.post('/api/bookings', bookingData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      console.log('Booking save response:', response.data);
-      alert('Booking Successful');
-      window.location.reload();
-
-      const bookingId = response.data._id;
-
+      // If there's an existing event in the location state, edit the lab session
       if (location.state && location.state.event) {
-        await axios.delete(`/api/bookings/${location.state.event.id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-      }
-
-      alert('Booking Successful');
-
-      const notificationData = {
-        title: bookingData.title,
-        startTime: bookingData.startTime,
-        endTime: bookingData.endTime,
-        description: bookingData.description,
-        attendees: bookingData.attendees,
-        uEmail: uEmail,
-        uDate: new Date(`${selectedDate}`).toISOString(),
-        bookingId
-      };
-
-      console.log('Saving notification with data:', notificationData);
-
-      try {
-        const notificationResponse = await axios.post('/api/notification/createNotification', notificationData, {
+        const bookingId = location.state.event.id;
+        const response = await axios.put(`/api/bookings/editLabSession/${bookingId}`, bookingData, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
         });
-
-        console.log('Notification creation response:', notificationResponse.data);
-      } catch (notificationError) {
-        console.error('Notification creation error:', notificationError);
-        if (notificationError.response && notificationError.response.data && notificationError.response.data.message) {
-          setErrorMessage(notificationError.response.data.message);
-        } else {
-          setErrorMessage('Failed to create notification');
+  
+        console.log('Edit lab session response:', response.data);
+        alert('Lab session updated successfully');
+        window.history.replaceState(null, '');
+        window.location.reload();
+      } else {
+        // Otherwise, create a new booking
+        const response = await axios.post('/api/bookings', bookingData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
+        console.log('Booking save response:', response.data);
+        alert('Booking Successful');
+        window.location.reload();
+  
+        const bookingId = response.data._id;
+  
+        const notificationData = {
+          title: bookingData.title,
+          startTime: bookingData.startTime,
+          endTime: bookingData.endTime,
+          description: bookingData.description,
+          attendees: bookingData.attendees,
+          uEmail: uEmail,
+          uDate: new Date(`${selectedDate}`).toISOString(),
+          bookingId
+        };
+  
+        console.log('Saving notification with data:', notificationData);
+  
+        try {
+          const notificationResponse = await axios.post('/api/notification/createNotification', notificationData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+  
+          console.log('Notification creation response:', notificationResponse.data);
+        } catch (notificationError) {
+          console.error('Notification creation error:', notificationError);
+          if (notificationError.response && notificationError.response.data && notificationError.response.data.message) {
+            setErrorMessage(notificationError.response.data.message);
+          } else {
+            setErrorMessage('Failed to create notification');
+          }
         }
       }
     } catch (error) {
-      console.error('Booking error:', error);
+      console.error('Booking save error:', error);
       if (error.response && error.response.data && error.response.data.message) {
         setErrorMessage(error.response.data.message);
       } else {
-        setErrorMessage('Server error');
+        setErrorMessage('Failed to save booking');
       }
     }
   };
+    
 
   const handleUserIconClick = () => {
     setIsBoxVisible(!isBoxVisible);
