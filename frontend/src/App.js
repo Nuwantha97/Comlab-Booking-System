@@ -25,7 +25,9 @@ import CalendarViewTo from './pages/ToView';
 import ToProfile from './pages/ToProfile';
 import ToNotification from './pages/ToNotification';
 import LecturerInstructorProfile from './pages/LecturerInstructorProfile';
-
+import UploadPage from './pages/UploadPage';
+import DisplayImagesPage from './pages/DisplayImagesPage';
+import EditImg from './pages/EditImg';
 
 function App() {
   return (
@@ -56,7 +58,9 @@ function App() {
             <Route path="/toProfile" element={<ToProfile />} />
             <Route path="/lecturerInstructorProfile" element={<LecturerInstructorProfile />} />
             <Route path="toNotification" element={<ToNotification />} />
-            
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/display" element={<DisplayImagesPage />} />
+            <Route path="/editImg" element={<EditImg />} />
           </Routes>
         </BrowserRouter>
       </div>

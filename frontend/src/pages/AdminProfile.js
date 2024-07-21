@@ -3,13 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import '../components/toProfile.css';
 import userImage from '../images/user-image.png';
-import Buttons from '../components/submitButton';
 import '../App.css';
 import Profile from '../components/Profile';
 import axios from 'axios';
 import HeaderAdmin from '../components/HeaderAdmin';
-
-
 
 export default function AdminProfile() {
   const [id, setId] = useState('');
@@ -21,7 +18,7 @@ export default function AdminProfile() {
   const [role, setRole] = useState("");
   const [textContainerText, setTextContainerText] = useState("Your Account");
   const navigate = useNavigate();
-  
+
   const location = useLocation();
   const token = localStorage.getItem('token');
   console.log(location.state);
@@ -32,9 +29,7 @@ export default function AdminProfile() {
   }, [location.state]);
 
   useEffect(() => {
-
     if (id) {
-
       const fetchUser = async () => {
         try {
           const response = await axios.get(`/api/users/getDetails/${id}`, {
@@ -53,7 +48,6 @@ export default function AdminProfile() {
           console.error('Error fetching user:', error);
         }
       };
-
       fetchUser();
     }
   }, [id, token]);
@@ -68,7 +62,7 @@ export default function AdminProfile() {
       firstName,
       lastName
     };
-    console.log('data',userData);
+    console.log('data', userData);
     try {
       let response;
       if (id) {
@@ -80,7 +74,7 @@ export default function AdminProfile() {
         });
         console.log(response.data);
         alert('User updated successfully!');
-      } 
+      }
       navigate('/adminhome');
     } catch (error) {
       console.error('Error saving user:', error);
@@ -92,6 +86,10 @@ export default function AdminProfile() {
     navigate('/forgotpassword');
   };
 
+  const handleEditClick = () => {
+    navigate('/editImg', { state: { id: id } });
+  };
+
   return (
     <div className='main-container'>
       <HeaderAdmin onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
@@ -99,8 +97,13 @@ export default function AdminProfile() {
         <div className='container-2-to'>
           <div className='user-logo-details-to'>
             <h3 className='text-1'>{textContainerText}</h3>
-            <img src={userImage} alt="user-photograph" className='userImage-to' />
-            <Buttons text="Edit" />
+            <img
+              src={`/api/images/get/${id}`}
+              alt="user-photograph"
+              className='userImage-to'
+              onError={(e) => { e.target.onerror = null; e.target.src = userImage; }}
+            />
+            <button className='buttons1' onClick={handleEditClick}>Edit</button>
           </div>
 
           <div className='user-input-details-to'>
@@ -148,7 +151,7 @@ export default function AdminProfile() {
                     value={role}
                   /><br />
                   <div className="button-save-to">
-                    <Buttons type="submit" text="Save" borderRadius="50px" width="125px" height="50px" marginTop="20px" />
+                    <button type="submit" className='button'>Save</button>
                   </div>
                 </form>
               </div>
