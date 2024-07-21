@@ -4,8 +4,18 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 dotenv.config();
 
+const path = require('path');
 const PORT = process.env.PORT || 8070;
 const URL = process.env.MONGODB_URL;
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "..", "frontend", "build")));
+  
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "frontend", "build", "index.html"));
+  });
+}
+
 
 mongoose.connect(URL, {
   useNewUrlParser: true,

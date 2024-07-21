@@ -8,6 +8,7 @@
   "name": "comlab-booking-system",
   "version": "1.0.0",
   "description": "Welcome to the Lab Booking System project! This project is developed as part of our final year computer engineering project. The Lab Booking System allows users to book labs for various purposes efficiently.",
+  "heroku-postbuild": "cd frontend && npm install && npm run build",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
