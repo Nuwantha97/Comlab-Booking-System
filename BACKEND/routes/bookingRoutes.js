@@ -88,15 +88,18 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-router.post('/cancelLabSession/:labId', auth, checkRole, async (req, res) => {
-  const { labId } = req.params;
-  console.log ('y8gbtgbs68y7hy7uasr7ybat76', labId);
-
+router.post('/cancelLabSession/:bookingId', auth, async (req, res) => {
+  const { bookingId } = req.params;
+  
   try {
+    // Check user role
+    if (req.user.role !== 'lecturer' && req.user.role !== 'instructor' && req.user.role !== 'admin') {
+        return res.status(403).json({ error: "Access denied. You're not authorized to book labs." });
+    }
 
     // Find and update the booking
     const booking = await Booking.findOneAndUpdate(
-        { _id: labId },
+        { _id: bookingId },
         { status: 'cancelled' },
         { new: true } // Return updated document
       );

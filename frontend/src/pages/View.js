@@ -16,6 +16,7 @@ function CalendarView() {
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const [isCancelConfirmationVisible, setIsCancelConfirmationVisible] = useState(false);
   const [attendeesInput, setAttendeesInput] = useState('');
+  const [currentDate, setCurrentDate] = useState(new Date()); // Add state for current date
   const profileRef = useRef(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -61,22 +62,6 @@ function CalendarView() {
   };
 
   const handleConfirmCancel = async () => {
-    /*try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`/api/bookings/${selectedEvent.id}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      // Remove the selected event from the events array
-      const updatedEvents = events.filter((event) => event.id !== selectedEvent.id);
-      setEvents(updatedEvents);
-      setSelectedEvent(null); // Clear the selectedEvent state
-    } catch (error) {
-      console.error('Error deleting booking:', error);
-    }*/
-
     try {
       const response = await axios.post(
         `/api/bookings/cancelLabSession/${selectedEvent.id}`, 
@@ -96,7 +81,6 @@ function CalendarView() {
     } catch (error) {
       console.error('Error updating booking status:', error);
     }
-
 
     setIsCancelConfirmationVisible(false);
   };
@@ -124,14 +108,18 @@ function CalendarView() {
     setAttendeesInput('');
   };
 
-  const CustomToolbar = () => {
+  const CustomToolbar = ({ onNavigate }) => {
     return (
       <div className="rbc-toolbar" style={{ backgroundColor: '#A6BBC1', padding: '10px' }}>
-        <div style={{ color: '#638793', display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
+        <div style={{ color: '#638793', display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+          <div>
+            <button onClick={() => onNavigate('PREV')}>&lt; Prev</button>
+            <button onClick={() => onNavigate('NEXT')}>Next &gt;</button>
+          </div>
           <div style={{ marginLeft: '20px' }}>
             <div style={{ color: '#fff' }}>
               <div style={{ backgroundColor: '#638793', width: '120px', height: '50px', marginRight: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '16px' }}>
-                {moment().format('MMMM')} {moment().format('YYYY')}
+                {moment(currentDate).format('MMMM YYYY')}
               </div>
             </div>
           </div>
@@ -173,6 +161,8 @@ function CalendarView() {
               startAccessor="start"
               endAccessor="end"
               style={{ height: '600px' }}
+              date={currentDate}
+              onNavigate={(date) => setCurrentDate(date)}
               eventPropGetter={(event, start, end, isSelected) => ({
                 style: {
                   backgroundColor: '#00B528', // Green color
@@ -192,10 +182,10 @@ function CalendarView() {
               <p>End: {selectedEvent.end.toLocaleString()}</p>
               <p>Attendees:</p>
               <ul>
-  {selectedEvent.attendees.map((attendee, index) => (
-    <li key={index} style={{ color: 'white' }}>{attendee}</li>
-  ))}
-</ul>
+                {selectedEvent.attendees.map((attendee, index) => (
+                  <li key={index} style={{ color: 'white' }}>{attendee}</li>
+                ))}
+              </ul>
 
               <div className="button-group">
                 <button onClick={handleEditEvent}>Edit</button>
