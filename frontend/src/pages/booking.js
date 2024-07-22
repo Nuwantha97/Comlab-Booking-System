@@ -167,10 +167,10 @@ export default function MyApp() {
   
         console.log('Booking save response:', response.data);
         alert('Booking Successful');
-        window.location.reload();
+        //window.location.reload();
   
         const bookingId = response.data._id;
-  
+        console.log('aaaaaaaaaabbbbbbbbb',bookingId);
         const notificationData = {
           title: bookingData.title,
           startTime: bookingData.startTime,

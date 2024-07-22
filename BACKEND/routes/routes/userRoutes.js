@@ -161,8 +161,9 @@ router.post('/add', auth, async (req, res) => {
     const { firstName, lastName, email, role, password } = req.body;
     const user = new User({ firstName, lastName, email, role, password });
     await user.save();
+    console.log(user._id);
     await sendMailNewUser(firstName, lastName, email, role, password);
-    res.json({ message: 'User added successfully' });
+    res.status(201).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
