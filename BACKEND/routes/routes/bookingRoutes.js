@@ -15,10 +15,15 @@ router.post('/check-availability', auth, checkRole, async (req, res) => {
   try {
     const { startTime, endTime } = req.body;
     const overlappingBookings = await Booking.find({
-      $or: [
-        { startTime: { $lt: endTime, $gte: startTime } },
-        { endTime: { $gt: startTime, $lte: endTime } },
-        { startTime: { $lte: startTime }, endTime: { $gte: endTime } }
+      $and: [
+        { status: { $ne: 'cancelled' } },
+        {
+          $or: [
+            { startTime: { $lt: endTime, $gte: startTime } },
+            { endTime: { $gt: startTime, $lte: endTime } },
+            { startTime: { $lte: startTime }, endTime: { $gte: endTime } }
+          ]
+        }
       ]
     });
 
@@ -32,6 +37,7 @@ router.post('/check-availability', auth, checkRole, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // Create a new booking
 router.post('/', auth, checkRole, async (req, res) => {
