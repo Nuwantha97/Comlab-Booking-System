@@ -1,22 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react';
 import HeaderAdmin from '../components/HeaderAdmin';
 import Buttons from '../components/submitButton';
 import UserImageAdmin from '../images/user-image.png';
 import { Link } from 'react-router-dom';
-import '../components/adduser.css'
-import Profile from '../components/Profile'
+import '../components/adduser.css';
+import Profile from '../components/Profile';
 import axios from 'axios';
-
 
 export default function AddUser() {
   const [isBoxVisible, setIsBoxVisible] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-  const profileRef = useRef(null);
   const [image, setImage] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(""); 
+  const profileRef = useRef(null);
 
   const token = localStorage.getItem('token');
 
@@ -41,11 +40,24 @@ export default function AddUser() {
   }, [isBoxVisible]);
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setImage(file);
+    setImagePreviewUrl(URL.createObjectURL(file)); 
+  };
+
+  const generateRandomPassword = () => {
+    const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$*&';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      password += characters[randomIndex];
+    }
+    return password;
   };
 
   const handleSave = async (event) => {
     event.preventDefault();
+    const password = generateRandomPassword();
     const userData = {
       firstName,
       lastName,
@@ -91,22 +103,20 @@ export default function AddUser() {
       } catch (err) {
         console.error('Error uploading image:', err);
         alert('Error uploading image');
-      } 
+      }
     } catch (err) {
       console.error('Error adding user:', err);
       alert('Error adding user');
     }
   };
+
   return (
     <div className='main-container-admin'>
-
       <HeaderAdmin onUserIconClick={handleUserIconClick} isProfileVisible={isBoxVisible} />
       <hr />
       <div className='container-1-admin'>
         <div className='container-2-admin'>
           <h3 className='text-container-admin'>Add User Details</h3>
-
-
           <div className='user-input-details-admin'>
             <form onSubmit={handleSave}>
               <label htmlFor="firstName" className="input-label-admin">First Name</label><br />
@@ -125,15 +135,6 @@ export default function AddUser() {
                 name="lastName"
                 className="input-field-admin"
                 onChange={(e) => setLastName(e.target.value)}
-              /><br />
-
-              <label htmlFor="password" className="input-label-admin">Password</label><br />
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className="input-field-admin"
-                onChange={(e) => setPassword(e.target.value)}
               /><br />
 
               <label htmlFor="email" className="input-label-admin">Email</label><br />
@@ -159,7 +160,7 @@ export default function AddUser() {
                 <option value="instructor">Instructor</option>
               </select><br />
               <input type="file" onChange={handleImageChange} required /><br />
-
+              {imagePreviewUrl && <p>Selected image: {imagePreviewUrl}</p>}
 
               <div className="buttons">
                 <Buttons type="submit" text="Save" borderRadius="50px" width="125px" height="50px" marginTop="20px" />
@@ -173,15 +174,17 @@ export default function AddUser() {
         <div className='container-3-main-admin'>
           <div className='container-3-admin'>
             <div className='user-logo-details-admin'>
-              <img src={UserImageAdmin} alt="user-photograph" className='userImageAdmin' />
+              {imagePreviewUrl ? (
+                <img src={imagePreviewUrl} alt="Selected user" className='userImageAdmin' />
+              ) : (
+                <img src={UserImageAdmin} alt="user-photograph" className='userImageAdmin' />
+              )}
             </div>
           </div>
         </div>
 
-
         {isBoxVisible && <Profile profileRef={profileRef} />}
-
       </div>
     </div>
-  )
+  );
 }
