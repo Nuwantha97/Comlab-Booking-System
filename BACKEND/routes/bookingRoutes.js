@@ -11,7 +11,7 @@ function checkRole(req, res, next) {
   }
   next();
 }
-
+/*
 router.post('/check-availability', auth, checkRole, async (req, res) => {
   try {
     const { startTime, endTime } = req.body;
@@ -33,6 +33,49 @@ router.post('/check-availability', auth, checkRole, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+*/
+router.post('/check-availability', auth, checkRole, async (req, res) => {
+  try {
+    const { startTime, endTime } = req.body;
+    const overlappingBookings = await Booking.find({
+      $or: [
+        { startTime: { $lt: endTime, $gte: startTime } },
+        { endTime: { $gt: startTime, $lte: endTime } },
+        { startTime: { $lte: startTime }, endTime: { $gte: endTime } }
+      ]
+    });
+
+    const canceledBookings = overlappingBookings.filter(booking => booking.status === 'cancelled');
+    const activeBookings = overlappingBookings.filter(booking => booking.status !== 'cancelled');
+
+    if (activeBookings.length > 0) {
+      const activeDetails = activeBookings.map(booking => ({
+        title: booking.title,
+        status: booking.status,
+        startTime: booking.startTime,
+        endTime: booking.endTime
+      }));
+      return res.status(400).json({ error: 'Time slot is already booked', activeDetails });
+    }
+
+    if (canceledBookings.length > 0) {
+      const canceledDetails = canceledBookings.map(booking => ({
+        title: booking.title,
+        description: booking.description,
+        status: booking.status,
+        startTime: booking.startTime,
+        endTime: booking.endTime
+      }));
+      return res.status(200).json({ message: 'Some overlapping bookings are cancelled', canceledDetails });
+    }
+
+    res.json({ message: 'Time slot is available' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 // Create a new booking
 router.post('/', auth, checkRole, async (req, res) => {
