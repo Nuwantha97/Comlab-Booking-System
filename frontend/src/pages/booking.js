@@ -103,7 +103,7 @@ export default function MyApp() {
       setAvailabilityMessage('Start time and end time cannot be empty');
       return;
     }
-
+console.log('aaaaaaaaaa');
     const checkData = {
       startTime: new Date(`${selectedDate}T${startTime}`).toISOString(),
       endTime: new Date(`${selectedDate}T${endTime}`).toISOString()
@@ -112,6 +112,7 @@ export default function MyApp() {
     console.log('Checking availability with data:', checkData);
 
     try {
+      
       const response = await axios.post('/api/bookings/check-availability', checkData, {
         headers: {
           'Content-Type': 'application/json',
@@ -282,7 +283,15 @@ export default function MyApp() {
 
               <label htmlFor="date">Date:</label>
               <div className="inline-container">
-                <input type="date" id="date" name="date" style={{ width: '150px' }} onChange={handleDateChange} />
+                <input
+                type="date"
+                id="date"
+                name="date" 
+                style={{ width: '150px' }}
+                value={selectedDate}
+                onChange={handleDateChange}
+                min={new Date().toISOString().split("T")[0]} // Block past dates
+                />
                 <label htmlFor="startTime">From:</label>
                 <input type="time" id="startTime" name="startTime" style={{ width: '90px' }} onChange={(e) => setStartTime(e.target.value)} />
                 <label htmlFor="endTime">To:</label>
