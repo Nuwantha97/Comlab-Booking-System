@@ -84,9 +84,9 @@ router.post('/', auth, checkRole, async (req, res) => {
 
     const overlappingBookings = await Booking.find({
       $or: [
-        { startTime: { $lt: endTime, $gte: startTime } },
-        { endTime: { $gt: startTime, $lte: endTime } },
-        { startTime: { $lte: startTime }, endTime: { $gte: endTime } }
+        { startTime: { $lt: endTime, $gte: startTime }, status: { $ne: 'cancelled' } },
+        { endTime: { $gt: startTime, $lte: endTime }, status: { $ne: 'cancelled' } },
+        { startTime: { $lte: startTime }, endTime: { $gte: endTime }, status: { $ne: 'cancelled' } }
       ]
     });
 

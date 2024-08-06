@@ -37,6 +37,22 @@ export default function ToNotification() {
   }, [token]);
 
   useEffect(() => {
+    const updateNotificationsToReminder = async () => {
+      try {
+        const response = await axios.put('/api/notification/reminder', {}, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        console.log('Notifications updated:', response.data);
+      } catch (error) {
+        console.error('Error updating notifications:', error);
+      }
+    };
+    updateNotificationsToReminder();
+  }, [token]);
+
+  useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -46,19 +62,6 @@ export default function ToNotification() {
   const filterNotifications = useCallback((type) => {
     if (type === 'unread') {
       setFilteredNotifications(notifications.filter(notification => !notification.isRead));
-    } else if (type === 'reminder') {
-      const now = new Date();
-      const nearbyReminders = notifications.filter(notification => {
-        const labStartTime = new Date(notification.labDate);
-        const timeDiff = labStartTime.getTime() - now.getTime();
-        const minutesDiff = Math.floor(timeDiff / (1000 * 60));
-        return (
-          labStartTime.toDateString() === now.toDateString() &&
-          minutesDiff <= 30 &&
-          minutesDiff >= 0
-        );
-      });
-      setFilteredNotifications(nearbyReminders);
     } else if (type === '') {
       setFilteredNotifications(notifications);
     } else if (type === 'Confirmed/Rejected') {

@@ -354,5 +354,26 @@ router.get('/attendeesAndTypeByBookingId/:bookingId', auth, async (req, res) => 
         res.status(500).json({ message: 'Server error' });
     }
 });
+router.put('/reminder', async (req, res) => {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0); 
+
+    const todayISO = today.toISOString(); 
+
+    try {
+        const result = await Notification.updateMany(
+            { labDate: todayISO, type: { $ne: 'cancellation' } },
+            { $set: { type: 'reminder' } }
+        );
+
+        res.status(200).json({
+            message: 'Notifications updated to reminders',
+            updatedCount: result.nModified
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 module.exports = router;
